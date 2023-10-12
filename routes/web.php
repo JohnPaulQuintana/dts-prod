@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
 
 // Route::get('/department', [DepartmentController::class,'dashboard'])->middleware(['auth', 'verified'])->name('departments.dashboard');
 
-Route::middleware(['auth', 'verified','roleguard'])->group(function(){
+Route::middleware(['auth', 'verified','roleguard','check.archived'])->group(function(){
     Route::get('/department', [DepartmentController::class,'dashboard'])->name('departments.dashboard');
     Route::get('/department-show', [OfficeController::class,'showDepartment'])->name('departments.dashboard.department');
     Route::get('/request-documents', [RequestedDocumentController::class,'showIncomingRequest'])->name('departments.dashboard.incoming');
@@ -57,9 +57,13 @@ Route::middleware(['auth', 'verified','roleguard'])->group(function(){
 Route::middleware('auth')->group(function () {
     // notification
     Route::get('/notification',[NotificationController::class,'getNotification'])->name('notify');
+    Route::post('/notification-update',[NotificationController::class,'updateNotification'])->name('notify.update');
     // on
     Route::get('/on',[ReportController::class,'getOnGoingDocuments'])->name('on');
 
+    // logs
+    Route::get('/logs',[AdministratorController::class,'history'])->name('history');
+    Route::get('/history',[DepartmentController::class,'history'])->name('history.department');
     // events
     Route::post('/events',[EventController::class,'pushEvents'])->name('events.push');
     Route::post('/delete-event',[EventController::class,'deleteEvents'])->name('events.delete');
@@ -68,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/edit-events',[EventController::class,'EditEvents'])->name('events.edit');
 
 
+    Route::post('/account-manage', [AdministratorController::class, 'accounts'])->name('account.manage');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

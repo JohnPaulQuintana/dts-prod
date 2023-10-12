@@ -78,6 +78,7 @@
                 <div class="card-body">
 
                     <div class="dropdown float-end">
+                        <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
@@ -85,13 +86,15 @@
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
                             <a id="trigger-office" href="javascript:void(0);" class="dropdown-item text-success">New Office</a>
+                            <!-- item-->
+                            <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                         </div>
                     </div>
 
                     <h4 class="card-title mb-4">Office List</h4>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
+                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap office-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Office Name</th>
@@ -104,6 +107,7 @@
                                 </tr>
                             </thead><!-- end thead -->
                             <tbody>
+                                
                                 @foreach ($offices as $office)
                                     <tr>
                                         <td><h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>{{ $office->office_name }}</h6></td>
@@ -197,6 +201,36 @@
         {{-- custom js --}}
         <script>
             $(document).ready(function(){
+
+                // search functionality
+                // Handle input changes in real-time
+                $('#search-input').on('input', function () {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Loop through each list item and hide/show based on the search text
+                    $('.office-table tbody tr').each(function () {
+                        var row = $(this);
+                        var rowMatches = false;
+                        // Loop through each cell in the row
+                        row.find('td').each(function () {
+                            var cellText = $(this).text().toLowerCase();
+
+                            // Check if the cell text contains the search text
+                            if (cellText.includes(searchText)) {
+                                rowMatches = true;
+                                return false; // Exit the cell loop early if a match is found
+                            }
+                        });
+
+                        // Show/hide the row based on whether it matches the search
+                        if (rowMatches) {
+                            row.show();
+                        } else {
+                            row.hide();
+                        }
+                    });
+                });
+
                 $('#trigger-office').on('click',function(){
                     $('#new-office').modal('show')
                     // var trkId = $(this).data("trk-id");
@@ -228,7 +262,7 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            console.log(notification)
+            // console.log(notification)
             toastr[notification.status](notification.message);
         });
     </script>

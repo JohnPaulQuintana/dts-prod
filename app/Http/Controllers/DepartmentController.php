@@ -3,15 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
-use App\Models\Office;
 use App\Models\User;
+use App\Models\Office;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
     public function dashboard(){
         return view('departments.components.contents.home')->with(['logs'=>$this->LogsInfo()]);
+    }
+
+    public function history(){
+        // dd(Auth::user()->id);
+        $logs = DB::table('logs')
+        ->join('requested_documents', 'logs.requested_document_id', '=', 'requested_documents.id')
+        ->join('users', 'requested_documents.requestor_user', '=' ,'users.id')
+        ->select('logs.*', 
+            'requested_documents.requestor_user', 'requested_documents.status', 'requested_documents.purpose',
+            'users.name'
+            )
+        ->get();
+
+        // dd($logs);
+        return view('departments.components.contents.history')->with(['history'=>$logs]);
     }
 
     public function getDept(){

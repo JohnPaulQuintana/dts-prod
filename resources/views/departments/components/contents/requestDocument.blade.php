@@ -93,6 +93,7 @@
                 <div class="card-body">
 
                     <div class="dropdown float-end">
+                        <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
@@ -102,11 +103,18 @@
                         </div>
                     </div>
                     {{-- {{ Auth::user() }} --}}
-                    <h4 class="card-title mb-4">Request List</h4>
+                    <h4 class="card-title mb-4">Document's List</h4>
+
+                    <div class="mb-2">
+                        <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="forwarded"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
+                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                        <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
+                        <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="success" data-bs-toggle="tooltip" data-bs-placement="top" title="Finished Document">Finished</a>
+                    </div>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
                        
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
+                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap req-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Tracking No.</th>
@@ -129,16 +137,21 @@
                                         $trk = $document['trk_id'];
                                         // dd($trk); // Check the value of $trkId
                                     @endphp
-                                    <tr>
+                                    <tr data-requestor-trk="{{ $document['trk_id'] }}">
                                         <td>
                                             @switch($document['trk_id'])
                                                 @case(null)
-                                                    <h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
+                                                @if ($document['status'] !== 'archived')
+                                                    <h6 class="mb-0 text-warning"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
+                                                @else
+                                                    <h6 class="mb-0 text-danger"><i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>{{ __('rejected') }}</h6>
+                                                @endif
+                                                    {{-- <h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6> --}}
                                                     @break
                                         
                                                 @default
                                                     <h6 class="mb-0 position-relative">
-                                                        {!! DNS1D::getBarcodeHTML("579503", 'PHARMA') !!}
+                                                        {!! DNS1D::getBarcodeHTML($document['trk_id'], 'PHARMA') !!}
                                                         @switch($document['type'])
                                                             @case('my document')
                                                             {{-- for barcodes --}}
@@ -149,11 +162,21 @@
                                                                 </span>
                                                                 @break
                                                             @case('requested')
+                                                                
+                                                                
+                                                                @if ($document['status'] !== 'forwarded')
+                                                                    <i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>
+                                                                    {{ __('TRK-XXXXXX') }}
+                                                                    <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
+                                                                        {{ $document['type'] }}
+                                                                    </span>
+                                                                @else
                                                                 <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
-                                                                {{ __('TRK-XXXXXX') }}
-                                                                <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
-                                                                    {{ $document['type'] }}
-                                                                </span>
+                                                                TRK-{{ $document['trk_id'] }}
+                                                                    <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
+                                                                        {{ $document['type'] }}
+                                                                    </span>
+                                                                @endif
                                                                 @break
                                                         @endswitch
                                                     </h6>
@@ -193,7 +216,20 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td><span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span></td>
+                                        <td>
+                                            @switch($document['status'])
+                                                @case('archived')
+                                                    <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
+                                                @case('forwarded')
+                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
+                                            
+                                                @default
+                                                    
+                                            @endswitch
+                                           
+                                        </td>
                                         <td><b>{{ $document['created_at'] }}</b></td>
                                         <td width="50px">
                                             <span class="">
@@ -202,10 +238,10 @@
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 {{-- for barcodes --}}
-                                                @if ($document['type'] === 'my document' && $document['status'] !== 'pending')
+                                                @if ($document['type'] === 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'archived')
                                                     <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
                                                 @endif
-                                                <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-purpose="{{ $document['purpose'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                                 <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a>
                                             </span>
                                         </td>
@@ -274,6 +310,84 @@
         {{-- custom js --}}
         <script>
             $(document).ready(function(){
+                // filter table base on id
+                 // Parse the URL search parameters
+                 const urlSearchParams = new URLSearchParams(window.location.search);
+
+                // Get the value of the 'search_id' parameter
+                const searchId = urlSearchParams.get('search_id');
+
+                // Check if 'searchId' has a value and use it
+                if (searchId !== null) {
+                    // console.log('search_id:', searchId);
+                    // Show/hide rows based on the selected user ID
+                    $('.req-table tr').each(function () {
+                        var rowUserId = $(this).data('requestor-trk');
+
+                        if (rowUserId == searchId) {
+                            var $this = $(this).addClass('position-relative');
+                            $(this).show();
+                            $(this).addClass('border border-danger bg-light');
+                            // Remove the 'border-danger' class after 5 seconds
+                            setTimeout(function () {
+                                // alert('remove')
+                                $this.addClass('border border-white');
+                            }, 5000); // 5000 milliseconds (5 seconds)
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    console.log('search_id parameter not found in the URL');
+                }
+
+                // search functionality
+                // Handle input changes in real-time
+                $('#search-input').on('input', function () {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Loop through each list item and hide/show based on the search text
+                    $('.req-table tbody tr').each(function () {
+                        var row = $(this);
+                        var rowMatches = false;
+                        // Loop through each cell in the row
+                        row.find('td').each(function () {
+                            var cellText = $(this).text().toLowerCase();
+
+                            // Check if the cell text contains the search text
+                            if (cellText.includes(searchText)) {
+                                rowMatches = true;
+                                return false; // Exit the cell loop early if a match is found
+                            }
+                        });
+
+                        // Show/hide the row based on whether it matches the search
+                        if (rowMatches) {
+                            row.show();
+                        } else {
+                            row.hide();
+                        }
+                    });
+                });
+
+                // Handle button click
+                $(".filter-button").click(function() {
+                    var filter = $(this).data("filter");
+                    
+                    // Show all rows initially
+                    $("tbody tr").show();
+                    
+                    // Hide rows that don't match the filter
+                    if (filter !== "All") {
+                        $("tbody tr").each(function() {
+                            var status = $(this).find("td:eq(4)").text(); // Assuming status is in the 5th column (index 4)
+                            if (status !== filter) {
+                                $(this).hide();
+                            }
+                        });
+                    }
+                });
+
                 // new request
                 $('#new-request').on('click',function(){
                      // Prevent modal from closing when clicking outside
@@ -284,7 +398,7 @@
 
                     $('#new-request-modal').modal('show')
                     var departmentJson = {!! json_encode($departments)!!};
-                    console.log(departmentJson)
+                    // console.log(departmentJson)
                     var html = ''
                     departmentJson.forEach(department => {
                         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
@@ -320,7 +434,7 @@
                         getLogs(trackId,trackNo)
                             .then(function(response) {
                                 // Process the response (logs) here
-                                console.log(response);
+                                // console.log(response);
                                 response.logs.forEach(log => {
                                     // Split the value into parts
                                     var parts = log.current_location.split('|');
@@ -364,7 +478,7 @@
                                             </div>
 
                                             <div class="cd-timeline-content text-center ${log.bgclass}" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
-                                                <p class="text-info">Document</p>
+                                                <p class="text-info" style="font-size:18px;">Document</p>
                                                 <p class="mb-0 text-muted font-14" style="margin-top: -15px;">
                                                     ${parts[1]}
                                                     <span class="badge bg-info p-1"><b>${parts[0]}</b></span>
@@ -372,11 +486,11 @@
                                                 <hr />
                                                 <p class="mb-0 font-10 text-secondary text-center">${log.notes}</p>
                                                 <hr />
-                                                <p class="mb-0 font-14 ${className} text-center border rounded">${log.status} status</p>
+                                                <p class="mb-0 font-18 ${className} text-center border rounded" style="font-size:16px;">${log.status} status</p>
                                                 <h2 style="margin-top: -10px;" class="cd-date text-center ${log.class}">${log.now}</h2>
                                                 <span style="margin-top: 10px;" class="cd-date text-center">${log.time_sent}</span>
-                                                <span style="margin-top: 30px;" class="cd-date">${log.time_spent}</span>  
-                                                <span style="margin-top: 65px;" class="cd-date ${noteClass}">
+                                                <span style="margin-top: 30px;" class="cd-date text-center">${log.time_spent}</span>  
+                                                <span style="margin-top: 65px;" class="cd-date ${noteClass} text-center">
                                                     <span><b>NOTE</b></span></br>
                                                     ${ log.notes_user }
                                                 </span>  
@@ -407,7 +521,7 @@
 
                     function onScanSuccess(decodedText, decodedResult) {
                         // handle the scanned code as you like, for example:
-                        console.log(`Code matched = ${decodedText}`, decodedResult);
+                        // console.log(`Code matched = ${decodedText}`, decodedResult);
 
                         // Set the value in an input field
                         $('.trk-input').val(`TKR-${decodedText}`).addClass('text-success border border-success');
@@ -422,11 +536,11 @@
 
                     function stopScanner() {
                         if (html5QrcodeScanner) {
-                            console.log('Stopping scanner...');
+                            // console.log('Stopping scanner...');
                             // Stop the scanner
                             html5QrcodeScanner.stop().then(() => {
                                 // QR Code scanning is stopped.
-                                console.log('Scanner stopped');
+                                // console.log('Scanner stopped');
                             }).catch((err) => {
                                 // Handle stop error, if any
                                 console.error('Error stopping scanner:', err);
@@ -458,10 +572,12 @@
                     $('#open-document-modal').modal('show')
                         const baseUrls = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                         var docPath = $(this).data("document-id");
+                        var purpose = $(this).data("purpose");
                          // Construct the full URL to the document
                         var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
                         // Set the src attribute of the iframe in the modal
                         $('#preview-doc').attr('src', fullDocUrl);
+                        $('.event-notes-open').val(purpose)
                 })
 
                 // pin open
@@ -482,7 +598,7 @@
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
                     // alert(scannedId)
-                    console.log(trkId, documentId, document)
+                    // console.log(trkId, documentId, document)
 
                     $('.trkNo').text(trkId)
                     $('.timestamp-placeholder').text(document)
@@ -498,7 +614,7 @@
                             // Process the response (logs) here
                             // console.log(response.departmentWithUsers);
                             response.departmentWithUsers.forEach(data => {
-                                console.log(data)
+                                // console.log(data)
                                 //office_id | office_name | office_abbrev
                                 departementHtml += `
                                     <option value='${data.offices[0].office_id} | ${data.offices[0].office_name} | ${data.offices[0].office_abbrev}'>
@@ -524,7 +640,7 @@
                         $('#department-select').on('change', function() {
                                 // const selectedDepartment = $(this).val();
                                 const selectedDepartmentOfficeId = $(this).val().split(' | ')[0];
-                                console.log(selectedDepartmentOfficeId)
+                                // console.log(selectedDepartmentOfficeId)
 
                                 // Clear the options in #department-staff-select
     
@@ -579,7 +695,7 @@
                     getDetailsForPrinting(trk)
                         .then(function(response){
                             response.records.forEach(record => {
-                                console.log(record)
+                                // console.log(record)
                                 $('.pdf-container').attr('src',record.document_code)
                             });
                         })
@@ -735,7 +851,7 @@
                 };
                 var notificationJson = {!! json_encode(session('notification')) !!};
                 var notification = JSON.parse(notificationJson);
-                console.log(notification)
+                // console.log(notification)
                 toastr[notification.status](notification.message);
             });
         </script>

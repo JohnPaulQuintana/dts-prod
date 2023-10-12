@@ -90,6 +90,7 @@ class RequestedDocumentController extends Controller
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
                 'requestor' => $document->requestor,
+                'requestor_user_id' => $document->requestor_user,
                 'purpose' => $document->purpose,
                 'documents' => $document->documents,
                 'status' => $document->status,
@@ -119,59 +120,116 @@ class RequestedDocumentController extends Controller
     public function updateIncomingRequest(Request $request){
         // dd($request);
         $id = $request->input('id');
-        // Update the 'status' field using the trk_id
-        $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id'=>$this->generateTRKID(),'status' => 'approved']);
-        // Retrieve the updated records
-        $updatedRecords = RequestedDocument::where('id', $id)->get();
-        // dd($updatedRecords[0]->id);
-        $formattedRecords = $updatedRecords->map(function ($record) {
-            $record->formatted_created_at = Carbon::parse($record->created_at)->isoFormat('ddd DD, YYYY, MMM');
-            $record->formatted_updated_at = Carbon::parse($record->updated_at)->isoFormat('ddd DD, YYYY, MMM');
-            return $record;
-        });
+        $action = $request->input('action');
+        switch ($action) {
+            case 'Approved':
+               // Update the 'status' field using the trk_id
+                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id'=>$this->generateTRKID(),'status' => 'approved']);
+                // Retrieve the updated records
+                $updatedRecords = RequestedDocument::where('id', $id)->get();
+                // dd($updatedRecords[0]->id);
+                $formattedRecords = $updatedRecords->map(function ($record) {
+                    $record->formatted_created_at = Carbon::parse($record->created_at)->isoFormat('ddd DD, YYYY, MMM');
+                    $record->formatted_updated_at = Carbon::parse($record->updated_at)->isoFormat('ddd DD, YYYY, MMM');
+                    return $record;
+                });
+                
+                // get the office cred
+                $office = Office::where('id',Auth::user()->office_id)->first();
+            
+                // Create a new RequestedDocument instance with default values
+                $documentLogs = new Log([
+                    'trk_id' => $updatedRecords[0]->trk_id,
+                    'requested_document_id' => $updatedRecords[0]->id,
+                    'forwarded_to' => $office->id, // department id
+                    'current_location' => $office->office_abbrev. ' | ' .$office->office_name, // current loaction  department abbrev
+                    'notes' => 'Waiting for the documents to arrived',//if the have a notes
+                    'notes_user' => 'false',//if the have a notes
+                    'status' => $updatedRecords[0]->status, // Set the on-going status
+                    'scanned' => true,
+                ]);
+
+                $documentLogs->save();
+
+                // get the cred from office
+                $notification = new Notification([
+                    'notification_from_id' => auth()->user()->id,
+                    'notification_from_name' => auth()->user()->name,
+                    'notification_to_id' => $updatedRecords[0]->requestor_user,//by default admin
+                    'notification_message'=>auth()->user()->name.' from '.$office->office_name .' has approved your document!',
+                    'notification_status'=>'unread',
+                ]);
+                $notification->save();
+
+                // generate barcode png
+                $this->generateBarcode($updatedRecords[0]->trk_id);//generate barcode png
+
+                // generate pdf
+                $this->generatePdf($updatedRecords[0]->trk_id, $updatedRecords[0]->id,$notification->notification_from_name,$office->office_name, $updatedRecords[0]->formatted_created_at,$updatedRecords[0]->formatted_created_at);
+
+                event(new NotifyEvent('documents is updated!'));
+                // Build the success message
+                $message = 'Successfully updated document!';
+
+                // Prepare the toast notification data
+                $notification = [
+                    'status' => 'success',
+                    'message' => $message,
+                ];
+                break;
+            case 'Archived':
+                // Update the 'status' field using the trk_id
+                $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'archived']);
+                // Retrieve the updated records
+                $updatedRecords = RequestedDocument::where('id', $id)->get();
+                // dd($updatedRecords[0]->id);
+                $formattedRecords = $updatedRecords->map(function ($record) {
+                    $record->formatted_created_at = Carbon::parse($record->created_at)->isoFormat('ddd DD, YYYY, MMM');
+                    $record->formatted_updated_at = Carbon::parse($record->updated_at)->isoFormat('ddd DD, YYYY, MMM');
+                    return $record;
+                });
+                
+                // get the office cred
+                $office = Office::where('id',Auth::user()->office_id)->first();
+            
+                // Create a new RequestedDocument instance with default values
+                $documentLogs = new Log([
+                    'trk_id' => $updatedRecords[0]->trk_id,
+                    'requested_document_id' => $updatedRecords[0]->id,
+                    'forwarded_to' => $office->id, // department id
+                    'current_location' => $office->office_abbrev. ' | ' .$office->office_name, // current loaction  department abbrev
+                    'notes' => 'Document is rejected by admin.',//if the have a notes
+                    'notes_user' => 'false',//if the have a notes
+                    'status' => $updatedRecords[0]->status, // Set the on-going status
+                    'scanned' => true,
+                ]);
+
+                $documentLogs->save();
+
+                // get the cred from office
+                $notification = new Notification([
+                    'notification_from_id' => auth()->user()->id,
+                    'notification_from_name' => auth()->user()->name,
+                    'notification_to_id' => $updatedRecords[0]->requestor_user,//by default admin
+                    'notification_message'=>auth()->user()->name.' from '.$office->office_name .' has rejected your document!',
+                    'notification_status'=>'unread',
+                ]);
+                $notification->save();
+
+                event(new NotifyEvent('documents is rejected!'));
+                // Build the success message
+                $message = 'Successfully updated document!';
+
+                // Prepare the toast notification data
+                $notification = [
+                    'status' => 'error',
+                    'message' => $message,
+                ];
+            default:
+                # code...
+                break;
+        }
         
-        // get the office cred
-        $office = Office::where('id',Auth::user()->office_id)->first();
-      
-        // Create a new RequestedDocument instance with default values
-        $documentLogs = new Log([
-            'trk_id' => $updatedRecords[0]->trk_id,
-            'requested_document_id' => $updatedRecords[0]->id,
-            'forwarded_to' => $office->id, // department id
-            'current_location' => $office->office_abbrev. ' | ' .$office->office_name, // current loaction  department abbrev
-            'notes' => 'Waiting for the documents to arrived',//if the have a notes
-            'notes_user' => 'false',//if the have a notes
-            'status' => $updatedRecords[0]->status, // Set the on-going status
-            'scanned' => true,
-        ]);
-
-        $documentLogs->save();
-
-        // get the cred from office
-        $notification = new Notification([
-            'notification_from_id' => auth()->user()->id,
-            'notification_from_name' => auth()->user()->name,
-            'notification_to_id' => $updatedRecords[0]->requestor_user,//by default admin
-            'notification_message'=>auth()->user()->name.' from '.$office->office_name .' has approved your document!',
-            'notification_status'=>'unread',
-        ]);
-        $notification->save();
-
-        // generate barcode png
-        $this->generateBarcode($updatedRecords[0]->trk_id);//generate barcode png
-
-        // generate pdf
-        $this->generatePdf($updatedRecords[0]->trk_id, $updatedRecords[0]->id,$notification->notification_from_name,$office->office_name, $updatedRecords[0]->formatted_created_at,$updatedRecords[0]->formatted_created_at);
-
-        event(new NotifyEvent('documents is updated!'));
-        // Build the success message
-        $message = 'Successfully updated document!';
-
-        // Prepare the toast notification data
-        $notification = [
-            'status' => 'success',
-            'message' => $message,
-        ];
 
         // Convert the notification to JSON
         $notificationJson = json_encode($notification);
@@ -365,6 +423,7 @@ class RequestedDocumentController extends Controller
 
         // get the cred from office
         $notificationForwarded = new Notification([
+            'notification_trk' =>$request->input('trk_id'),
             'notification_from_id' => auth()->user()->id,
             'notification_from_name' => auth()->user()->name,
             'notification_to_id' => $partsDepartmentStaff[0],//by default admin
@@ -379,6 +438,7 @@ class RequestedDocumentController extends Controller
 
         // get the cred from office
         $notificationRequestor = new Notification([
+            'notification_trk' =>$request->input('trk_id'),
             'notification_from_id' => auth()->user()->id,
             'notification_from_name' => auth()->user()->name,
             'notification_to_id' => $updatedRecords->requestor_user,//by default admin

@@ -36,14 +36,40 @@
                     <span>Offices</span>
                 </a>
             </li>
-            {{-- <li>
-                <a href="#" class="waves-effect">
-                    <i class="fas fa-users"></i>
-                    <span>Users</span>
+            <li>
+                <a href="{{ route('history') }}" class="waves-effect">
+                    <i class="ri-history-line"></i>
+                    <span>Logs</span>
                 </a>
-            </li> --}}
+            </li>
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault();this.closest('form').submit();">
+                        <i class="fas fa-sign-out-alt align-middle me-1 text-danger"></i> 
+                        {{ __('Logout') }}
+                    </a>
+                </form>
+            </li>
 
+            <li class="menu-title">Date and Time</li>
+            {{-- <hr class="text-dark"> --}}
+            <li>
+                <a href="{{ route('administrator.dashboard') }}" class="waves-effect">
+                    <i class="far fa-calendar-alt text-dark"></i>
+                    
+                    <span class="current-date text-dark">12:00 PM</span>
+                </a>
+            </li>
+            {{-- <hr class="text-dark"> --}}
         </ul>
+        <!-- Add a container for the time display -->
+        {{-- <div class="time-display bg-dark" style="text-align: center;padding: 10px; background-color: #f5f5f5;border-top: 1px solid #ddd;display:flex;flex-direction:column; position: absolute;width:100%;bottom:0;">
+            <!-- Display the time here -->
+            <span class="current-date text-white" style="font-size: 18px;color: #333;">12:00 PM</span>
+            <!-- Display the time here -->
+            <span class="current-time text-white" style="font-size: 18px;color: #333;">12:00 PM</span>
+        </div> --}}
     </div>
     <!-- Sidebar -->
 </div>

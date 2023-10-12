@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
 use Illuminate\Http\Request;
 use App\Models\RequestedDocument;
+use Illuminate\Support\Facades\Auth;
 // use App\Http\Controllers\RequestedDocumentController;
 
 class ReportController extends Controller
@@ -15,6 +17,9 @@ class ReportController extends Controller
             return $group->count();
         });
 
+        // assigned documents
+        $assignedDoc = Log::where('forwarded_to', Auth::user()->id)->get();
+        
         // Create an associative array for the response
         $response = [
             'forwarded' => $statusCounts->get('forwarded', 0),
@@ -23,7 +28,7 @@ class ReportController extends Controller
             'pending' => $statusCounts->get('pending', 0),
         ];
 
-        return response()->json(['response' => $response]);
+        return response()->json(['response' => $response,'assigned'=>$assignedDoc]);
 
     }
 }

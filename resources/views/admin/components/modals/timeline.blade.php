@@ -1,7 +1,7 @@
 <div class="col-sm-6 col-md-4 col-xl-3">
    
     <div class="modal fade" id="timeline-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalScrollableTitle">Document History</h5>

@@ -79,24 +79,32 @@
                 <div class="card-body">
 
                     <div class="dropdown float-end">
+                        <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                         <a class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">New Request</a>
+                            <!-- item-->
+                            <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
+                            <a id="new-request" href="javascript:void(0);" class="dropdown-item text-danger">Report</a>
+                            <!-- item-->
+                            <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                         </div>
                     </div>
 
                     <h4 class="card-title mb-4">
-                        <span class="me-2">Request List</span>
+                        <span class="me-2">Docement's List</span>
+                        
+                    </h4>
+                    <div class="mb-2">
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="forwarded"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
                         <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="success" data-bs-toggle="tooltip" data-bs-placement="top" title="Finished Document">Finished</a>
-                    </h4>
+                    </div>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
+                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap req-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Tracking No.</th>
@@ -112,18 +120,33 @@
                                 {{-- {{ $documents }} --}}
                                 @foreach ($documents as $document)
                                     {{-- {{ $document }} --}}
-                                    <tr data-status="{{ $document['status'] }}">
+                                    <tr data-status="{{ $document['status'] }}" data-requestor-id="{{ $document['requestor_user_id'] }}">
                                         <td class="text-center">
                                             @switch($document['trk_id'])
                                                 @case(null)
-                                                    <h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
+                                                    @if ($document['status'] !== 'archived')
+                                                        <h6 class="mb-0 text-warning"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
+                                                    @else
+                                                        <h6 class="mb-0 text-danger"><i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>{{ __('rejected') }}</h6>
+                                                    @endif
+                                                    
                                                     @break
                                         
                                                 @default
-                                                    <h6 class="mb-0">
+                                                    <h6 class="mb-0 position-relative">
                                                         {!! DNS1D::getBarcodeHTML("579503", 'PHARMA') !!}
                                                         <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
-                                                        TRK-{{ $document['trk_id'] }}</h6>
+                                                            TRK-{{ $document['trk_id'] }}
+                                                        @if ($document['status'] !== 'forwarded')
+                                                            <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
+                                                                {{ __('requested') }}
+                                                            </span>
+                                                        @else
+                                                            <span class="position-absolute bottom-50 left-100 translate-middle badge bg-success">
+                                                                {{ __('approved') }}
+                                                            </span>
+                                                        @endif
+                                                    </h6>
                                                     @break
                                             @endswitch
                                         </td>
@@ -139,14 +162,27 @@
                                             <span class="badge bg-info p-1"><b>{{ $document['corporate_office']['office_abbrev'] }}</b></span>
                                             
                                         </td>
-                                        <td><span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span></td>
+                                        <td>
+                                            @switch($document['status'])
+                                                @case('archived')
+                                                    <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
+                                                @case('forwarded')
+                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
+                                            
+                                                @default
+                                                    
+                                            @endswitch
+                                            
+                                        </td>
                                         <td><b>{{ $document['created_at'] }}</b></td>
                                         <td width="50px">
                                             <span class="">
                                                 @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'finished' && $document['status'] !== 'forwarded')
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
-                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }} }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }} }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                                 <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a>
                                             </span>
                                         </td>
@@ -211,32 +247,66 @@
         {{-- custom js --}}
         <script>
             $(document).ready(function(){
-                // new request
-                // $('#new-request').on('click',function(){
-                //      // Prevent modal from closing when clicking outside
-                //     $('#new-request-modal').modal({
-                //         backdrop: 'static',
-                //         keyboard: false
-                //     });
+                // filter table base on id
+                 // Parse the URL search parameters
+                const urlSearchParams = new URLSearchParams(window.location.search);
 
-                //     $('#new-request-modal').modal('show')
-                //     var departmentJson = {!! json_encode($departments)!!};
-                //     console.log(departmentJson)
-                //     var html = ''
-                //     departmentJson.forEach(department => {
-                //         html += `<option value="${department.office_name}">${department.office_name}</option>`
-                //     });
+                // Get the value of the 'search_id' parameter
+                const searchId = urlSearchParams.get('search_id');
 
-                //     // var trkId = $(this).data("trk-id");
-                //     $('#department-select').html(html)
+                // Check if 'searchId' has a value and use it
+                if (searchId !== null) {
+                    // console.log('search_id:', searchId);
+                     // Show/hide rows based on the selected user ID
+                    $('.req-table tr').each(function () {
+                        var rowUserId = $(this).data('requestor-id');
 
-                //     // Reset the form when clicking the "x" button
-                //     $('#close-modal').on('click', function () {
-                //         $('#request-form')[0].reset();
-                //         $("#image").val(""); // Clear the file input
-                //         $("#image-preview").hide(); // Hide the image preview container
-                //     });
-                // })
+                        if (rowUserId == searchId) {
+                            var $this = $(this).addClass('position-relative');
+                            $(this).show();
+                            $(this).addClass('border border-danger bg-light');
+                            // Remove the 'border-danger' class after 5 seconds
+                            setTimeout(function () {
+                                // alert('remove')
+                                $this.addClass('border border-white');
+                            }, 5000); // 5000 milliseconds (5 seconds)
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    console.log('search_id parameter not found in the URL');
+                }
+
+                // search functionality
+                // Handle input changes in real-time
+                $('#search-input').on('input', function () {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Loop through each list item and hide/show based on the search text
+                    $('.req-table tbody tr').each(function () {
+                        var row = $(this);
+                        var rowMatches = false;
+                        // Loop through each cell in the row
+                        row.find('td').each(function () {
+                            var cellText = $(this).text().toLowerCase();
+
+                            // Check if the cell text contains the search text
+                            if (cellText.includes(searchText)) {
+                                rowMatches = true;
+                                return false; // Exit the cell loop early if a match is found
+                            }
+                        });
+
+                        // Show/hide the row based on whether it matches the search
+                        if (rowMatches) {
+                            row.show();
+                        } else {
+                            row.hide();
+                        }
+                    });
+                });
+                
 
                 // Handle button click
                 $(".filter-button").click(function() {
@@ -256,6 +326,7 @@
                     }
                 });
 
+               
                 // documents open
                 $('.view-document-btn').on('click', function(){
                     $('#open-document-modal').modal({
@@ -268,8 +339,10 @@
                         var docPath = $(this).data("document-id");
                         var id = parseInt($(this).data("id"));
                         var trkId = $(this).data("trk");
+                        var purpose = $(this).data("purpose");
                         if(trkId == ''){
                             trkId = 'Pending Approval'
+                            $('#btn-approved').css({'display':'block'})
                         }else{
                             $('#btn-approved').css({'display':'none'})
                         }
@@ -279,7 +352,12 @@
                         $('#preview-doc').attr('src', fullDocUrl);
                         $('#doc-id').val(id)
                         $('#trkNo').html(trkId)
+                        $('.event-notes-open').val(purpose)
+                        // add data-id on archived button
+                        // $('.documents-archive').attr('data-archived-id',id)
                         $('#open-document-modal').modal('show')
+
+                       
                 })
 
                 // pin open
@@ -289,7 +367,7 @@
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
 
-                    console.log(trkId, documentId, document)
+                    // console.log(trkId, documentId, document)
 
                     $('.trkNo').text(trkId)
                     $('.timestamp-placeholder').text(document)
@@ -305,7 +383,7 @@
                             // Process the response (logs) here
                             // console.log(response.departmentWithUsers);
                             response.departmentWithUsers.forEach(data => {
-                                console.log(data)
+                                // console.log(data)
                                 //office_id | office_name | office_abbrev
                                 departementHtml += `
                                     <option value='${data.offices[0].office_id} | ${data.offices[0].office_name} | ${data.offices[0].office_abbrev}'>
@@ -331,7 +409,7 @@
                         $('#department-select').on('change', function() {
                                 // const selectedDepartment = $(this).val();
                                 const selectedDepartmentOfficeId = $(this).val().split(' | ')[0];
-                                console.log(selectedDepartmentOfficeId)
+                                // console.log(selectedDepartmentOfficeId)
 
                                 // Clear the options in #department-staff-select
     
@@ -367,29 +445,49 @@
                     var trackNo = $(this).data("trk");
                     var trackId = $(this).data("id");
                     var timelineHtml = ''
-                    var timelineTrk = ''
+                    var timelineTrk = '******'
                     var className = ''
+                    var noteClass = ''
                     // alert(trackNo);
                     if (trackNo != '') {
                         // Usage example
                         getLogs(trackId,trackNo)
                             .then(function(response) {
                                 // Process the response (logs) here
-                                console.log(response);
+                                // console.log(response);
                                 response.logs.forEach(log => {
+                                    // timelineTrk = log.trk_id;
                                     // Split the value into parts
                                     var parts = log.current_location.split('|');
-                                    timelineTrk = log.trk_id;
-
+                                
+                                    if(log.trk_id != null){
+                                        timelineTrk = log.trk_id;
+                                        console.log(timelineTrk)
+                                    }
+                                    
+                                    if(log.notes_user !== 'false'){
+                                        noteClass = 'border border-danger rounded text-danger'
+                                    }else{
+                                        noteClass = 'border border-0 text-white'
+                                    }
                                     switch (log.status) {
                                         case 'pending':
-                                            className = 'text-warning'
+                                            className = 'bg-warning text-white'
                                             break;
                                         case 'on-going':
-                                            className = 'text-warning'
+                                            className = 'bg-warning text-white'
+                                            break;
+                                        case 'forwarded':
+                                            className = 'bg-warning text-white'
+                                            break;
+                                        case 'approved':
+                                            className = 'bg-info text-white'
+                                            break;
+                                        case 'success':
+                                            className = 'bg-success text-white'
                                             break;
                                         case 'archived':
-                                            className = 'text-danger'
+                                            className = 'bg-danger text-white'
                                             break;
                                     
                                         default:
@@ -402,8 +500,8 @@
                                                 <i class="mdi mdi-adjust"></i>
                                             </div>
 
-                                            <div class="cd-timeline-content text-center" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
-                                                <p class="text-info">Received by</p>
+                                            <div class="cd-timeline-content text-center ${log.bgclass}" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+                                                <p class="text-info" style="font-size:18px;">Document</p>
                                                 <p class="mb-0 text-muted font-14" style="margin-top: -15px;">
                                                     ${parts[1]}
                                                     <span class="badge bg-info p-1"><b>${parts[0]}</b></span>
@@ -411,9 +509,14 @@
                                                 <hr />
                                                 <p class="mb-0 font-10 text-secondary text-center">${log.notes}</p>
                                                 <hr />
-                                                <p class="mb-0 font-14 ${className} text-center">${log.status} status</p>
-                                                <span style="margin-top: -10px;" class="cd-date">${log.time_sent}</span>
-                                                <span style="margin-top: 7px;" class="cd-date">${log.time_spent}</span>  
+                                                <p class="mb-0 font-18 ${className} text-center border rounded" style="font-size:16px;">${log.status} status</p>
+                                                <h2 style="margin-top: -10px;" class="cd-date text-center ${log.class}">${log.now}</h2>
+                                                <span style="margin-top: 10px;" class="cd-date text-center">${log.time_sent}</span>
+                                                <span style="margin-top: 30px;" class="cd-date text-center">${log.time_spent}</span>  
+                                                <span style="margin-top: 65px;" class="cd-date ${noteClass} text-center">
+                                                    <span><b>NOTE</b></span></br>
+                                                    ${ log.notes_user }
+                                                </span>  
                                             </div>
                                         </div>
                                         `
@@ -552,7 +655,7 @@
                 };
                 var notificationJson = {!! json_encode(session('notification')) !!};
                 var notification = JSON.parse(notificationJson);
-                console.log(notification)
+                // console.log(notification)
                 toastr[notification.status](notification.message);
             });
         </script>

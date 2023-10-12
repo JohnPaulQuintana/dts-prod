@@ -15,7 +15,7 @@ class OfficeController extends Controller
 {
     public function showOffices(){
         $offices = Office::where('status', 'active')
-            ->where('office_type','!=','Admin')
+            ->where('office_type','!=','Administrator')
             ->get();
     
         return view('admin.components.contents.office')->with(['offices'=>$offices]);
@@ -36,7 +36,7 @@ class OfficeController extends Controller
             'office_name' => ['required', 'string', 'max:255'],
             'office_desc' => ['required', 'string'],
             'office_head' => ['required', 'string', 'max:255'],
-            'office_type' => ['required', 'string', Rule::in(['viewing'])], // Adjust the valid types
+            'office_type' => ['required', 'string'], // Rule::in(['viewing'])], // Adjust the valid types
         ]);
 
         // Create a new Office instance
@@ -73,6 +73,7 @@ class OfficeController extends Controller
     public function showOfficesUser($office_id){
         // Find the office by its ID
         $users = User::where('office_id',$office_id)->orderBy('name', 'asc')->get();
+        $currentOffice = Office::where('id',$office_id)->get();
 
         if (!$users) {
             // Handle the case where the office is not found
@@ -87,7 +88,7 @@ class OfficeController extends Controller
         // Retrieve users associated with this office
         // $users = $users->users;
 
-        return view('admin.components.contents.users')->with(['users'=>$users]);
+        return view('admin.components.contents.users')->with(['users'=>$users,'currentOffice'=>$currentOffice]);
     }
 
     public function addUsers(Request $request){

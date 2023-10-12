@@ -25,5 +25,13 @@ class NotificationController extends Controller
 
             return response()->json(['notifications'=>$notifications]);
     }
+
+    // update notification
+    public function updateNotification(Request $request){
+        // dd($request);
+        $updateNotif = Notification::where('notification_from_id',$request->input('id'))->update(['notification_status' =>'read']);
+        // return redirect()->route('administrator.dashboard.incoming.request')->with(['search_id'=>$request->input('id')]);
+        return response()->json(['notification'=>'success'],200);
+    }
     
 }

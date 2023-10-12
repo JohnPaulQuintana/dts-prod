@@ -35,7 +35,10 @@
                                             <div class="mb-3">
                                                 <select class="form-select" name="office_type" aria-label="Office Type">
                                                     <option selected>Office Type</option>
+                                                    <option value="signing">Signing</option>
                                                     <option value="viewing">Viewing</option>
+                                                    <option value="recieving">Recieving</option>
+                                                    <option value="checking">Checking</option>
                                                 </select>
                                             </div>
                                             

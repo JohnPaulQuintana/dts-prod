@@ -17,23 +17,21 @@
                                             <div class="card">
                                                 <div class="card-body">
                     
-                                                    {{-- <h4 class="card-title">Responsive images</h4>
-                                                    <p class="card-title-desc">Images in Bootstrap are made responsive
-                                                        with <code class="highlighter-rouge">.img-fluid</code>. <code class="highlighter-rouge">max-width: 100%;</code> and <code class="highlighter-rouge">height: auto;</code> are applied to
-                                                        the image so that it scales with the parent element.</p> --}}
-                    
                                                     <div class="embed-responsive embed-responsive-16by9" style="height: 400px;">
                                                         {{-- <iframe id="preview-doc" src="" frameborder="0" class="img-fluid w-100 embed-responsive-item" style="height: 100%;"></iframe> --}}
                                                         <img id="preview-doc" src="assets/images/small/img-2.jpg" class="img-fluid" alt="Responsive image">
                                                     </div>
+                                                    <br>
+                                                    <textarea class="form-control text-center event-notes-open" rows="3" type="text"
+                                                        name="notes" id="event-notes" required value=""></textarea>
                                                 </div>
                                             </div>
                                         </div>
                         </div> <!-- end row -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+                        {{-- <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button> --}}
                     </div>
                 </div><!-- /.modal-content -->
             </form>

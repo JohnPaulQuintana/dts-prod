@@ -2,18 +2,12 @@
 
 @section('head')
     <meta charset="utf-8" />
-    <title>Departments Dashboard</title>
+    <title>Department Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
-
-    <!-- Plugin css -->
-    <link rel="stylesheet" href="{{ asset('assets/libs/@fullcalendar/core/main.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/libs/@fullcalendar/daygrid/main.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/libs/@fullcalendar/bootstrap/main.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('assets/libs/@fullcalendar/timegrid/main.min.css') }}" type="text/css">
 
     {{-- toast css --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/toastr/build/toastr.min.css') }}">
@@ -71,7 +65,7 @@
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Document Tracking</a></li>
-                    <li class="breadcrumb-item active">Office's</li>
+                    <li class="breadcrumb-item active">History log's</li>
                 </ol>
             </div>
 
@@ -84,70 +78,56 @@
                 <div class="card-body">
 
                     <div class="dropdown float-end">
+                        <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a id="trigger-office" href="javascript:void(0);" class="dropdown-item text-success">New Office</a>
+                            {{-- <a id="trigger-office" href="javascript:void(0);" class="dropdown-item text-success">New Office</a> --}}
+                            <!-- item-->
+                            <a  href="{{ route('departments.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                         </div>
                     </div>
 
-                    <h4 class="card-title mb-4">Office List</h4>
-                    {{-- {{ $logs }} --}}
+                    <h4 class="card-title mb-4">History Logs</h4>
+                    {{-- {{ $history }} --}}
                     <div class="table-responsive">
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
+                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap history-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Office Name</th>
-                                    <th>Office Description</th>
-                                    <th>Office Head</th>
-                                    <th>Office Type</th>
-                                    <th>Status</th>
-                                    <th>Date Created</th>
-                                    <th>Action</th>
+                                    <th class="text-center" colspan="7">History Of Documents</th>
                                 </tr>
                             </thead><!-- end thead -->
                             <tbody>
-                                @foreach ($offices as $office)
-                                    <tr>
-                                        <td><h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>{{ $office->office_name }}</h6></td>
-                                        <td>{{ $office->office_description }}</td>
-                                        <td>{{ $office->office_head }}</td>
-                                        <td>{{ $office->office_type }}</td>
+                                
+                               @foreach ($history as $log)
+                                   <tr>
                                         <td>
-                                            @switch($office->status)
-                                                @case("forwarded")
-                                                    <!-- Display something when status is 1 -->
-                                                    <span class="badge bg-info p-2"><b>{{ $office->status }}</b></span>
-                                                    @break
-                                                @case("rejected")
-                                                    <!-- Display something when status is 2 -->
-                                                    <span class="badge bg-danger p-2"><b>{{ $office->status }}</b></span>
-                                                    @break
-                                                @case("on-going")
-                                                    <!-- Display something when status is 2 -->
-                                                    <span class="badge p-2"><b>{{ $office->status }}</b></span>
-                                                    @break
-                                                @case("active")
-                                                    <!-- Display something when status is 2 -->
-                                                    <span class="badge bg-success p-2"><b>{{ $office->status }}</b></span>
-                                                    @break
-                                                @default
-                                                    <!-- Display something for other status values -->
-                                                    Other Status Content
-                                            @endswitch
+                                            @if ($log->trk_id != null)
+                                                <h3 class="badge bg-success p-2"><b>{{ __('Generated') }}</b></h3>
+            
+                                            @else
+                                               <span class="badge bg-danger p-2"><b>{{ __('Not Generated') }}</b></span>
+                                            @endif
+                                           
                                         </td>
-                                        <td>{{ $office->created_at }}</td>
-                                        {{-- <td>{{ $log->formatted_time }}</td> --}}
-                                        <td width="50px">
-                                            <span class="">
-                                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Department Users"></a>
-                                            </span>
+                                        <td>{{ $log->name}}</td>
+                                        <td>{{ $log->purpose}}</td>
+                                        <td>
+                                            @if ($log->scanned != 0)
+                                                <h3 class="badge bg-success p-2">{{ __('scanned')}}</h3>
+                                            @else
+                                            <h3 class="badge bg-danger p-2">{{ __('not-scanned')}}</h3>
+                                            @endif
+                                            
                                         </td>
-                                    </tr>
-                                @endforeach
+                                        <td>{{ $log->status}}</td>
+                                        <td>{{ $log->notes}}</td>
+                                        <td>{{ $log->created_at}}</td>
+                                   </tr>
+                               @endforeach
                                 
                                 <!-- end -->
                                 
@@ -161,7 +141,7 @@
     </div>
 
     {{-- new office modal --}}
-    {{-- @include('admin.components.modals.newOffice') --}}
+    @include('admin.components.modals.newOffice')
 @endsection
 
 @section('script')
@@ -197,30 +177,43 @@
         <!-- toastr init -->
         <script src="{{ asset('assets/js/pages/toastr.init.js') }}"></script>
 
-        <!-- plugin js -->
-        <script src="{{ asset('assets/libs/moment/min/moment.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jquery-ui-dist/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/@fullcalendar/core/main.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/@fullcalendar/bootstrap/main.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/@fullcalendar/daygrid/main.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/@fullcalendar/timegrid/main.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/@fullcalendar/interaction/main.min.js') }}"></script>
-
-        <!-- Calendar init -->
-        <script src="{{ asset('assets/js/pages/calendar.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
 
         {{-- custom js --}}
-        {{-- <script>
+        <script>
             $(document).ready(function(){
-                $('#trigger-office').on('click',function(){
-                    $('#new-office').modal('show')
-                    // var trkId = $(this).data("trk-id");
-                    // $('#data-trk-id').val(trkId)
-                })
+
+                // search functionality
+                // Handle input changes in real-time
+                $('#search-input').on('input', function () {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Loop through each list item and hide/show based on the search text
+                    $('.history-table tbody tr').each(function () {
+                        var row = $(this);
+                        var rowMatches = false;
+                        // Loop through each cell in the row
+                        row.find('td').each(function () {
+                            var cellText = $(this).text().toLowerCase();
+
+                            // Check if the cell text contains the search text
+                            if (cellText.includes(searchText)) {
+                                rowMatches = true;
+                                return false; // Exit the cell loop early if a match is found
+                            }
+                        });
+
+                        // Show/hide the row based on whether it matches the search
+                        if (rowMatches) {
+                            row.show();
+                        } else {
+                            row.hide();
+                        }
+                    });
+                });
             })
-        </script> --}}
+        </script>
         {{-- // notification --}}
     @if (session()->has('notification'))
     <script>
