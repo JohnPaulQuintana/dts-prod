@@ -238,7 +238,7 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            // console.log(notification)
+            console.log(notification)
             toastr[notification.status](notification.message);
         });
     </script>

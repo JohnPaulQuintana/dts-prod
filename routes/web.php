@@ -30,6 +30,7 @@ Route::get('/', [AuthenticatedSessionController::class, 'create']);
 Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
     Route::get('/administrator', [AdministratorController::class,'dashboard'])->name('administrator.dashboard');
     Route::get('/request-documents-admin', [RequestedDocumentController::class,'showIncomingRequestAdmin'])->name('administrator.dashboard.incoming.request');
+    Route::get('/request-my-documents', [RequestedDocumentController::class,'myRequestAdmin'])->name('administrator.dashboard.my.request');
     Route::post('/request-documents-update', [RequestedDocumentController::class,'updateIncomingRequest'])->name('administrator.dashboard.incoming.request.update');
     Route::get('/offices', [OfficeController::class,'showOffices'])->name('administrator.dashboard.offices');
     Route::post('/offices-add', [OfficeController::class,'addOffices'])->name('administrator.dashboard.offices.add');
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
     Route::post('/get-logs',[RequestedDocumentController::class, 'getLogs']);
     Route::post('/request-documents-forward', [RequestedDocumentController::class,'forwardIncomingRequest'])->name('administrator.dashboard.incoming.request.forward');
     Route::get('/departments-with-users/{id}', [RequestedDocumentController::class,'departmentAndUsers']);
+    Route::get('/create-reports', [AdministratorController::class,'reportsPdf'])->name('reportsPdf');
+    Route::post('/generate-reports', [RequestedDocumentController::class,'generateReports'])->name('generate.reports');
+    Route::post('/cancel-reports', [RequestedDocumentController::class,'cancelReports'])->name('cancel.reports');
 });
 
 // Route::get('/department', [DepartmentController::class,'dashboard'])->middleware(['auth', 'verified'])->name('departments.dashboard');
@@ -74,6 +78,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/account-manage', [AdministratorController::class, 'accounts'])->name('account.manage');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profiledept', [ProfileController::class, 'editDept'])->name('profile.edit.dept');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

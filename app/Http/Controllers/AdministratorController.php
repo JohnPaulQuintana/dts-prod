@@ -120,4 +120,20 @@ class AdministratorController extends Controller
         // dd($logs);
         return view('admin.components.contents.history')->with(['history'=>$logs]);
     }
+
+
+    public function reportsPdf(){
+        $trackingNos = DB::table('requested_documents')->select('trk_id','id')->get();
+        $offices = DB::table('offices')->select('office_name', 'id')->get();
+        $users = DB::table('users')->select('name','id')->where('assigned','!=','viewing')->where('status','!=','deactivated')->get();
+
+        $groupedData = [
+            'trackingNos' => $trackingNos,
+            'offices' => $offices,
+            'users' => $users,
+        ];
+        
+        // dd($groupedData);
+        return view('admin.components.contents.report',['creds'=>$groupedData]);
+    }
 }

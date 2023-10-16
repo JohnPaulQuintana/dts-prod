@@ -27,7 +27,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Time - optional</label>
                                 <input class="form-control" rows="5" type="time"
-                                    name="notes" id="event-time" required value="">
+                                    name="notes" id="event-time" value="">
                                 <div class="invalid-feedback">Please provide a valid event notes
                                 </div>
                             </div>

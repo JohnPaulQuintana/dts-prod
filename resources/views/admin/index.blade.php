@@ -141,7 +141,7 @@
                         },
                         success: function (response) {
                             // Handle the AJAX response here
-                            // console.log(response);
+                            console.log(response);
                             var notifHtml = ''
                             // Using a conditional statement
                             if (response.notifications.length > 0) {
@@ -173,19 +173,19 @@
 
                             } else {
                                 // The response is empty or falsy
-                                // console.log("Response is empty or falsy:", response);
+                                console.log("Response is empty or falsy:", response);
                                 $('.noti-dot').css({'display':'none'})
                             }
                         },
                         error: function (error) {
                             // Handle AJAX error here
-                            // console.error(error);
+                            console.error(error);
                         }
                     });
                 }
                 getNotification()
                 // Enable pusher logging - don't include this in production
-                // Pusher.logToConsole = true;
+                Pusher.logToConsole = true;
 
                 var pusher = new Pusher('60b56d1ff7cab3fbbbee', {
                 cluster: 'ap1'

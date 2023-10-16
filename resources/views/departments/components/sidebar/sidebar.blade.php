@@ -37,19 +37,6 @@
                     <span>Logs</span>
                 </a>
             </li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a class="dropdown-item text-danger" :href="route('logout')" onclick="event.preventDefault();this.closest('form').submit();">
-                        <i class="fas fa-sign-out-alt align-middle me-1 text-danger"></i> 
-                        {{ __('Logout') }}
-                    </a>
-                </form>
-                {{-- <a class="waves-effect text-danger">
-                    <i class="fas fa-sign-out-alt text-danger"></i>
-                    <span>Logout</span>
-                </a> --}}
-            </li>
 
             <li class="menu-title">Date and Time</li>
             {{-- <hr class="text-dark"> --}}

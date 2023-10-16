@@ -111,7 +111,7 @@ class OfficeController extends Controller
             'office_id' => $request->office_id,
             'status' => 'deactivated',
             'role' => 0,
-            'type' => $request->type,
+            'assigned' => $request->type,
             'password' => Hash::make($request->password),
         ]);
 

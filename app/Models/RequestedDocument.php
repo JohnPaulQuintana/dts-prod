@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RequestedDocument extends Model
 {
     use HasFactory;
-    protected $fillable = ['trk_id','requestor','requestor_user', 'forwarded_to','purpose','recieved_offices','documents','status'];
+    protected $fillable = ['trk_id','requestor','requestor_user', 'forwarded_to','purpose','amount','recieved_offices','documents','status'];
    
     /**
      * Define a one-to-many relationship with the Log model.

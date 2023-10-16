@@ -281,6 +281,24 @@
                 });
 
                 $('#trigger-user').on('click',function(){
+                        // var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                        // $.ajax({
+                        //     type: "POST",
+                        //     url: "/account-manage",
+                        //     headers: {
+                        //         "X-CSRF-TOKEN": csrfToken
+                        //     },
+                        //     data: { 'id': id, 'req': req },
+                        //     success: function (response) {
+                        //         resolve(response); // Resolve the Promise with the response
+                        //         // Redirect to the logout route
+                        //         // window.location.href = '/logout';
+                        //     },
+                        //     error: function (err) {
+                        //         reject(err); // Reject the Promise with the error
+                        //     }
+                        // });
+
                     $('#new-user').modal('show')
                    // Create a URL object from the current window's URL
                     const currentUrl = new URL(window.location.href);
@@ -307,7 +325,7 @@
                         if (result.isConfirmed) {
                             sendRequests(id,'archived')
                             .then(function (response) {
-                                // console.log(response); // Log the success message
+                                console.log(response); // Log the success message
                                 Swal.fire(
                                     'Archived!',
                                     response.message,
@@ -344,7 +362,7 @@
                         if (result.isConfirmed) {
                             sendRequests(id,'forgot-password')
                             .then(function (response) {
-                                // console.log(response); // Log the success message
+                                console.log(response); // Log the success message
                                 Swal.fire(
                                     'Forgot User Password!',
                                     response.message,
@@ -381,7 +399,7 @@
                         if (result.isConfirmed) {
                             sendRequests(id,'activate')
                             .then(function (response) {
-                                // console.log(response); // Log the success message
+                                console.log(response); // Log the success message
                                 Swal.fire(
                                     'Activated Account!',
                                     response.message,
@@ -450,7 +468,7 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            // console.log(notification)
+            console.log(notification)
             toastr[notification.status](notification.message);
         });
     </script>

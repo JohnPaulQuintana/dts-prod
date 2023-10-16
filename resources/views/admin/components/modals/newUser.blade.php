@@ -5,7 +5,7 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalScrollableTitle">New User</h5>
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Assigned New User</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -41,12 +41,11 @@
                                         </div>
 
                                         <div class="row g-3">
-                                            <div class="col-6">
+                                            <div class="col-6 user-type">
                                                 <div class="mb-3">
                                                     <label for="type" class="form-label">Type</label>
                                                     <select class="form-select" name="type" aria-label="Type">
-                                                        <option value="staff">Staff</option>
-                                                        <option value="viewing">Viewing</option>
+                                                        <option value="{{ $currentOffice[0]->office_type }}">{{ $currentOffice[0]->office_type }}</option>
                                                     </select>
                                                 </div>
                                            </div>

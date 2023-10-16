@@ -103,7 +103,7 @@
                         },
                         success: function(res){
                             $('.dept').text(res.department[0].office_name)
-                            // console.log(res)
+                            console.log(res)
                         },
                         error: function(err){
                             console.log(err)
@@ -122,7 +122,7 @@
                         },
                         success: function (response) {
                             // Handle the AJAX response here
-                            // console.log(response);
+                            console.log(response);
                             var notifHtml = ''
                             // Using a conditional statement
                             if (response.notifications.length > 0) {
@@ -178,7 +178,7 @@
                             $('.rejected').text(res.response.rejected)
                             $('.assigned').text(res.response.assigned)
 
-                            // console.log(res)
+                            console.log(res)
                         },
                         error: function(err){
                             console.log(err)
@@ -190,7 +190,7 @@
             getNotification()
            
             // Enable pusher logging - don't include this in production
-            // Pusher.logToConsole = true;
+            Pusher.logToConsole = true;
 
             var pusher = new Pusher('60b56d1ff7cab3fbbbee', {
             cluster: 'ap1'
@@ -198,7 +198,7 @@
 
             var channel = pusher.subscribe('update-dashboard');
             channel.bind('initialize-dashboard', function(data) {
-            // console.log(JSON.stringify(data));
+            console.log(JSON.stringify(data));
                 getNotification();
                 // Reload the page when the event is received
                 window.location.reload();

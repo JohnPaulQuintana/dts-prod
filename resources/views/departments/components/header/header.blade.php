@@ -76,8 +76,8 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
-                {{-- <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="ri-user-line align-middle me-1"></i> Profile</a> --}}
-                {{-- <div class="dropdown-divider"></div> --}}
+                <a class="dropdown-item" href="{{ route('profile.edit.dept') }}"><i class="ri-user-line align-middle me-1"></i> Profile</a>
+                <div class="dropdown-divider"></div>
                 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

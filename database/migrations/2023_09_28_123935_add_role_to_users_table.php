@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('department')->nullable();//means user
             $table->bigInteger('office_id');//means user
             $table->string('status');
+            $table->string('assigned')->nullable();
         });
     }
 
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->dropColumn('department');
             $table->dropColumn('office_id');
             $table->dropColumn('status');
+            $table->dropColumn('assigned');
         });
     }
 };

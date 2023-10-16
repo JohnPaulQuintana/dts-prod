@@ -141,7 +141,7 @@
                                         {{-- <td>{{ $log->formatted_time }}</td> --}}
                                         <td width="50px">
                                             <span class="">
-                                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Department Users"></a>
+                                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
                                             </span>
                                         </td>
                                     </tr>
@@ -262,7 +262,7 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            // console.log(notification)
+            console.log(notification)
             toastr[notification.status](notification.message);
         });
     </script>

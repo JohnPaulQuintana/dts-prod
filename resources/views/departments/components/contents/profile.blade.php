@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('departments.index')
 
 @section('head')
     <meta charset="utf-8" />
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-12">
                             <div class="p-4 bg-white shadow rounded-lg">
                                 <div class="max-w-xl">
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         {{-- </x-app-layout> --}}
@@ -173,7 +173,7 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            // console.log(notification)
+            console.log(notification)
             toastr[notification.status](notification.message);
         });
     </script>

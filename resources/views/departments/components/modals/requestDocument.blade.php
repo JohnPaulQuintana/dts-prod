@@ -46,6 +46,13 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-6" style="margin: auto;">
+                                                        <div class="mb-2 text-center">
+                                                            <h4 class="card-title">Amount: <span class="text-secondary">- optional</span></h4>
+                                                            <input type="number" id="department-amount" name="amount" class="form-select" value="" placeholder="Budget request">
+                                                                
+                                                        </div>
+                                                    </div>
                                                     
                                                     
                                                     
@@ -65,8 +72,8 @@
                         </div> <!-- end row -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+                        {{-- <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button> --}}
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Send Request</button>
                     </div>
                 </div><!-- /.modal-content -->
             </form>

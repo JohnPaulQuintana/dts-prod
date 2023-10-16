@@ -106,10 +106,11 @@
                     <h4 class="card-title mb-4">Document's List</h4>
 
                     <div class="mb-2">
-                        <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="forwarded"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
+                        <a class="filter-button text-white font-size-13 btn btn-info p-1" data-filter="all"  data-bs-toggle="tooltip" data-bs-placement="top" title="All Document">All Documents</a>
+                        <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
                         <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
-                        <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="success" data-bs-toggle="tooltip" data-bs-placement="top" title="Finished Document">Finished</a>
+                        <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed Document">Completed</a>
                     </div>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
@@ -132,11 +133,13 @@
                                      $badges = []
                                 @endphp
                                 @foreach ($documents as $document)
-                                    {{-- {{ $document }} --}}
+                                        {{-- @print_r($document->belongTo); --}}
                                     @php
+                                        // print_r($document['belongsTo']);
                                         $trk = $document['trk_id'];
                                         // dd($trk); // Check the value of $trkId
                                     @endphp
+                                   
                                     <tr data-requestor-trk="{{ $document['trk_id'] }}">
                                         <td>
                                             @switch($document['trk_id'])
@@ -187,7 +190,7 @@
                                         <td>
                                             <i class="far fa-file-alt fa-3x"></i> <!-- Larger document icon -->
                                             <a class="position-relative track-document" data-id="{{ $document['document_id'] }}" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Track document...">
-                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b>+</b></span>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b><i class="fas fa-route"></i></b></span>
                                             </a>
                                     
                                         </td>
@@ -224,7 +227,12 @@
                                                 @case('forwarded')
                                                     <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
-                                            
+                                                @case('approved')
+                                                    <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
+                                                @case('pending')
+                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
                                                 @default
                                                     
                                             @endswitch
@@ -232,8 +240,9 @@
                                         </td>
                                         <td><b>{{ $document['created_at'] }}</b></td>
                                         <td width="50px">
+                                            {{-- {{ Auth::user()->assigned }} --}}
                                             <span class="">
-                                                @if ($document['type'] !== 'my document')
+                                                @if (Auth::user()->assigned !='viewing' && $document['type'] !== 'my document' && $document['status'] !== 'pending')
                                                 {{-- data-scanned-id="{{ $document['scanned'] }}" --}}
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
@@ -241,11 +250,13 @@
                                                 @if ($document['type'] === 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'archived')
                                                     <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
                                                 @endif
-                                                <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-purpose="{{ $document['purpose'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
-                                                <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a>
+                                                
+                                                <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-amount="{{ $document['amount'] }}" data-id="{{ $document['document_id'] }}" data-type="{{ $document['belongsTo'] }}" data-purpose="{{ $document['purpose'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                             </span>
                                         </td>
                                     </tr>
+                                  
                                 @endforeach
                                 
                             </tbody><!-- end tbody -->
@@ -372,15 +383,15 @@
 
                 // Handle button click
                 $(".filter-button").click(function() {
-                    var filter = $(this).data("filter");
+                    var filter = $(this).data("filter").trim().toLowerCase();
                     
                     // Show all rows initially
                     $("tbody tr").show();
                     
                     // Hide rows that don't match the filter
-                    if (filter !== "All") {
+                    if (filter !== "all") {
                         $("tbody tr").each(function() {
-                            var status = $(this).find("td:eq(4)").text(); // Assuming status is in the 5th column (index 4)
+                            var status = $(this).find("td:eq(4)").text().trim().toLowerCase(); // Assuming status is in the 5th column (index 4)
                             if (status !== filter) {
                                 $(this).hide();
                             }
@@ -398,7 +409,7 @@
 
                     $('#new-request-modal').modal('show')
                     var departmentJson = {!! json_encode($departments)!!};
-                    // console.log(departmentJson)
+                    console.log(departmentJson)
                     var html = ''
                     departmentJson.forEach(department => {
                         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
@@ -434,7 +445,7 @@
                         getLogs(trackId,trackNo)
                             .then(function(response) {
                                 // Process the response (logs) here
-                                // console.log(response);
+                                console.log(response);
                                 response.logs.forEach(log => {
                                     // Split the value into parts
                                     var parts = log.current_location.split('|');
@@ -521,7 +532,7 @@
 
                     function onScanSuccess(decodedText, decodedResult) {
                         // handle the scanned code as you like, for example:
-                        // console.log(`Code matched = ${decodedText}`, decodedResult);
+                        console.log(`Code matched = ${decodedText}`, decodedResult);
 
                         // Set the value in an input field
                         $('.trk-input').val(`TKR-${decodedText}`).addClass('text-success border border-success');
@@ -536,11 +547,11 @@
 
                     function stopScanner() {
                         if (html5QrcodeScanner) {
-                            // console.log('Stopping scanner...');
+                            console.log('Stopping scanner...');
                             // Stop the scanner
                             html5QrcodeScanner.stop().then(() => {
                                 // QR Code scanning is stopped.
-                                // console.log('Scanner stopped');
+                                console.log('Scanner stopped');
                             }).catch((err) => {
                                 // Handle stop error, if any
                                 console.error('Error stopping scanner:', err);
@@ -573,11 +584,24 @@
                         const baseUrls = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                         var docPath = $(this).data("document-id");
                         var purpose = $(this).data("purpose");
+                        var amount = $(this).data("amount");
+                        var id = parseInt($(this).data("id"));
+                        var belongsTo = $(this).data('type');
                          // Construct the full URL to the document
                         var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
                         // Set the src attribute of the iframe in the modal
                         $('#preview-doc').attr('src', fullDocUrl);
                         $('.event-notes-open').val(purpose)
+                        $('.amount').val(amount)
+                        $('#doc-id').val(id)
+                        // alert(belongsTo)
+                        if(belongsTo !== 1){
+                            $('.btn-r').show();
+                            $('.btn-a').show();
+                        }else{
+                            $('.btn-r').hide();
+                            $('.btn-a').hide();
+                        }
                 })
 
                 // pin open
@@ -598,7 +622,7 @@
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
                     // alert(scannedId)
-                    // console.log(trkId, documentId, document)
+                    console.log(trkId, documentId, document)
 
                     $('.trkNo').text(trkId)
                     $('.timestamp-placeholder').text(document)
@@ -614,7 +638,7 @@
                             // Process the response (logs) here
                             // console.log(response.departmentWithUsers);
                             response.departmentWithUsers.forEach(data => {
-                                // console.log(data)
+                                console.log(data)
                                 //office_id | office_name | office_abbrev
                                 departementHtml += `
                                     <option value='${data.offices[0].office_id} | ${data.offices[0].office_name} | ${data.offices[0].office_abbrev}'>
@@ -640,7 +664,7 @@
                         $('#department-select').on('change', function() {
                                 // const selectedDepartment = $(this).val();
                                 const selectedDepartmentOfficeId = $(this).val().split(' | ')[0];
-                                // console.log(selectedDepartmentOfficeId)
+                                console.log(selectedDepartmentOfficeId)
 
                                 // Clear the options in #department-staff-select
     
@@ -695,7 +719,7 @@
                     getDetailsForPrinting(trk)
                         .then(function(response){
                             response.records.forEach(record => {
-                                // console.log(record)
+                                console.log(record)
                                 $('.pdf-container').attr('src',record.document_code)
                             });
                         })
@@ -851,7 +875,7 @@
                 };
                 var notificationJson = {!! json_encode(session('notification')) !!};
                 var notification = JSON.parse(notificationJson);
-                // console.log(notification)
+                console.log(notification)
                 toastr[notification.status](notification.message);
             });
         </script>

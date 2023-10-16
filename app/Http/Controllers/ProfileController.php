@@ -20,6 +20,15 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
+    /**
+     * Display the user's profile form.
+     */
+    public function editDept(Request $request): View
+    {
+        return view('departments.components.contents.profile', [
+            'user' => $request->user(),
+        ]);
+    }
 
     /**
      * Update the user's profile information.

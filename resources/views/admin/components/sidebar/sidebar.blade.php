@@ -31,9 +31,21 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('administrator.dashboard.my.request') }}" class="waves-effect">
+                    <i class="fas fa-file"></i><span class="badge rounded-pill bg-success float-end"></span>
+                    <span>My Request</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('administrator.dashboard.offices') }}" class="waves-effect">
                     <i class="fas fa-building"></i>
                     <span>Offices</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('reportsPdf') }}" class="waves-effect">
+                    <i class="ri-bar-chart-grouped-line"></i>
+                    <span>Reports</span>
                 </a>
             </li>
             <li>
@@ -42,15 +54,15 @@
                     <span>Logs</span>
                 </a>
             </li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
+            {{-- <li>
+                <form method="POST" action="{{ route('logout') }}" class="waves-effect">
                     @csrf
                     <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault();this.closest('form').submit();">
                         <i class="fas fa-sign-out-alt align-middle me-1 text-danger"></i> 
-                        {{ __('Logout') }}
+                        <span>{{ __('Logout') }}</span>
                     </a>
                 </form>
-            </li>
+            </li> --}}
 
             <li class="menu-title">Date and Time</li>
             {{-- <hr class="text-dark"> --}}
