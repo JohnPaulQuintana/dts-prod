@@ -24,10 +24,10 @@
                                                     </div>
                                                     <br>
                                                     <label for="amount" class="text-center">Requested Amount</label>
-                                                    <input type="text" name="amount" value="" class="form-control text-center mb-2 amount">
+                                                    <input type="text" name="amount" value="" class="form-control text-center mb-2 amount" readonly>
                                                     <label for="amount" class="text-center">Description</label>
                                                     <textarea class="form-control text-center event-notes-open" rows="3" type="text"
-                                                        name="notes" id="event-notes" required value=""></textarea>
+                                                        name="notes" id="event-notes" required value="" readonly></textarea>
                                                 </div>
                                             </div>
                                         </div>

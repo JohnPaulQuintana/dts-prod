@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('requestor_user');//id of sender
             $table->bigInteger('forwarded_to')->default(1);//id of reciever default is direct to admin
             $table->string('purpose');//purpose
+            $table->string('amount')->nullable();//purpose
             $table->bigInteger('recieved_offices');//purpose
             $table->string('documents');//purpose
             $table->string('status');

@@ -85,9 +85,9 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">Request a Documents</a>
+                        <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success new-request">Request a Documents</a>
                         <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
-                        <a id="new-request" href="javascript:void(0);" class="dropdown-item text-danger">Report</a>
+                        <a href="{{ route('reportsPdf') }}" class="dropdown-item text-danger">Report</a>
                         <!-- item-->
                         <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                     </div>
@@ -346,12 +346,23 @@
                 var departmentJson = {!! json_encode($departments)!!};
                 console.log(departmentJson)
                 var html = ''
-                departmentJson.forEach(department => {
-                   if(department.office_abbrev !== 'ADM'){
-                        html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
-                   }
-                });
-
+                //old
+                // departmentJson.forEach(department => {
+                //    if(department.office_abbrev !== 'ADM'){
+                //         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
+                //    }
+                // });
+                    // updates
+                    $.each(departmentJson, function(officeAbbrev, officeData){
+                        var office = officeData.office;
+                        var officeUsers = officeData.users;
+                        console.log(office.office_abbrev,' ',officeUsers)
+                        // Access and loop through users for this office
+                        $.each(officeData.users, function(index, user) {
+                            html += `<option value="${office.office_abbrev}|${office.office_name}|${user.name}|${user.id}">${office.office_abbrev} - ${user.name}</option>`
+                            
+                        });
+                    })
                 // var trkId = $(this).data("trk-id");
                 $('#department-select').html(html)
 

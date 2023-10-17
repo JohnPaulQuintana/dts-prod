@@ -85,9 +85,9 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">Request a Documents</a>
+                            {{-- <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success new-request">Request a Documents</a> --}}
                             <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
-                            <a id="new-request" href="javascript:void(0);" class="dropdown-item text-danger">Report</a>
+                            <a href="{{ route('reportsPdf') }}" class="dropdown-item text-danger">Report</a>
                             <!-- item-->
                             <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                         </div>
@@ -170,7 +170,7 @@
                                                     <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
                                                 @case('forwarded')
-                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                    <span class="badge bg-info p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
                                                 @case('approved')
                                                     <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
@@ -188,7 +188,7 @@
                                         <td width="50px">
                                             <span class="">
                                                 @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'finished' && $document['status'] !== 'forwarded')
-                                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
+                                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 
                                                 <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
@@ -339,34 +339,42 @@
                     }
                 });
 
-                // new request
-                $('#new-request').on('click',function(){
-                     // Prevent modal from closing when clicking outside
-                    $('#new-request-modal').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
+                // // new request
+                // $('.new-request').on('click',function(){
+                //     // alert('dwadwa')
+                //      // Prevent modal from closing when clicking outside
+                //     $('#new-request-modal').modal({
+                //         backdrop: 'static',
+                //         keyboard: false
+                //     });
 
-                    $('#new-request-modal').modal('show')
-                    var departmentJson = {!! json_encode($departments)!!};
-                    console.log(departmentJson)
-                    var html = ''
-                    departmentJson.forEach(department => {
-                       if(department.office_abbrev !== 'ADM'){
-                            html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
-                       }
-                    });
+                //     $('#new-request-modal').modal('show')
+                //     var departmentJson = {!! json_encode($departments)!!};
+                //     console.log(departmentJson)
+                //     var html = ''
+                //     //old
+                //     // departmentJson.forEach(department => {
+                //     //     console.log(department)
+                //     //    if(department.office_abbrev !== 'ADM'){
+                //     //         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
+                //     //    }
+                //     // });
 
-                    // var trkId = $(this).data("trk-id");
-                    $('#department-select').html(html)
+                //     // updates
+                //     $.each(departmentJson, function(officeAbbrev, officeData){
+                //         var officeAbbr = officeData.office_abbrev;
+                //         console.log(officeAbbr)
+                //     })
+                //     // var trkId = $(this).data("trk-id");
+                //     $('#department-select').html(html)
 
-                    // Reset the form when clicking the "x" button
-                    $('#close-modal').on('click', function () {
-                        $('#request-form')[0].reset();
-                        $("#image").val(""); // Clear the file input
-                        $("#image-preview").hide(); // Hide the image preview container
-                    });
-                })
+                //     // Reset the form when clicking the "x" button
+                //     $('#close-modal').on('click', function () {
+                //         $('#request-form')[0].reset();
+                //         $("#image").val(""); // Clear the file input
+                //         $("#image-preview").hide(); // Hide the image preview container
+                //     });
+                // })
                
                 // documents open
                 $('.view-document-btn').on('click', function(){
@@ -409,6 +417,7 @@
                     var documentId = parseInt($(this).data('id'))//documents id
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
+                    var requestor = $(this).data('requestor-id')//documents
 
                     console.log(trkId, documentId, document)
 
@@ -421,10 +430,10 @@
                     var departementHtml = ''
                     var departementUsersHtml = ``
             
-                    getDepartmentWithUsers(officeId)
+                    getDepartmentWithUsers(requestor)
                         .then(function(response) {
                             // Process the response (logs) here
-                            // console.log(response.departmentWithUsers);
+                            console.log(response.departmentWithUsers);
                             response.departmentWithUsers.forEach(data => {
                                 console.log(data)
                                 //office_id | office_name | office_abbrev
@@ -628,13 +637,13 @@
                 }
 
                 // process request for all departments and users
-                function getDepartmentWithUsers(office_id) {
+                function getDepartmentWithUsers(requestor) {
                     // alert(id);
                     // Return a promise
                     return new Promise(function(resolve, reject) {
                         // Make an AJAX request to retrieve logs
                         $.ajax({
-                            url: `/departments-with-users/${office_id}`, // Replace with your route URL
+                            url: `/departments-with-users/${requestor}`, // Replace with your route URL
                             type: 'GET',
                             headers: {
                                 'X-CSRF-TOKEN': "{{ csrf_token() }}"

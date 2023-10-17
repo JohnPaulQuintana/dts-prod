@@ -225,7 +225,7 @@
                                                     <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
                                                 @case('forwarded')
-                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                    <span class="badge bg-info p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
                                                 @case('approved')
                                                     <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
@@ -411,9 +411,21 @@
                     var departmentJson = {!! json_encode($departments)!!};
                     console.log(departmentJson)
                     var html = ''
-                    departmentJson.forEach(department => {
-                        html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
-                    });
+                    // departmentJson.forEach(department => {
+                    //     html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
+                    // });
+
+                     // updates
+                     $.each(departmentJson, function(officeAbbrev, officeData){
+                        var office = officeData.office;
+                        var officeUsers = officeData.users;
+                        console.log(office.office_abbrev,' ',officeUsers)
+                        // Access and loop through users for this office
+                        $.each(officeData.users, function(index, user) {
+                            html += `<option value="${office.office_abbrev}|${office.office_name}|${user.name}|${user.id}">${office.office_abbrev} - ${user.name}</option>`
+                            
+                        });
+                    })
 
                     // var trkId = $(this).data("trk-id");
                     $('#department-select').html(html)

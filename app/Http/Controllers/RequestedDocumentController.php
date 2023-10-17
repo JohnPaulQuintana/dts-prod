@@ -64,12 +64,34 @@ class RequestedDocumentController extends Controller
         //for selection request
         $allDepartments = Office::select('id', 'office_name', 'office_abbrev', 'office_head')
             ->where('office_type', '!=', 'viewing')
+            ->where('id', '!=', 1)
             ->get();
+
+        //    dd($allDepartments);
+         // Initialize an empty array to store the merged data
+         $mergedData = [];
+
+         foreach ($allDepartments as $department) {
+             $departmentId = $department->id;
+ 
+             // Retrieve the users for the current department
+             $usersInDepartment = User::where('office_id', $departmentId)
+                 ->where('status', 'active')
+                 ->where('office_id', '!=', 1)
+                 ->get();
+ 
+             // Merge the office and user data for this department
+             $mergedData[$department->office_abbrev] = [
+                 'office' => $department,
+                 'users' => $usersInDepartment,
+             ];
+         }
+            //  dd($mergedData);
 
         // Merge the two collections into a single collection
         // $combinedDocuments = $documents->concat($allDepartments);
        
-        return view('admin.components.contents.my-request')->with(['documents'=>$formattedDocuments, 'departments'=>$allDepartments]);
+        return view('admin.components.contents.my-request')->with(['documents'=>$formattedDocuments, 'departments'=>$mergedData]);
         // return view('admin.components.contents.my-request', ['mydocs'=>$myDocuments]);
     }
     public function showIncomingRequest(){
@@ -175,8 +197,27 @@ class RequestedDocumentController extends Controller
         ->where('office_type', '!=', 'viewing')
         ->where('id', '!=', Auth::user()->office_id)
         ->get();
+
+        // Initialize an empty array to store the merged data
+        $mergedData = [];
+
+        foreach ($allDepartments as $department) {
+            $departmentId = $department->id;
+
+            // Retrieve the users for the current department
+            $usersInDepartment = User::where('office_id', $departmentId)
+                ->where('status', 'active')
+                // ->where('office_id', '!=', 1)
+                ->get();
+
+            // Merge the office and user data for this department
+            $mergedData[$department->office_abbrev] = [
+                'office' => $department,
+                'users' => $usersInDepartment,
+            ];
+        }
        
-        return view('departments.components.contents.requestDocument')->with(['documents'=>$mergedDocumentsWithLogs, 'departments'=>$allDepartments]);
+        return view('departments.components.contents.requestDocument')->with(['documents'=>$mergedDocumentsWithLogs, 'departments'=>$mergedData]);
     }
     public function showIncomingRequestAdmin(){
         $user_id = Auth::user()->id;
@@ -375,7 +416,7 @@ class RequestedDocumentController extends Controller
         $parts = explode('|', $request->input('department'));
         $departmentUser = Office::where('office_abbrev',$parts[0])->first();
         if($departmentUser){
-            $usersInDepartment = User::where('office_id', $departmentUser['id'])->first();
+            $usersInDepartment = User::where('office_id', $departmentUser['id'])->where('id',$parts[3])->first();
             //  dd($usersInDepartment);
         }
         // Check if an image was uploaded
@@ -408,7 +449,7 @@ class RequestedDocumentController extends Controller
             $documentLogs = new Log([
                 'requested_document_id' => $documentRequest->id,
                 'forwarded_to' => $documentRequest->forwarded_to, // department id
-                'current_location' => $request->input('department'), // current loaction  department abbrev
+                'current_location' => $parts[0].' | '.$parts[1], // current loaction  department abbrev
                 'notes' => 'requesting for approval',
                 'notes_user' => 'false',
                 'status' => $documentRequest->status, // Set the default status
@@ -426,7 +467,7 @@ class RequestedDocumentController extends Controller
             $notification = new Notification([
                 'notification_from_id' => auth()->user()->id,
                 'notification_from_name' => auth()->user()->name,
-                'notification_to_id' => Auth::user()->role !== 1 ? 1 : $usersInDepartment['office_id'],//by default admin
+                'notification_to_id' => Auth::user()->role !== 1 ? 1 : $parts[3],//by default admin
                 'notification_message'=>auth()->user()->name.' from '.$requestorOffice['office_name'].' Has forwarded a document!',
                 'notification_status'=>'unread',
             ]);
@@ -592,9 +633,9 @@ class RequestedDocumentController extends Controller
     }
 
     //get all departements and users
-    public function departmentAndUsers($id){
-        // dd($id);
-        $excludedOfficeIds = [$id, 1];
+    public function departmentAndUsers($requestor){
+        // dd($requestor);
+        $excludedOfficeIds = [$requestor, 1];//user id
         // Retrieve all departments and their users - old not included the user types
         // $departmentWithUsers = DB::table('offices')
         // ->leftJoin('users', 'offices.id', '=', 'users.office_id')
@@ -607,17 +648,19 @@ class RequestedDocumentController extends Controller
         $departmentWithUsers = DB::table('offices')
             ->leftJoin('users', 'offices.id', '=', 'users.office_id')
             ->select('offices.*', 'users.name as user_name', 'users.email as user_email', 'users.id as user_id','users.office_id as user_office_id')
-            ->whereNotIn('offices.id', $excludedOfficeIds)
+            ->whereNotIn('users.id', $excludedOfficeIds)//this is the problem all the users with the same office_id
             ->where(function ($query) {
                 $query->where('users.status', 'active')
-                    ->orWhere(/* Your additional condition here */);
+                    ->where('users.assigned', 'processing');
             })
             ->get();
 
         // Group the results by user name using Laravel collection's groupBy method
         $usersWithOffices = $departmentWithUsers->groupBy('user_name');
+        // dd($usersWithOffices);
         // Transform the grouped collection into the specified format
         $result = $usersWithOffices->map(function ($offices, $userName) {
+            // dd($userName);
             return [
                 'user_id' => $offices->first()->user_id, // Get the user ID from the first office,
                 'user_office_id' => $offices->first()->user_office_id, // Get the user ID from the first office,

@@ -1,6 +1,0 @@
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDn5Rxh8IQPAMxt6wS7CapgUlKUcyFsXfZCwKjwxWXDE5DpNyQ3CvhcKbc8kV394TCny+aDeRpvp/gUbl5He2QwTeV/N4CT694jvRbPLu0bU8dkGwHI3SqXcDpTRA+uWFZ1cmq0RQE2+eq0dbW3ls38HqzEQLCD35E1kupja5TizLgB2nYUhqIfS3/AWvkqzM8TptWyZSkIFMNJDAYfZY8IYTN+Mpz7pKqWTALy/g7AbIHrUWniMGKpMC6zWPgCub22/93AaY7oFz3Af4MfBzPKcA/KmGbw8sQltKH5odSifxJVf7WcfPmRwxKBzpX8BpbmtKOjLdbKDfHsrCNEh6On u543936206@sg-nme-web544.main-hosting.eu
-
-	username u543936206
-SSH new password pXNennQ4N-eq7t#
-
-domain orani-dts.online
