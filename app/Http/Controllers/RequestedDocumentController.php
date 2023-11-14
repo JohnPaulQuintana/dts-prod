@@ -239,6 +239,7 @@ class RequestedDocumentController extends Controller
             $formattedDocument = [
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
+                'pr' => $document->pr,
                 'requestor' => $document->requestor,
                 'requestor_user_id' => $document->requestor_user,
                 'purpose' => $document->purpose,
@@ -274,10 +275,11 @@ class RequestedDocumentController extends Controller
         // dd($request);
         $id = $request->input('id');
         $action = $request->input('action');
+        $pr = $request->input('pr');
         switch ($action) {
             case 'Approved':
                // Update the 'status' field using the trk_id
-                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id'=>$this->generateTRKID(),'status' => 'approved']);
+                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id'=>$this->generateTRKID(),'pr'=>'PR-'.$pr,'status' => 'approved']);
                 // Retrieve the updated records
                 $updatedRecords = RequestedDocument::where('id', $id)->get();
                 // dd($updatedRecords[0]->id);
@@ -806,6 +808,7 @@ class RequestedDocumentController extends Controller
                 'belongsTo'=> $document->type ?? 3,// 3 means unknown
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
+                'pr' => $document->pr,
                 'requestor' => $document->requestor,
                 'purpose' => $document->purpose,
                 'amount' => $document->amount,

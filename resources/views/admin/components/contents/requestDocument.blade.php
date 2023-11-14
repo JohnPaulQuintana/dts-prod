@@ -110,6 +110,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Tracking No.</th>
+                                    <th>PR.</th>
                                     <th>Document</th>
                                     <th>Purpose</th>
                                     <th>Office (Requestor)</th>
@@ -151,6 +152,13 @@
                                                     </h6>
                                                     @break
                                             @endswitch
+                                        </td>
+                                        <td>
+                                            @if ($document['pr'] != null)
+                                                <span class="badge bg-success p-2"><b>{{ $document['pr'] }}</b></span>
+                                            @else
+                                                <span class="badge bg-danger p-2"><b>not available</b></span>
+                                            @endif
                                         </td>
                                         <td>
                                             <i class="far fa-file-alt fa-3x"></i> <!-- Larger document icon -->

@@ -323,7 +323,7 @@
                         confirmButtonText: 'Yes, Archived!'
                         }).then((result) => {
                         if (result.isConfirmed) {
-                            sendRequests(id,'archived')
+                            sendRequests(id,null,'archived')
                             .then(function (response) {
                                 console.log(response); // Log the success message
                                 Swal.fire(
@@ -346,21 +346,42 @@
                     })
                 })
 
-                // archived user account
+                // forgot user account
                 $('.forgot-password').on('click',function(){
                     var id = $(this).data('user-id')
                     // alert($id)
                     Swal.fire({
                         title: 'Are you sure?',
                         text: "Your attempting to reset the password of this account!",
-                        icon: 'warning',
+                        icon: 'warning', 
+                        input: "text",
+                        inputLabel: "Enter a new Password",
+                        inputPlaceholder: "Enter your new password",
+                        inputAttributes: {
+                            maxlength: "10",
+                            autocapitalize: "off",
+                            autocorrect: "off"
+                        },
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, Forgot!'
+                        confirmButtonText: 'Yes, Forgot!',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'New Password is required!';
+                            }
+                            if (value.length < 8) {
+                                return 'Password must be at least 8 characters long!';
+                            }
+                            // Check if the password contains at least one special character
+                            if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                                return 'Password must contain at least one special character!';
+                            }
+                        }
                         }).then((result) => {
                         if (result.isConfirmed) {
-                            sendRequests(id,'forgot-password')
+                            const newPassword = result.value;
+                            sendRequests(id,newPassword,'forgot-password')
                             .then(function (response) {
                                 console.log(response); // Log the success message
                                 Swal.fire(
@@ -383,13 +404,13 @@
                     })
                 })
 
-                // archived user account
+                // activate user account
                 $('.activate-account').on('click',function(){
                     var id = $(this).data('user-id')
                     // alert($id)
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "Once activated user can login to the system and verify the email!",
+                        text: "Once activated user can login to the system!",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -397,7 +418,7 @@
                         confirmButtonText: 'Yes, Activate!'
                         }).then((result) => {
                         if (result.isConfirmed) {
-                            sendRequests(id,'activate')
+                            sendRequests(id,null,'activate')
                             .then(function (response) {
                                 console.log(response); // Log the success message
                                 Swal.fire(
@@ -421,7 +442,7 @@
                 })
 
                 // send requestest for account
-                function sendRequests(id, req) {
+                function sendRequests(id,data, req) {
                     return new Promise(function (resolve, reject) {
                         var csrfToken = $('meta[name="csrf-token"]').attr('content');
                         $.ajax({
@@ -430,7 +451,7 @@
                             headers: {
                                 "X-CSRF-TOKEN": csrfToken
                             },
-                            data: { 'id': id, 'req': req },
+                            data: { 'id': id, 'p': data, 'req': req },
                             success: function (response) {
                                 resolve(response); // Resolve the Promise with the response
                                 // Redirect to the logout route

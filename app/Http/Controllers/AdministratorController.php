@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Log;
 use App\Models\User;
 use App\Events\NotifyEvent;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +65,11 @@ class AdministratorController extends Controller
     public function accounts(Request $request){
         // dd($request);
         $id = $request->input('id');
+        $nP = $request->input('p');
         $req = $request->input('req');
+        $user = null; // Initialize $user outside the switch statement
+        $status = null;
+        $message = null;
         switch ($req) {
             case 'archived':
                 // Find the user by ID
@@ -80,11 +85,11 @@ class AdministratorController extends Controller
                 // Find the user by ID
                 $user = User::find($id);
                 // Mark the user as unverified (set email_verified_at to null)
-                $user->email_verified_at = null;
-                $user->status = 'deactivated';
+                $user->email_verified_at = Carbon::now();
+                $user->status = 'active';
                 $user->password = Hash::make('password');
                 $status = 'success';
-                $message = 'Account is successfully activated, user can activate its email to login!';
+                $message = 'Account is successfully activated, user can login to the system!';
                 break;
             case 'forgot-password':
                 // Find the user by ID
@@ -92,7 +97,7 @@ class AdministratorController extends Controller
                 // Mark the user as unverified (set email_verified_at to null)
                 $user->email_verified_at = null;
                 $user->status = 'deactivated';
-                $user->password = Hash::make('password');//default its password
+                $user->password = Hash::make($nP);//default its password
                 $status = 'success';
                 $message = 'Account is successfully reset the password, user can activate its email to login!';
                 break;
@@ -101,8 +106,10 @@ class AdministratorController extends Controller
                 # code...
                 break;
         }
-        $user->save();
-        event(new NotifyEvent('acounts archived'));
+        if ($user) {
+            $user->save();
+            event(new NotifyEvent('accounts archived'));
+        }
         return response()->json(['status'=>$status,'message'=>$message],200);
     }
 
@@ -115,7 +122,9 @@ class AdministratorController extends Controller
             'requested_documents.requestor_user', 'requested_documents.status', 'requested_documents.purpose',
             'users.name'
             )
+            ->where('users.id', Auth::user()->id)
         ->get();
+
 
         // dd($logs);
         return view('admin.components.contents.history')->with(['history'=>$logs]);

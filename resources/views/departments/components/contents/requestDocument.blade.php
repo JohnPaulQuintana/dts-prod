@@ -119,6 +119,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Tracking No.</th>
+                                    <th>PR</th>
                                     <th>Document</th>
                                     <th>Purpose</th>
                                     <th>Received Offices</th>
@@ -185,6 +186,13 @@
                                                     </h6>
                                                     @break
                                             @endswitch
+                                        </td>
+                                        <td>
+                                            @if ($document['pr'] != null)
+                                                <span class="badge bg-success p-2"><b>{{ $document['pr'] }}</b></span>
+                                            @else
+                                                <span class="badge bg-danger p-2"><b>not available</b></span>
+                                            @endif
                                         </td>
                                         {{-- for now id muna --}}
                                         <td>
@@ -428,7 +436,7 @@
                     })
 
                     // var trkId = $(this).data("trk-id");
-                    $('#department-select').html(html)
+                    $('#department-select').attr('value','ADM|Administrator|Administrator|1')
 
                     // Reset the form when clicking the "x" button
                     $('#close-modal').on('click', function () {

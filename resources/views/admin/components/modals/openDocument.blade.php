@@ -32,6 +32,8 @@
                                                 <textarea class="form-control text-center event-notes-open" rows="3" type="text"
                                                     name="notes" id="event-notes" required value="" readonly></textarea>
                                                 <br/>
+                                                <label for="pr" class="text-center">Purchased Request</label>
+                                                <input type="text" name="pr" value="" class="form-control text-center mb-2 pr" placeholder="Enter your purchased request">
                                                 <label for="amount" class="text-center text-danger">give them a reason's why this documents archived!</label>
                                                 <textarea class="form-control text-center" rows="3" type="text"
                                                     name="reason" id="event-notes" value="" placeholder="This section is for giving them a valid reason for being archived there documents optional"></textarea>

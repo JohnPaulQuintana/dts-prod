@@ -17,13 +17,16 @@ class DepartmentController extends Controller
 
     public function history(){
         // dd(Auth::user()->id);
-        $logs = DB::table('logs')
-        ->join('requested_documents', 'logs.requested_document_id', '=', 'requested_documents.id')
-        ->join('users', 'requested_documents.requestor_user', '=' ,'users.id')
-        ->select('logs.*', 
-            'requested_documents.requestor_user', 'requested_documents.status', 'requested_documents.purpose',
+        $logs = Log::join('requested_documents', 'logs.requested_document_id', '=', 'requested_documents.id')
+        ->join('users', 'requested_documents.requestor_user', '=', 'users.id')
+        ->select(
+            'logs.*',
+            'requested_documents.requestor_user',
+            'requested_documents.status',
+            'requested_documents.purpose',
             'users.name'
-            )
+        )
+        ->where('users.id', Auth::user()->id)
         ->get();
 
         // dd($logs);

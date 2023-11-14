@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\TextAbbreviator;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Office;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Helpers\TextAbbreviator;
 // use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class OfficeController extends Controller
 {
@@ -114,6 +115,9 @@ class OfficeController extends Controller
             'assigned' => $request->type,
             'password' => Hash::make($request->password),
         ]);
+
+        // Send email verification notification
+        event(new Registered($user));
 
         // Build the success message
         $message = 'Successfully added '.$user->name;

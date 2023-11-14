@@ -41,21 +41,35 @@
                                         </div>
 
                                         <div class="row g-3">
-                                            <div class="col-6 user-type">
-                                                <div class="mb-3">
-                                                    <label for="type" class="form-label">Type</label>
-                                                    <select class="form-select" name="type" aria-label="Type">
-                                                        <option value="{{ $currentOffice[0]->office_type }}">{{ $currentOffice[0]->office_type }}</option>
-                                                    </select>
+                                            @if ($currentOffice[0]->office_type != 'viewing')
+                                                <div class="col-6 user-type">
+                                                    <div class="mb-3">
+                                                        <label for="type" class="form-label">Type</label>
+                                                        <select class="form-select" name="type" aria-label="Type">
+                                                            <option value="{{ $currentOffice[0]->office_type }}">{{ $currentOffice[0]->office_type }}</option>
+                                                            <option value="{{ __('viewing') }}">{{ __('viewing') }}</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                           </div>
 
-                                            <div class="col-6">
-                                                <div class="mb-3">
-                                                    <label for="user-name" class="form-label">Username</label>
-                                                    <input type="text" name="username" class="form-control" id="user-name">
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label for="user-name" class="form-label">Username</label>
+                                                        <input type="text" name="username" class="form-control" id="user-name">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                <input type="text" name="type" id="" value="{{ $currentOffice[0]->office_type }}" hidden>
+                                                <div class="col-12">
+                                                    <div class="mb-3">
+                                                        <label for="user-name" class="form-label">Username</label>
+                                                        <input type="text" name="username" class="form-control" id="user-name">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            
+
+                                            
                                         </div>
 
                                         <div class="row g-3">
