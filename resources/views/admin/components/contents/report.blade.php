@@ -72,7 +72,7 @@
 
         </div>
     </div>
-    
+    {{-- per tracking report --}}
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
@@ -85,6 +85,7 @@
                        {{-- {{ $creds['trackingNos'] }} --}}
                     <form action="{{ route('generate.reports') }}" method="POST" class="row g-3">
                         @csrf
+                        <input type="text" name="action" id="" value="per-tracking">
                         <div class="col-sm-3">
                             <label for="tracking-number"><span class="">Tracking Number<span class="required text-danger">*</span></span></label>
                             {{-- <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com"> --}}
@@ -117,7 +118,7 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="processed-by">Processed By <span class="required text-danger">*</span></label>
-                            <select name="processed-by" id="processed-by" class="form-control">
+                            <select name="processed-by" id="processed-by" class="form-select">
                                 {{-- <option value="all">All</option> --}}
                                 @foreach ($creds['users'] as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -125,8 +126,73 @@
                             </select>
                         </div>
                         <div class="col-sm-3">
+                            <label for="status">Status <span class="required text-danger">*</span></label>
+                            <select name="status" id="" class="form-select">
+                                {{-- <option value="all">All</option> --}}
+                                <option value="*">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="archived">Discontinued</option>
+                                <option value="approved">On Going</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
                             <label for="order-by">Order By <span class="required text-danger">*</span></label>
-                            <select name="order-by" id="order-by" class="form-control">
+                            <select name="order-by" id="order-by" class="form-select">
+                                <option value="asc">Ascending Order</option>
+                                <option value="desc">descending Order</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="submit" class="form-control btn btn-success" id="submit" value="Generate" name="">
+                            
+                        </div>
+                          
+                    </form>
+                </div><!-- end card -->
+            </div><!-- end card -->
+        </div>
+        <!-- end col -->
+    </div>
+
+    {{-- report for every end user's request --}}
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <h4 class="card-title mb-4">
+                        <span class="me-2">Generate History Reports for every user's</span>   
+                    </h4>
+                       {{-- {{ $creds['trackingNos'] }} --}}
+                    <form action="{{ route('generate.reports') }}" method="POST" class="row g-3">
+                        @csrf
+                        <input type="text" name="action" id="" value="all-user">
+                        
+                        <div class="col-sm-3">
+                            <label for="processed-by">Processed By <span class="required text-danger">*</span></label>
+                            <select name="processed-by" id="processed-by" class="form-select">
+                                {{-- <option value="all">All</option> --}}
+                                <option value="*">All user's</option>
+                                {{-- @foreach ($creds['users'] as $user)
+                                    
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach --}}
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="status">Status <span class="required text-danger">*</span></label>
+                            <select name="status" id="" class="form-select">
+                                {{-- <option value="all">All</option> --}}
+                                <option value="*">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="archived">Discontinued</option>
+                                <option value="approved">On Going</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="order-by">Order By <span class="required text-danger">*</span></label>
+                            <select name="order-by" id="order-by" class="form-select">
                                 <option value="asc">Ascending Order</option>
                                 <option value="desc">descending Order</option>
                             </select>

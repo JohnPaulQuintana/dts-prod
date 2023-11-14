@@ -166,7 +166,7 @@
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b><i class="fas fa-route"></i></b></span>
                                             </a>
                                         </td>
-                                        <td>{{ $document['purpose'] }}</td>
+                                        <td style="word-break: break-all; max-width:150px;white-space:nowrap;overflow: hidden; text-overflow: ellipsis;">{{ $document['purpose'] }}</td>
                                         <td>
                                             {{ $document['corporate_office']['office_name'] }}
                                             <span class="badge bg-info p-1"><b>{{ $document['corporate_office']['office_abbrev'] }}</b></span>
@@ -335,7 +335,7 @@
                     // Hide rows that don't match the filter
                     if (filter !== "all") {
                         $("tbody tr").each(function() {
-                            var status = $(this).find("td:eq(4)").text().trim().toLowerCase(); // Assuming status is in the 5th column (index 4)
+                            var status = $(this).find("td:eq(5)").text().trim().toLowerCase(); // Assuming status is in the 5th column (index 4)
                             // console.log('start')
                             // console.log(filter)
                             // console.log(status)

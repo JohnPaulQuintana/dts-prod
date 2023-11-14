@@ -202,7 +202,9 @@
                                             </a>
                                     
                                         </td>
-                                        <td>{{ $document['purpose'] }}</td>
+                                        <td style="word-break: break-all; max-width:150px;white-space:nowrap;overflow: hidden; text-overflow: ellipsis;"><span class="" >
+                                            {{ $document['purpose'] }}    
+                                        </span></td>
                                         <td>
                                             @php
                                                 // $badges = ['BGA', 'BGB', 'BGX', 'BGC', 'BGI', 'BGK']; // Replace this with your data
@@ -399,7 +401,7 @@
                     // Hide rows that don't match the filter
                     if (filter !== "all") {
                         $("tbody tr").each(function() {
-                            var status = $(this).find("td:eq(4)").text().trim().toLowerCase(); // Assuming status is in the 5th column (index 4)
+                            var status = $(this).find("td:eq(5)").text().trim().toLowerCase(); // Assuming status is in the 5th column (index 4)
                             if (status !== filter) {
                                 $(this).hide();
                             }
