@@ -85,7 +85,7 @@
                        {{-- {{ $creds['trackingNos'] }} --}}
                     <form action="{{ route('generate.reports') }}" method="POST" class="row g-3">
                         @csrf
-                        <input type="text" name="action" id="" value="per-tracking">
+                        <input type="text" name="action" id="" value="per-tracking" hidden>
                         <div class="col-sm-3">
                             <label for="tracking-number"><span class="">Tracking Number<span class="required text-danger">*</span></span></label>
                             {{-- <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com"> --}}
@@ -167,7 +167,7 @@
                        {{-- {{ $creds['trackingNos'] }} --}}
                     <form action="{{ route('generate.reports') }}" method="POST" class="row g-3">
                         @csrf
-                        <input type="text" name="action" id="" value="all-user">
+                        <input type="text" name="action" id="" value="all-user" hidden>
                         
                         <div class="col-sm-3">
                             <label for="processed-by">Processed By <span class="required text-danger">*</span></label>
