@@ -32,6 +32,7 @@
                                                 <textarea class="form-control text-center event-notes-open" rows="3" type="text"
                                                     name="notes" id="event-notes" required value="" readonly></textarea>
                                                 <br/>
+                                               
                                                 <label for="pr" class="text-center">Purchased Request</label>
                                                 <input type="text" name="pr" value="" class="form-control text-center mb-2 pr" placeholder="Enter your purchased request">
                                                 <label for="amount" class="text-center text-danger">give them a reason's why this documents archived!</label>
@@ -45,7 +46,8 @@
                     </div>
                     <div class="modal-footer">
                         <input type="submit" name="action" class="btn btn-success waves-effect" id="btn-approved" value="Approved">
-                        <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive" value="Archived">
+                        
+                        <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive" id="btn-arc" value="Archived">
                     </div>
                 </div><!-- /.modal-content -->
             </form>

@@ -116,7 +116,7 @@
                                         <td>{{ $log->name}}</td>
                                         <td>{{ $log->purpose}}</td>
                                         <td>
-                                            @if ($log->scanned != 0)
+                                            @if ($log->scanned == 1)
                                                 <h3 class="badge bg-success p-2">{{ __('scanned')}}</h3>
                                             @else
                                             <h3 class="badge bg-danger p-2">{{ __('not-scanned')}}</h3>

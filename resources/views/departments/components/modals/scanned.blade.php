@@ -42,6 +42,10 @@
                                 <span style="padding-right: 10px;">-OR-</span>
                                 <input class="btn btn-success text-center scanner-btn" type="button" value="Scanner" data-bs-toggle="tooltip" data-bs-placement="top" title="Scanner Received">
                             </div>
+                            <hr>
+                            <div class="col-8 text-center mt-3" style="margin: auto;">
+                                <input class="btn btn-success text-center completed-btn" type="submit" name="completed" value="Completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed">
+                            </div>
                         </div>
                     </div>
                 </div><!-- /.modal-content -->

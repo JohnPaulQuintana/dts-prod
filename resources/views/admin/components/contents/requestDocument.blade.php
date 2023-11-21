@@ -186,6 +186,9 @@
                                                 @case('pending')
                                                     <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
                                                     @break
+                                                @case('completed')
+                                                    <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
+                                                    @break
                                             
                                                 @default
                                                     

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ModalController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfficeController;
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
 // Route::get('/department', [DepartmentController::class,'dashboard'])->middleware(['auth', 'verified'])->name('departments.dashboard');
 
 Route::middleware(['auth', 'verified','roleguard','check.archived'])->group(function(){
+    Route::get('/my-documents', [RequestedDocumentController::class,'myRequest'])->name('departments.dashboard.my.request');
     Route::get('/department', [DepartmentController::class,'dashboard'])->name('departments.dashboard');
     Route::get('/department-show', [OfficeController::class,'showDepartment'])->name('departments.dashboard.department');
     Route::get('/request-documents', [RequestedDocumentController::class,'showIncomingRequest'])->name('departments.dashboard.incoming');
@@ -68,6 +70,8 @@ Route::middleware('auth')->group(function () {
     // logs
     Route::get('/logs',[AdministratorController::class,'history'])->name('history');
     Route::get('/history',[DepartmentController::class,'history'])->name('history.department');
+    //check if already processed
+    Route::post('/already-processed',[LogController::class, 'alreadyProcessed'])->name('already.process');
     // events
     Route::post('/events',[EventController::class,'pushEvents'])->name('events.push');
     Route::post('/delete-event',[EventController::class,'deleteEvents'])->name('events.delete');

@@ -134,7 +134,7 @@ class AdministratorController extends Controller
     public function reportsPdf(){
         $trackingNos = DB::table('requested_documents')->select('trk_id','id')->get();
         $offices = DB::table('offices')->select('office_name', 'id')->get();
-        $users = DB::table('users')->select('name','id')->where('assigned','!=','viewing')->where('status','!=','deactivated')->get();
+        $users = DB::table('users')->select('name','id')->where('status','!=','deactivated')->get();
 
         $groupedData = [
             'trackingNos' => $trackingNos,

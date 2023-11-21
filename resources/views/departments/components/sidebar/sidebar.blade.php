@@ -30,6 +30,12 @@
                     <span>Requests</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('departments.dashboard.my.request') }}" class="waves-effect">
+                    <i class="fas fa-file"></i><span class="badge rounded-pill bg-danger float-end"></span>
+                    <span>My Documents</span>
+                </a>
+            </li>
 
             <li>
                 <a href="{{ route('history.department') }}" class="waves-effect">

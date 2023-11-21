@@ -170,20 +170,33 @@
                         <input type="text" name="action" id="" value="all-user" hidden>
                         
                         <div class="col-sm-3">
-                            <label for="processed-by">Processed By <span class="required text-danger">*</span></label>
-                            <select name="processed-by" id="processed-by" class="form-select">
+                            <label for="processed-by">Departments <span class="required text-danger">*</span></label>
+                            <select name="processed-by-departments" id="processed-by" class="form-select">
                                 {{-- <option value="all">All</option> --}}
-                                <option value="*">All user's</option>
-                                {{-- @foreach ($creds['users'] as $user)
+                                {{-- <option value="*">All user's</option> --}}
+                                @foreach ($creds['offices'] as $off)
                                     
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach --}}
+                                    <option value="{{ $off->id }}">{{ $off->office_name }}</option>
+                                @endforeach
                             </select>
                         </div>
+
                         <div class="col-sm-3">
-                            <label for="status">Status <span class="required text-danger">*</span></label>
-                            <select name="status" id="" class="form-select">
+                            <label for="processed-by">User's <span class="required text-danger">*</span></label>
+                            <select name="processed-by" id="processed-by" class="form-select">
                                 {{-- <option value="all">All</option> --}}
+                                {{-- <option value="*">All user's</option> --}}
+                                @foreach ($creds['users'] as $user)
+                                    
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-sm-3" hidden>
+                            <label for="status">Status <span class="required text-danger">*</span></label>
+                            <select name="status" id="" class="form-select" hidden>
+                              
                                 <option value="*">All</option>
                                 <option value="completed">Completed</option>
                                 <option value="archived">Discontinued</option>

@@ -134,138 +134,144 @@
                                      $badges = []
                                 @endphp
                                 @foreach ($documents as $document)
-                                        {{-- @print_r($document->belongTo); --}}
+                                        
                                     @php
                                         // print_r($document['belongsTo']);
                                         $trk = $document['trk_id'];
                                         // dd($trk); // Check the value of $trkId
                                     @endphp
                                    
-                                    <tr data-requestor-trk="{{ $document['trk_id'] }}">
-                                        <td>
-                                            @switch($document['trk_id'])
-                                                @case(null)
-                                                @if ($document['status'] !== 'archived')
-                                                    <h6 class="mb-0 text-warning"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
-                                                @else
-                                                    <h6 class="mb-0 text-danger"><i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>{{ __('rejected') }}</h6>
-                                                @endif
-                                                    {{-- <h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6> --}}
-                                                    @break
-                                        
-                                                @default
-                                                    <h6 class="mb-0 position-relative">
-                                                        {!! DNS1D::getBarcodeHTML($document['trk_id'], 'PHARMA') !!}
-                                                        @switch($document['type'])
-                                                            @case('my document')
-                                                            {{-- for barcodes --}}
-                                                            <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
-                                                                TRK-{{ $document['trk_id'] }}
-                                                                <span class="position-absolute bottom-50 left-100 translate-middle badge bg-info">
+                                   @if (in_array(Auth::user()->id, $document['destination']))
+                                   <tr data-requestor-trk="{{ $document['trk_id'] }}">
+                                    <td>
+                                        @switch($document['trk_id'])
+                                            @case(null)
+                                            @if ($document['status'] !== 'archived')
+                                                <h6 class="mb-0 text-warning"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>
+                                            @else
+                                                <h6 class="mb-0 text-danger"><i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>{{ __('rejected') }}</h6>
+                                            @endif
+                                                {{-- <h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6> --}}
+                                                @break
+                                    
+                                            @default
+                                                <h6 class="mb-0 position-relative">
+                                                    {!! DNS1D::getBarcodeHTML($document['trk_id'], 'PHARMA') !!}
+                                                    @switch($document['type'])
+                                                        @case('my document')
+                                                        {{-- for barcodes --}}
+                                                        <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
+                                                           TRK-{{ $document['trk_id'] }}
+                                                            <span class="position-absolute bottom-50 left-100 translate-middle badge bg-info">
+                                                                {{ $document['type'] }}
+                                                            </span>
+                                                            @break
+                                                        @case('requested')
+
+                                                            @if ($document['status'] !== 'forwarded')
+                                                                <i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>
+                                                                {{-- {{ __('TRK-XXXXXX') }} this is the original --}}
+                                                                    TRK-{{ $document['trk_id'] }}
+                                                                <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
                                                                     {{ $document['type'] }}
                                                                 </span>
-                                                                @break
-                                                            @case('requested')
-                                                                
-                                                                
-                                                                @if ($document['status'] !== 'forwarded')
-                                                                    <i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>
-                                                                    {{ __('TRK-XXXXXX') }}
-                                                                    <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
-                                                                        {{ $document['type'] }}
-                                                                    </span>
-                                                                @else
+                                                            @else
                                                                 <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
-                                                                TRK-{{ $document['trk_id'] }}
-                                                                    <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
-                                                                        {{ $document['type'] }}
-                                                                    </span>
-                                                                @endif
-                                                                @break
-                                                        @endswitch
-                                                    </h6>
-                                                    @break
-                                            @endswitch
-                                        </td>
-                                        <td>
-                                            @if ($document['pr'] != null)
-                                                <span class="badge bg-success p-2"><b>{{ $document['pr'] }}</b></span>
-                                            @else
-                                                <span class="badge bg-danger p-2"><b>not available</b></span>
-                                            @endif
-                                        </td>
-                                        {{-- for now id muna --}}
-                                        <td>
-                                            <i class="far fa-file-alt fa-3x"></i> <!-- Larger document icon -->
-                                            <a class="position-relative track-document" data-id="{{ $document['document_id'] }}" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Track document...">
-                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b><i class="fas fa-route"></i></b></span>
-                                            </a>
+                                                                <span class="trk-display">TRK-{{ $document['trk_id'] }}</span>
+                                                                <span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
+                                                                    {{ $document['type'] }}
+                                                                </span>
+                                                            @endif
+                                                            @break
+                                                    @endswitch
+                                                </h6>
+                                                @break
+                                        @endswitch
+                                    </td>
+                                    <td>
+                                        @if ($document['pr'] != null)
+                                            <span class="badge bg-success p-2"><b>{{ $document['pr'] }}</b></span>
+                                        @else
+                                            <span class="badge bg-danger p-2"><b>not available</b></span>
+                                        @endif
+                                    </td>
+                                    {{-- for now id muna --}}
+                                    <td>
+                                        <i class="far fa-file-alt fa-3x"></i> <!-- Larger document icon -->
+                                        <a class="position-relative track-document" data-id="{{ $document['document_id'] }}" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Track document...">
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b><i class="fas fa-route"></i></b></span>
+                                        </a>
+                                
+                                    </td>
+                                    <td style="word-break: break-all; max-width:150px;white-space:nowrap;overflow: hidden; text-overflow: ellipsis;"><span class="" >
+                                        {{ $document['purpose'] }}    
+                                    </span></td>
+                                    <td>
+                                        @php
+                                            // $badges = ['BGA', 'BGB', 'BGX', 'BGC', 'BGI', 'BGK']; // Replace this with your data
+                                            $partAbbr = explode(' | ', $document['logs']);
+                                            
+                                            $uniqueBadges = array_unique($partAbbr);
+                                            $maxBadgesToShow = 3;
+                                            $remainingBadges = count($badges) - $maxBadgesToShow;
+                                            $uniqueId = uniqid(); // Generate a unique ID for the badge container
+                                        @endphp
+                                        <div id="{{ $uniqueId }}">
+                                            @foreach ($uniqueBadges as $badge)
+                                                @if ($loop->index < $maxBadgesToShow)
+                                                    <span class="badge bg-info p-1"><b>{{ $badge }}</b></span>
+                                                @endif
+                                            @endforeach
                                     
-                                        </td>
-                                        <td style="word-break: break-all; max-width:150px;white-space:nowrap;overflow: hidden; text-overflow: ellipsis;"><span class="" >
-                                            {{ $document['purpose'] }}    
-                                        </span></td>
-                                        <td>
-                                            @php
-                                                // $badges = ['BGA', 'BGB', 'BGX', 'BGC', 'BGI', 'BGK']; // Replace this with your data
-                                                $partAbbr = explode(' | ', $document['logs']);
+                                            @if ($remainingBadges > 0)
+                                                <a href="#" class="position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="+{{ $remainingBadges }} more...">
+                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b>+{{ $remainingBadges }}</b></span>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @switch($document['status'])
+                                            @case('archived')
+                                                <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
+                                                @break
+                                            @case('forwarded')
+                                                <span class="badge bg-info p-2"><b>{{ $document['status'] }}</b></span>
+                                                @break
+                                            @case('approved')
+                                                <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
+                                                @break
+                                            @case('pending')
+                                                <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
+                                                @break
+                                            @case('completed')
+                                                <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
+                                                @break
+                                            @default
                                                 
-                                                $uniqueBadges = array_unique($partAbbr);
-                                                $maxBadgesToShow = 3;
-                                                $remainingBadges = count($badges) - $maxBadgesToShow;
-                                                $uniqueId = uniqid(); // Generate a unique ID for the badge container
-                                            @endphp
-                                            <div id="{{ $uniqueId }}">
-                                                @foreach ($uniqueBadges as $badge)
-                                                    @if ($loop->index < $maxBadgesToShow)
-                                                        <span class="badge bg-info p-1"><b>{{ $badge }}</b></span>
-                                                    @endif
-                                                @endforeach
-                                        
-                                                @if ($remainingBadges > 0)
-                                                    <a href="#" class="position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="+{{ $remainingBadges }} more...">
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b>+{{ $remainingBadges }}</b></span>
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @switch($document['status'])
-                                                @case('archived')
-                                                    <span class="badge bg-danger p-2"><b>{{ $document['status'] }}</b></span>
-                                                    @break
-                                                @case('forwarded')
-                                                    <span class="badge bg-info p-2"><b>{{ $document['status'] }}</b></span>
-                                                    @break
-                                                @case('approved')
-                                                    <span class="badge bg-success p-2"><b>{{ $document['status'] }}</b></span>
-                                                    @break
-                                                @case('pending')
-                                                    <span class="badge bg-warning p-2"><b>{{ $document['status'] }}</b></span>
-                                                    @break
-                                                @default
-                                                    
-                                            @endswitch
-                                           
-                                        </td>
-                                        <td><b>{{ $document['created_at'] }}</b></td>
-                                        <td width="50px">
-                                            {{-- {{ Auth::user()->assigned }} --}}
-                                            <span class="">
-                                                @if (Auth::user()->assigned !='viewing' && $document['type'] !== 'my document' && $document['status'] !== 'pending')
-                                                {{-- data-scanned-id="{{ $document['scanned'] }}" --}}
-                                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
-                                                @endif
-                                                {{-- for barcodes --}}
-                                                @if ($document['type'] === 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'archived')
-                                                    <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
-                                                @endif
-                                                
-                                                <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-amount="{{ $document['amount'] }}" data-id="{{ $document['document_id'] }}" data-type="{{ $document['belongsTo'] }}" data-purpose="{{ $document['purpose'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
-                                                {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
-                                            </span>
-                                        </td>
-                                    </tr>
+                                        @endswitch
+                                       
+                                    </td>
+                                    <td><b>{{ $document['created_at'] }}</b></td>
+                                    <td width="50px">
+                                        {{-- problem on this buttons --}}
+                                        {{-- {{ Auth::user()->assigned }} --}}
+                                        <span class="">
+                                            @if (Auth::user()->assigned !='viewing' && $document['type'] !== 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'completed' && Auth::user()->id === end($document['destination']))
+                                            {{-- data-scanned-id="{{ $document['scanned'] }}" --}}
+                                                <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
+                                            @endif
+                                            {{-- for barcodes --}}
+                                            @if ($document['type'] === 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'archived')
+                                                <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
+                                            @endif
+                                            
+                                            <a id="view-document-btn" class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-stats="{{ $document['status'] }}" data-po="{{ $document['po'] }}" data-amount="{{ $document['amount'] }}" data-id="{{ $document['document_id'] }}" data-type="{{ $document['belongsTo'] }}" data-purpose="{{ $document['purpose'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                            {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
+                                        </span>
+                                    </td>
+                                </tr>
+                                   @endif
                                   
                                 @endforeach
                                 
@@ -499,6 +505,9 @@
                                         case 'archived':
                                             className = 'bg-danger text-white'
                                             break;
+                                        case 'completed':
+                                            className = 'bg-success text-white'
+                                            break;
                                     
                                         default:
                                             break;
@@ -608,6 +617,9 @@
                         var purpose = $(this).data("purpose");
                         var amount = $(this).data("amount");
                         var id = parseInt($(this).data("id"));
+                        var po = $(this).data("po");
+                        var stats = $(this).data("stats");
+                        // alert(stats)
                         var belongsTo = $(this).data('type');
                          // Construct the full URL to the document
                         var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
@@ -616,6 +628,14 @@
                         $('.event-notes-open').val(purpose)
                         $('.amount').val(amount)
                         $('#doc-id').val(id)
+                        if (po !== '' || stats === 'completed' || stats === 'archived') {
+                            // alert('yes')
+                            $('.po').val(po).prop('readonly', true);
+                        } else {
+                            // alert('yes')
+                            $('.po').prop('readonly', false);
+                        }
+
                         // alert(belongsTo)
                         if(belongsTo !== 1){
                             $('.btn-r').show();
@@ -624,6 +644,25 @@
                             $('.btn-r').hide();
                             $('.btn-a').hide();
                         }
+
+                        checkIfAlreadyProcessed(id)
+                        .then((res)=>{
+                            console.log(res)
+                            //hide the buttons for already processed documents by this user
+                            if(res === '1'){
+                                console.log('ginagawa')
+                                $('.btn-approved').prop('disabled', true);
+                                $('.btn-archived').prop('disabled', true);
+                                $('.po').prop('readonly', false);
+                                
+                            }
+                        })
+                })
+
+                //close modal set modal to default
+                $('.openBtnClose').on('click', function(){
+                    $('.btn-approved').prop('disabled', false);
+                    $('.btn-archived').prop('disabled', false);
                 })
 
                 // pin open
@@ -711,6 +750,7 @@
                         // alert(currentLoc)
                         switch (scannedId) {
                             case 1:
+                                // alert('yes')
                                 $('.rdi').val(documentId)
                                 $('.loc').val(currentLoc)
                                 $('#scanned-barcode-modal').modal('show')
@@ -871,6 +911,32 @@
                     };
                     toastr[stats](message);
                 }
+
+                //check if a user is already process a documents base on scaanned
+                function checkIfAlreadyProcessed(doc_id){
+                    return new Promise(function(resolve, reject) {
+                        // Make an AJAX request to retrieve logs
+                        $.ajax({
+                            url: '/already-processed', // Replace with your route URL
+                            type: 'POST',
+                            data: {doc_id : doc_id},
+                            headers: {
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                // Resolve the promise with the response
+                                resolve(response);
+                            },
+                            error: function(xhr, status, error) {
+                                // Reject the promise with an error
+                                reject(xhr.responseText);
+                            }
+                        });
+                    });
+                }
+
+                
+                
             })
         </script>
         {{-- // notification --}}

@@ -7,7 +7,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Document Preview <span id="stats"></span></h5>
-                        <button type="button" id="close-modal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="close-modal" class="btn-close openBtnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -23,6 +23,8 @@
                                                         <img id="preview-doc" src="assets/images/small/img-2.jpg" class="img-fluid" alt="Responsive image">
                                                     </div>
                                                     <br>
+                                                    <label for="po" class="text-center">Purchase Order</label>
+                                                    <input type="number" name="po" value="" class="form-control text-center mb-2 po" placeholder="PO-123456">
                                                     <label for="amount" class="text-center">Requested Amount</label>
                                                     <input type="text" name="amount" value="" class="form-control text-center mb-2 amount" readonly>
                                                     <label for="amount" class="text-center">Description</label>
@@ -35,8 +37,8 @@
                     </div>
                     <div class="modal-footer">
                         @if (Auth::user()->assigned !== 'viewing' && Auth::user()->id)
-                            <input type="submit" name="action" class="btn btn-success waves-effect btn-r" id="btn-approved" value="Approved">
-                            <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive btn-a" value="Archived">
+                            <input type="submit" name="action" class="btn btn-success openbtn waves-effect btn-r btn-approved" id="btn-approved" value="Approved">
+                            <input type="submit" name="action" class="btn btn-danger openbtn waves-effect waves-light documents-archive btn-a btn-archived" id="btn-archived" value="Archived">
                             {{-- <input type="button" class="btn btn-success waves-effect btn-r">
                             <input type="submit" class="btn btn-danger waves-effect waves-light btn-a"> --}}
                         @endif

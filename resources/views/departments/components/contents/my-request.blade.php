@@ -2,7 +2,7 @@
 
 @section('head')
     <meta charset="utf-8" />
-    <title>Administrator Dashboard</title>
+    <title>Department Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
@@ -78,20 +78,20 @@
         <div class="card">
             <div class="card-body">
 
-                <div class="dropdown float-end">
+                {{-- <div class="dropdown float-end">
                     <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                     <a class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <!-- item-->
+                      
                         <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success new-request">Request a Documents</a>
                         <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
                         <a href="{{ route('reportsPdf') }}" class="dropdown-item text-danger">Report</a>
-                        <!-- item-->
-                        <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
+                       
+                        <a  href="{{ route('departments.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                     </div>
-                </div>
+                </div> --}}
 
                 <h4 class="card-title mb-4">
                     <span class="me-2">Docement's List</span>
@@ -216,7 +216,7 @@
                                             @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'completed')
                                                 <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
                                             @endif
-                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-my="mydocs" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                             {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                         </span>
                                     </td>
@@ -233,15 +233,15 @@
 </div>
 
 {{-- new request modal --}}
-@include('admin.components.modals.requestDocument')
+@include('departments.components.modals.requestDocument')
 {{-- open document modal --}}
-@include('admin.components.modals.openDocument')
+@include('departments.components.modals.openDocument')
 {{-- open timeline modal --}}
-@include('admin.components.modals.timeline')
+@include('departments.components.modals.timeline')
 {{-- open pin modal --}}
-@include('admin.components.modals.pin')
+@include('departments.components.modals.pin')
 {{-- open pin modal --}}
-@include('admin.components.modals.print')
+@include('departments.components.modals.print')
 @endsection
 
 @section('script')
@@ -437,6 +437,8 @@
                         // alert('yes')
                         $('#btn-arc').prop('disabled', true);
                     }
+                    $('#btn-approved').prop('disabled', true);
+                    $('.btn-archived').prop('disabled', true);
                     $('#open-document-modal').modal('show')
 
                    
