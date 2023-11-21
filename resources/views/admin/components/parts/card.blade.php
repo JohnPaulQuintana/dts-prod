@@ -4,7 +4,7 @@
             <div class="d-flex">
                 <div class="flex-grow-1">
                     <p class="text-truncate font-size-14 mb-2">Ongoing Document(s)</p>
-                    <h4 class="mb-2">1452</h4>
+                    <h4 class="mb-2">0</h4>
                     
                 </div>
                 <div class="avatar-sm">
@@ -23,7 +23,7 @@
             <div class="d-flex">
                 <div class="flex-grow-1">
                     <p class="text-truncate font-size-14 mb-2">Total Accomplished</p>
-                    <h4 class="mb-2">938</h4>
+                    <h4 class="mb-2">0</h4>
                 </div>
                 <div class="avatar-sm">
                     <span class="avatar-title bg-light text-success rounded-3">
@@ -41,7 +41,7 @@
             <div class="d-flex">
                 <div class="flex-grow-1">
                     <p class="text-truncate font-size-14 mb-2">Total Discontinued</p>
-                    <h4 class="mb-2">8246</h4>
+                    <h4 class="mb-2">0</h4>
                 </div>
                 <div class="avatar-sm">
                     <span class="avatar-title bg-light text-danger rounded-3">
