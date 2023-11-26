@@ -40,12 +40,12 @@
                                                     <div class="col-6" style="margin: auto;">
                                                         <div class="mb-2 text-center">
                                                             <h4 class="card-title">Forward to:</h4>
-                                                            <input type="text" name="department" id="department-select" class="form-control" value="" hidden>
-                                                            <input type="text" id="department-select" class="form-control text-center" value="Administrator" readonly>
-                                                            {{-- <select id="department-select" name="department" class="form-select" aria-label="Default select example">
+                                                            {{-- <input type="text" name="department" id="department-select" class="form-control" value="" hidden> --}}
+                                                            {{-- <input type="text" id="department-select" class="form-control text-center" value="Administrator" readonly> --}}
+                                                            <select id="department-select" name="department" class="form-select department-select" aria-label="Default select example">
                                                                 <option selected>Select a department</option>
                                                                 
-                                                            </select> --}}
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-6" style="margin: auto;">

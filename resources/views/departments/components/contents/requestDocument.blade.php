@@ -259,7 +259,7 @@
                                         <span class="">
                                             @if (Auth::user()->assigned !='viewing' && $document['type'] !== 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'completed' && Auth::user()->id === end($document['destination']))
                                             {{-- data-scanned-id="{{ $document['scanned'] }}" --}}
-                                                <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
+                                                <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-from="{{ $document['from'] }}" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                             @endif
                                             {{-- for barcodes --}}
                                             @if ($document['type'] === 'my document' && $document['status'] !== 'pending' && $document['status'] !== 'archived')
@@ -444,7 +444,10 @@
                     })
 
                     // var trkId = $(this).data("trk-id");
-                    $('#department-select').attr('value','ADM|Administrator|Administrator|1')
+                    // $('#department-select').attr('value','ADM|Administrator|Administrator|1') //old
+
+                    $('#department-select').html(html)//new added
+
 
                     // Reset the form when clicking the "x" button
                     $('#close-modal').on('click', function () {
@@ -682,6 +685,7 @@
                     var documentId = parseInt($(this).data('id'))//documents id
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
+                    var from = $(this).data('from')
                     // alert(scannedId)
                     console.log(trkId, documentId, document)
 
@@ -694,7 +698,7 @@
                     var departementHtml = ''
                     var departementUsersHtml = ``
             
-                    getDepartmentWithUsers(officeId)
+                    getDepartmentWithUsers(from,officeId)
                         .then(function(response) {
                             // Process the response (logs) here
                             // console.log(response.departmentWithUsers);
@@ -841,13 +845,13 @@
                 }
 
                 // process request for all departments and users
-                function getDepartmentWithUsers(office_id) {
+                function getDepartmentWithUsers(from,office_id) {
                     // alert(id);
                     // Return a promise
                     return new Promise(function(resolve, reject) {
                         // Make an AJAX request to retrieve logs
                         $.ajax({
-                            url: `/departments-with-users/${office_id}`, // Replace with your route URL
+                            url: `/departments-with-users/${from}`, // Replace with your route URL
                             type: 'GET',
                             headers: {
                                 'X-CSRF-TOKEN': "{{ csrf_token() }}"

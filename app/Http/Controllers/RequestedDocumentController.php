@@ -278,9 +278,9 @@ class RequestedDocumentController extends Controller
         //for selection request
         $allDepartments = Office::select('id', 'office_name', 'office_abbrev', 'office_head')
             ->where('office_type', '!=', 'viewing')
-            ->where('id', '!=', Auth::user()->office_id)
+            // ->where('id', '!=', Auth::user()->office_id)
             ->get();
-
+        // dd($allDepartments);
         // Initialize an empty array to store the merged data
         $mergedData = [];
 
@@ -290,7 +290,8 @@ class RequestedDocumentController extends Controller
             // Retrieve the users for the current department
             $usersInDepartment = User::where('office_id', $departmentId)
                 ->where('status', 'active')
-                // ->where('office_id', '!=', 1)
+                ->where('assigned', '!=', 'viewing')
+                ->where('id', '!=', Auth::user()->id)
                 ->get();
 
             // Merge the office and user data for this department
@@ -364,12 +365,9 @@ class RequestedDocumentController extends Controller
         // dd($po);
         switch ($action) {
             case 'Approved':
-                if (Auth::user()->role !== 1) {
-                    // Update the 'status' field using the trk_id
-                    $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'approved', 'po' => $po]);
-                } else {
-                    $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' => 'PR-' . $pr, 'status' => 'approved']);
-                }
+
+                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' => 'PR-' . $pr, 'status' => 'approved']);
+
 
                 // Retrieve the updated records
                 $updatedRecords = RequestedDocument::where('id', $id)->get();
@@ -530,7 +528,8 @@ class RequestedDocumentController extends Controller
                 // 'trk_id' => $this->generateTRKID(),
                 'requestor' => auth()->user()->office_id, // Assuming you want to associate with the logged-in user
                 'requestor_user' => auth()->user()->id, // Assuming you want to associate with the logged-in user
-                'forwarded_to' => Auth::user()->role !== 1 ? 1 : $usersInDepartment['id'], // administrator
+                // 'forwarded_to' => Auth::user()->role !== 1 ? 1 : $usersInDepartment['id'], // administrator
+                'forwarded_to' => $usersInDepartment['id'], //can send to all
                 'purpose' => $request->input('request-text'),
                 'amount' => $request->input('amount'),
                 'recieved_offices' => Auth::user()->role !== 1 ? 1 : $usersInDepartment['office_id'], //administrator
@@ -541,59 +540,59 @@ class RequestedDocumentController extends Controller
             $documentRequest->save();
 
             // if admin auto approved
-            if (Auth::user()->role === 1) {
-                $this->autoApproved($documentRequest->id, $usersInDepartment['id'], $request->input('purchased-request'));
-                // Create a new RequestedDocument instance with default values
-            } else {
-                // Create a new RequestedDocument instance with default values
-                $documentLogs = new Log([
-                    'requested_document_id' => $documentRequest->id,
-                    'forwarded_to' => $documentRequest->forwarded_to, // department id 
-                    'destination' => $usersInDepartment['id'], // department user id 
-                    'current_location' => $parts[0] . ' | ' . $parts[1], // current loaction  department abbrev
-                    'notes' => 'requesting for approval',
-                    'notes_user' => 'false',
-                    'status' => $documentRequest->status, // Set the default status
-                    'scanned' => false,
-                ]);
+            // if (Auth::user()->role === 1) {
+            // $this->autoApproved($documentRequest->id, $usersInDepartment['id'], $request->input('purchased-request'));
+            // Create a new RequestedDocument instance with default values
+            // } else {
+            // Create a new RequestedDocument instance with default values
+            $documentLogs = new Log([
+                'requested_document_id' => $documentRequest->id,
+                'forwarded_to' => $documentRequest->forwarded_to, // department id 
+                'destination' => $usersInDepartment['id'], // department user id 
+                'current_location' => $parts[0] . ' | ' . $parts[1], // current loaction  department abbrev
+                'notes' => 'requesting for approval',
+                'notes_user' => 'false',
+                'status' => $documentRequest->status, // Set the default status
+                'scanned' => false,
+            ]);
 
-                $documentLogs->save();
+            $documentLogs->save();
 
-                // explode the department abbr
-                // $dept = explode(' | ',$request->input('department'));
+            // explode the department abbr
+            // $dept = explode(' | ',$request->input('department'));
 
-                // get the office of requestor
-                $requestorOffice = Office::where('id', $documentRequest->requestor)->first();
-                // get the cred from office
-                $notification = new Notification([
-                    'notification_from_id' => auth()->user()->id,
-                    'notification_from_name' => auth()->user()->name,
-                    'notification_to_id' => Auth::user()->role !== 1 ? 1 : $parts[3], //by default admin
-                    'notification_message' => auth()->user()->name . ' from ' . $requestorOffice['office_name'] . ' Has forwarded a document!',
-                    'notification_status' => 'unread',
-                ]);
-                $notification->save();
-                event(new NotifyEvent('departments sending a documents'));
-                // Save the image timestamp in the database
-                // $imageModel = new Image();
-                // $imageModel->timestamp = $imageName;
-                // $imageModel->save();
+            // get the office of requestor
+            $requestorOffice = Office::where('id', $documentRequest->requestor)->first();
+            // get the cred from office
+            $notification = new Notification([
+                'notification_from_id' => auth()->user()->id,
+                'notification_from_name' => auth()->user()->name,
+                'notification_to_id' => Auth::user()->role !== 1 ? 1 : $parts[3], //by default admin
+                'notification_message' => auth()->user()->name . ' from ' . $requestorOffice['office_name'] . ' Has forwarded a document!',
+                'notification_status' => 'unread',
+            ]);
+            $notification->save();
+            event(new NotifyEvent('departments sending a documents'));
+            // Save the image timestamp in the database
+            // $imageModel = new Image();
+            // $imageModel->timestamp = $imageName;
+            // $imageModel->save();
 
-                // Build the success message
-                $message = 'Successfully Submitted your documents!';
+            // Build the success message
+            $message = 'Successfully Submitted your documents!';
 
-                // Prepare the toast notification data
-                $notification = [
-                    'status' => 'success',
-                    'message' => $message,
-                ];
+            // Prepare the toast notification data
+            $notification = [
+                'status' => 'success',
+                'message' => $message,
+            ];
 
-                // Convert the notification to JSON
-                $notificationJson = json_encode($notification);
+            // Convert the notification to JSON
+            $notificationJson = json_encode($notification);
 
-                // Redirect back with a success message and the inserted products
-                return back()->with('notification', $notificationJson);
-            }
+            // Redirect back with a success message and the inserted products
+            return back()->with('notification', $notificationJson);
+            // }
         }
         // Prepare the toast notification data
         $notification = [
@@ -724,6 +723,7 @@ class RequestedDocumentController extends Controller
         ]);
         $partsDepartment = explode(" | ", $request->input('department'));
         $partsDepartmentStaff = explode(" | ", $request->input('department_staff'));
+        // dd('')
         // get the office cred
         // $office = Office::where('id',Auth::user()->office_id)->first();
         $affectedRows = RequestedDocument::where('trk_id', $request->input('trk_id'))->update(['status' => 'forwarded']);
@@ -809,15 +809,7 @@ class RequestedDocumentController extends Controller
     public function departmentAndUsers($requestor)
     {
         // dd($requestor);
-        $excludedOfficeIds = [$requestor, 1]; //user id
-        // Retrieve all departments and their users - old not included the user types
-        // $departmentWithUsers = DB::table('offices')
-        // ->leftJoin('users', 'offices.id', '=', 'users.office_id')
-        // ->select('offices.*', 'users.name as user_name', 'users.email as user_email', 'users.id as user_id','users.office_id as user_office_id')
-        // ->whereNotIn('offices.id', $excludedOfficeIds)
-        // ->where('users.status', 'active')
-        // ->get();
-
+        $excludedOfficeIds = [$requestor, 1, Auth::user()->id]; //user id
         // updates
         $departmentWithUsers = DB::table('offices')
             ->leftJoin('users', 'offices.id', '=', 'users.office_id')
@@ -996,6 +988,7 @@ class RequestedDocumentController extends Controller
             $formattedDocument = [
                 'type' => $types,
                 'belongsTo' => $document->type ?? 3, // 3 means unknown
+                'from' => $document->requestor_user,
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
                 'pr' => $document->pr,
@@ -1075,7 +1068,7 @@ class RequestedDocumentController extends Controller
         $from = $request->input('from');
         $to = $request->input('to');
         $office = $request->input('office');
-        $processedBy = $request->input('processed-by');
+        // $processedBy = $request->input('processed-by');
         $processedByDept = $request->input('processed-by-departments');
         $orderBy = $request->input('order-by');
         $status = $request->input('status');
@@ -1140,6 +1133,8 @@ class RequestedDocumentController extends Controller
                         'requested_documents.id',
                         'requested_documents.requestor_user',
                         'requested_documents.forwarded_to',
+                        'requested_documents.pr',
+                        'requested_documents.po',
                         'users.id as userId',
                         'users.office_id as userofficeId',
                         'users.name',
@@ -1149,18 +1144,21 @@ class RequestedDocumentController extends Controller
                     )
                     ->leftJoin('users', 'requested_documents.requestor_user', '=', 'users.id')
                     ->leftJoin('offices', 'users.office_id', '=', 'offices.id')
-                    ->leftJoin('logs', 'requested_documents.id', '=', 'logs.requested_document_id') // Join with 'logs' table
+                    ->leftJoin('logs', 'requested_documents.id', '=', 'logs.requested_document_id')
                     ->when($processedByDept !== '*', function ($query) use ($processedByDept) {
                         $query->where('offices.id', '=', $processedByDept);
                     })
-                    ->when($processedBy !== '*', function ($query) use ($processedBy) {
-                        $query->where('users.id', '=', $processedBy);
-                    })
-                    ->unless($processedBy === '*' && $processedByDept === '*', function ($query) {
-                        $query->whereNotNull('users.id');
-                    })
                     ->when($status !== '*', function ($query) use ($status) {
                         $query->where('logs.status', '=', $status);
+                    })
+                    ->when($status === 'completed', function ($query) {
+                        $query->where('logs.status', '=', 'completed');
+                    })
+                    ->when($from, function ($query) use ($from) {
+                        $query->whereDate('logs.created_at', '>=', $from);
+                    })
+                    ->when($to, function ($query) use ($to) {
+                        $query->whereDate('logs.created_at', '<=', $to);
                     })
                     ->orderBy('logs.created_at', $orderBy)
                     ->get();
@@ -1168,7 +1166,7 @@ class RequestedDocumentController extends Controller
         // dd($getAllData);
 
         if (count($getAllData) > 0) {
-            $pdfName = $this->generateReportDocuments($getAllData, $from, $to);
+            $pdfName = $this->generateReportDocuments2($getAllData, $from, $to);
 
             $saveReports = new Report();
             $saveReports->report_trk = $trk ?? 'not-generated';
@@ -1367,6 +1365,90 @@ class RequestedDocumentController extends Controller
         return $uniqueId;
     }
 
+    function generateReportDocuments2($datas, $from, $to)
+    {
+        // dd($datas);
+        $from2 = $from ?? now()->format('Y-m-d');
+        $to2 = $to ?? now()->format('Y-m-d');
+
+        $pdf = new GenerateTable('P', 'mm', 'A4'); //custom class for generating table
+        // $fpdf = new Fpdf('P', 'mm', 'A4');
+        $pdf->AddPage();
+        $bgColor = 211; // Initial background color (gray)
+        // Header
+        $pdf->SetFont('Courier', 'B', 18);
+        $pdf->Cell(0, 10, 'Document Tracking System' . ' Reports', 0, 1, 'C');
+        $pdf->SetFont('Courier', '', 12);
+        $pdf->Cell(0, 5, 'From: ' . $from2 . ' | To: ' . $to2, 0, 1, 'C');
+        $pdf->Ln(10);
+
+        // get the title for next page
+        // $pdf->getHeader($types);
+        // $pdf->SetFont('Courier', '', 14);
+        // $columnWidth = 190 / count($names); // Adjust this width as needed
+        // foreach ($names as $name) {
+        //     // Set the background color
+        //     $pdf->SetFillColor(211, 211, 211);
+        //     $pdf->Cell($columnWidth, 10, $name, 0, 0, 'C', true);
+        // }
+
+
+        // add heading
+        $pdf->SetFont('Courier', 'B', 12);
+        $pdf->SetFillColor(192, 192, 192); // RGB values for gray
+        $pdf->Cell(30, 5, 'TRK-No', 1, 0, 'C', true);
+        $pdf->Cell(20, 5, 'PR#', 1, 0, 'C', true);
+        $pdf->Cell(20, 5, 'PO#', 1, 0, 'C', true);
+        $pdf->Cell(30, 5, 'Purpose', 1, 0, 'C', true);
+        $pdf->Cell(30, 5, 'Status', 1, 0, 'C', true);
+        // $pdf->Cell(18, 5, 'Status', 1, 0, 'C', true);
+        $pdf->Cell(25, 5, 'Created', 1, 0, 'C', true);
+        $pdf->Cell(25, 5, 'Time', 1, 0, 'C', true);
+        // Reset the background color
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->Ln(7); // Move to the next row
+
+        $pdf->SetFont('Courier', '', 10);
+
+        $pdf->SetWidths(array(30, 20, 20, 30, 30, 25, 25)); //set width for each column (6)
+
+        $pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C'));
+        $pdf->SetLineHeight(6); //hieght of each lines, not rows
+
+        $json = file_get_contents(public_path('MOCK_DATA.json')); //read data
+        $data = json_decode($json, true);
+
+        foreach ($datas as $item) {
+            //    dd($item);
+            //write data using Row() methiod containing array of value
+            //    $pdf->Row(Array(
+            //         'TRK-'.$item['id'],
+            //         $item['first_name'],
+            //         $item['last_name'],
+            //         $item['email'],
+            //         $item['gender'],
+            //         $item['address'],
+            //    ));
+
+            $pdf->Row(array(
+                ($item->trk_id ? "TRK-" . $item->trk_id : "Not-Generated"),
+              
+                // $item->office_name,
+                ($item->pr ? $item->pr : "No PR"), 
+                ($item->po ? $item->po : "No PO"),
+                $item->current_location,
+                $item->status,
+                $item->created_at,
+                $item->time_range,
+            ));
+        }
+
+        // Output the PDF
+        $uniqueId = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+        $pdf->Output('F', public_path('reports/') . $uniqueId . '.pdf');
+
+        return $uniqueId;
+    }
     // cancel report 
     public function cancelReports(Request $request)
     {

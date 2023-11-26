@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('departments.index')
 
 @section('head')
     <meta charset="utf-8" />
@@ -364,15 +364,16 @@
 
             // new request
             $('#new-request').on('click',function(){
+                // console.log('dkwajdkwajkdwa')
                  // Prevent modal from closing when clicking outside
                 $('#new-request-modal').modal({
                     backdrop: 'static',
                     keyboard: false
                 });
 
-                $('#new-request-modal').modal('show')
+               
                 var departmentJson = {!! json_encode($departments)!!};
-                console.log(departmentJson)
+                // console.log(departmentJson)
                 var html = ''
                 //old
                 // departmentJson.forEach(department => {
@@ -392,8 +393,9 @@
                         });
                     })
                 // var trkId = $(this).data("trk-id");
+                console.log(html)
                 $('#department-select').html(html)
-
+                $('#new-request-modal').modal('show')
                 // Reset the form when clicking the "x" button
                 $('#close-modal').on('click', function () {
                     $('#request-form')[0].reset();

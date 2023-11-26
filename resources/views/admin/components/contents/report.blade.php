@@ -181,21 +181,20 @@
                             </select>
                         </div>
 
-                        <div class="col-sm-3">
+                        {{-- <div class="col-sm-3">
                             <label for="processed-by">User's <span class="required text-danger">*</span></label>
                             <select name="processed-by" id="processed-by" class="form-select">
-                                {{-- <option value="all">All</option> --}}
-                                {{-- <option value="*">All user's</option> --}}
+                               
                                 @foreach ($creds['users'] as $user)
                                     
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
-                        <div class="col-sm-3" hidden>
+                        <div class="col-sm-3">
                             <label for="status">Status <span class="required text-danger">*</span></label>
-                            <select name="status" id="" class="form-select" hidden>
+                            <select name="status" id="" class="form-select">
                               
                                 <option value="*">All</option>
                                 <option value="completed">Completed</option>
@@ -204,12 +203,23 @@
                             </select>
                         </div>
                         <div class="col-sm-3">
+                            <label for="from">From <span class="required text-danger">*</span></label>
+                            <input type="date" name="from" id="from" class="form-control">
+                               
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="to">To <span class="required text-danger">*</span></label>
+                            <input type="date" name="to" id="to" class="form-control">
+                               
+                        </div>
+                        <div class="col-sm-3">
                             <label for="order-by">Order By <span class="required text-danger">*</span></label>
                             <select name="order-by" id="order-by" class="form-select">
                                 <option value="asc">Ascending Order</option>
                                 <option value="desc">descending Order</option>
                             </select>
                         </div>
+                       
                         <div class="col-sm-12">
                             <input type="submit" class="form-control btn btn-success" id="submit" value="Generate" name="">
                             
