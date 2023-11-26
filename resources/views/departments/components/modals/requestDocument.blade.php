@@ -33,7 +33,7 @@
                                                     <div class="col-6" style="margin: auto;">
                                                         <div class="mb-2 text-center">
                                                             <h4 class="card-title">Upload Documents</h4>
-                                                            <input class="form-control" type="file" name="document" accept="image/*" id="image">
+                                                            <input class="form-control" type="file" name="document" accept="image/*" id="image" required>
                                                         </div>
                                                     </div>
 

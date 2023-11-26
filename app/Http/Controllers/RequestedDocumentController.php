@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Log;
 use App\Models\User;
 use App\Models\Office;
+use App\Models\Report;
 use App\Models\Barcode;
 use Milon\Barcode\DNS1D;
 use App\Events\NotifyEvent;
@@ -13,11 +14,11 @@ use Codedge\Fpdf\Fpdf\Fpdf;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\GenerateTable;
-use App\Models\Report;
 use App\Models\RequestedDocument;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class RequestedDocumentController extends Controller
 {
@@ -362,7 +363,7 @@ class RequestedDocumentController extends Controller
         $action = $request->input('action');
         $pr = $request->input('pr');
         $po = $request->input('po');
-        // dd($po);
+        // dd($pr);
         switch ($action) {
             case 'Approved':
 
@@ -499,11 +500,22 @@ class RequestedDocumentController extends Controller
     {
         // dd($request);
         // Validate the uploaded file
-        $request->validate([
-            'document' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed
-            'request-text' => 'required|max:255',
-            'department' => 'required|max:255',
-        ]);
+        try {
+            $request->validate([
+                'document' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'request-text' => 'required|max:255',
+                'department' => 'required|max:255',
+            ]);
+        } catch (ValidationException $e) {
+            $notification = [
+                'status' => 'error',
+                'message' => 'Documents not submitted successfully!',
+            ];
+            // Convert the notification to JSON
+            $notificationJson = json_encode($notification);
+            // Redirect back with a success message and the inserted products
+            return back()->with('notification', $notificationJson);
+        }
 
         // Split the value into parts using the pipe character '|'
         $parts = explode('|', $request->input('department'));
