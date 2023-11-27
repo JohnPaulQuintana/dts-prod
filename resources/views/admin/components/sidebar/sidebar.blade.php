@@ -37,6 +37,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('administrator.dashboard.monitor') }}" class="waves-effect">
+                    <i class="fas fa-file"></i><span class="badge rounded-pill bg-success float-end"></span>
+                    <span>Monitor Documents</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('administrator.dashboard.offices') }}" class="waves-effect">
                     <i class="fas fa-building"></i>
                     <span>Offices</span>

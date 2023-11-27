@@ -435,9 +435,26 @@
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
 
-                    if(stats === 'completed'){
-                        // alert('yes')
-                        $('#btn-arc').prop('disabled', true);
+                   
+
+                    switch (stats) {
+                        case 'forwarded':
+                            $('.status-badge').html(` <h5 class="badge bg-warning p-2">This document is ${stats}</h5>`)
+                            break;
+                        case 'approved':
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
+                            break;
+                        case 'archived':
+                            $('.status-badge').html(` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
+                            break;
+                        case 'completed':
+                            $('#btn-arc').prop('disabled', true);
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
+                            break;
+                    
+                        default:
+                        $('.status-badge').html(``)
+                            break;
                     }
                     $('#btn-approved').prop('disabled', true);
                     $('.btn-archived').prop('disabled', true);

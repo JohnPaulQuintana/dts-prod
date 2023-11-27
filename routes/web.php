@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
     Route::get('/administrator', [AdministratorController::class,'dashboard'])->name('administrator.dashboard');
     Route::get('/request-documents-admin', [RequestedDocumentController::class,'showIncomingRequestAdmin'])->name('administrator.dashboard.incoming.request');
     Route::get('/request-my-documents', [RequestedDocumentController::class,'myRequestAdmin'])->name('administrator.dashboard.my.request');
+    Route::get('/monitor', [RequestedDocumentController::class,'monitor'])->name('administrator.dashboard.monitor');
     Route::post('/request-documents-update', [RequestedDocumentController::class,'updateIncomingRequest'])->name('administrator.dashboard.incoming.request.update');
     Route::get('/offices', [OfficeController::class,'showOffices'])->name('administrator.dashboard.offices');
     Route::post('/offices-add', [OfficeController::class,'addOffices'])->name('administrator.dashboard.offices.add');

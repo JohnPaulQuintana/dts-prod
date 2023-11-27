@@ -198,11 +198,11 @@
                                         <td><b>{{ $document['created_at'] }}</b></td>
                                         <td width="50px">
                                             <span class="">
-                                                @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'finished' && $document['status'] !== 'forwarded')
+                                                @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'completed' && $document['status'] !== 'forwarded')
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 
-                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                                 {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                             </span>
                                         </td>
@@ -401,6 +401,7 @@
                         var trkId = $(this).data("trk");
                         var purpose = $(this).data("purpose");
                         var amount = $(this).data("amount");
+                        var stats = $(this).data('stat')
                         if(trkId == ''){
                             trkId = 'Pending Approval'
                             $('#btn-approved').css({'display':'block'})
@@ -417,6 +418,38 @@
                         $('.amount').val(amount)
                         // add data-id on archived button
                         // $('.documents-archive').attr('data-archived-id',id)
+                        switch (stats) {
+                        case 'forwarded':
+                            $('#btn-reprocess').hide()
+                            $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)
+                            break;
+                        case 'approved':
+                            $('#btn-reprocess').hide()
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">${stats}</h5>`)
+                            break;
+                        case 'archived':
+                            $('#btn-reprocess').show()
+                            $('.pr-text').hide();
+                            $('.pr').hide();
+                            $('.reason').hide();
+                            $('.reason-text').hide();
+                            $('#btn-arc').css({'display':'none'})
+                            $('.status-badge').html(` <h5 class="badge bg-danger p-2">${stats}</h5>`)
+                            break;
+                        case 'completed':
+                            $('.pr-text').hide();
+                            $('.pr').hide();
+                            $('.reason').hide();
+                            $('.reason-text').hide();
+                            $('#btn-arc').css({'display':'none'})
+                            $('#btn-reprocess').show()
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">${stats}</h5>`)
+                            break;
+                    
+                        default:
+                        $('.status-badge').html(``)
+                            break;
+                    }
                         $('#open-document-modal').modal('show')
 
                        

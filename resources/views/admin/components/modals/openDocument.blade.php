@@ -11,6 +11,9 @@
                     </div>
                     <div class="modal-body">
                         <h5 class="text-center">Tracking No. - <span class="text-primary" id="trkNo">TRK-12345678</span></h5>
+                        <div class="d-flex justify-content-center status-badge">
+                           
+                        </div>
                         <div class="row">
                             <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
                             <input type="number" name="id" id="doc-id" value="" hidden>
@@ -33,10 +36,10 @@
                                                     name="notes" id="event-notes" required value="" readonly></textarea>
                                                 <br/>
                                                
-                                                <label for="pr" class="text-center">Purchased Request</label>
+                                                <label for="pr" class="text-center pr-text">Purchased Request</label>
                                                 <input type="text" name="pr" value="" class="form-control text-center mb-2 pr" placeholder="Enter your purchased request">
-                                                <label for="amount" class="text-center text-danger">give them a reason's why this documents archived!</label>
-                                                <textarea class="form-control text-center" rows="3" type="text"
+                                                <label for="amount" class="text-center text-danger reason-text">give them a reason's why this documents archived!</label>
+                                                <textarea class="form-control text-center reason" rows="3" type="text"
                                                     name="reason" id="event-notes" value="" placeholder="This section is for giving them a valid reason for being archived there documents optional"></textarea>
                                             </div>
                                         </div>
@@ -47,6 +50,7 @@
                     <div class="modal-footer">
                         <input type="submit" name="action" class="btn btn-success waves-effect" id="btn-approved" value="Approved">
                         
+                        <input type="submit" name="action" class="btn btn-info waves-effect waves-light documents-reprocess" id="btn-reprocess" value="Re-process">
                         <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive" id="btn-arc" value="Archived">
                     </div>
                 </div><!-- /.modal-content -->

@@ -23,6 +23,22 @@ use Illuminate\Validation\ValidationException;
 class RequestedDocumentController extends Controller
 {
 
+    public function monitor(){
+        $documents = RequestedDocument::get();
+
+        // Fetch logs for each document separately
+        $documents->each(function ($document) {
+            $document->logs = Log::where('requested_document_id', $document->id)
+                ->orderBy('id', 'desc') // Order the logs by id in descending order to get the latest log first
+                ->get();
+        });
+        
+
+    // dd($documents);
+
+    
+        return view('admin.components.contents.monitor')->with(['documents'=>$documents]);
+    }
     public function myRequestAdmin()
     {
         $user_id = Auth::user()->id;
@@ -482,6 +498,56 @@ class RequestedDocumentController extends Controller
                     'status' => 'error',
                     'message' => $message,
                 ];
+            case 'Re-process':
+                // Update the 'status' field using the trk_id
+                $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'approved']);
+                // Retrieve the updated records
+                $updatedRecords = RequestedDocument::where('id', $id)->get();
+                // dd($updatedRecords[0]->id);
+                $formattedRecords = $updatedRecords->map(function ($record) {
+                    $record->formatted_created_at = Carbon::parse($record->created_at)->isoFormat('ddd DD, YYYY, MMM');
+                    $record->formatted_updated_at = Carbon::parse($record->updated_at)->isoFormat('ddd DD, YYYY, MMM');
+                    return $record;
+                });
+
+                // get the office cred
+                $office = Office::where('id', Auth::user()->office_id)->first();
+
+                // Create a new RequestedDocument instance with default values
+                $documentLogs = new Log([
+                    'trk_id' => $updatedRecords[0]->trk_id,
+                    'requested_document_id' => $updatedRecords[0]->id,
+                    'forwarded_to' => $office->id, // department id
+                    'destination' => Auth::user()->id,
+                    'current_location' => $office->office_abbrev . ' | ' . $office->office_name, // current loaction  department abbrev
+                    'notes' => 'Document is re-processing by admin.', //if the have a notes
+                    'notes_user' => 'Document is re-processing by admin', //if the have a notes
+                    'status' => $updatedRecords[0]->status, // Set the on-going status
+                    'scanned' => true,
+                ]);
+
+                $documentLogs->save();
+
+                // get the cred from office
+                $notification = new Notification([
+                    'notification_from_id' => auth()->user()->id,
+                    'notification_from_name' => auth()->user()->name,
+                    'notification_to_id' => $updatedRecords[0]->requestor_user, //by default admin
+                    'notification_message' => auth()->user()->name . ' from ' . $office->office_name . ' has reprocess your document!',
+                    'notification_status' => 'unread',
+                ]);
+                $notification->save();
+
+                event(new NotifyEvent('documents is reprocess!'));
+                // Build the success message
+                $message = 'Successfully updated document!';
+
+                // Prepare the toast notification data
+                $notification = [
+                    'status' => 'error',
+                    'message' => $message,
+                ];
+                break;
             default:
                 # code...
                 break;

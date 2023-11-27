@@ -10,6 +10,9 @@
                         <button type="button" id="close-modal" class="btn-close openBtnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <div class="d-flex justify-content-center status-badge">
+                           
+                        </div>
                         <div class="row">
                             <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
                             <input type="number" name="id" id="doc-id" value="" hidden>

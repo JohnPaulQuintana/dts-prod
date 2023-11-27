@@ -442,6 +442,39 @@
                         // alert('yes')
                         $('#btn-arc').prop('disabled', true);
                     }
+
+                    switch (stats) {
+                        case 'forwarded':
+                            $('#btn-reprocess').hide()
+                            $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)
+                            break;
+                        case 'approved':
+                            $('#btn-reprocess').hide()
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">${stats}</h5>`)
+                            break;
+                        case 'archived':
+                            $('#btn-reprocess').show()
+                            $('.pr-text').hide();
+                            $('.pr').hide();
+                            $('.reason').hide();
+                            $('.reason-text').hide();
+                            $('#btn-arc').css({'display':'none'})
+                            $('.status-badge').html(` <h5 class="badge bg-danger p-2">${stats}</h5>`)
+                            break;
+                        case 'completed':
+                            $('.pr-text').hide();
+                            $('.pr').hide();
+                            $('.reason').hide();
+                            $('.reason-text').hide();
+                            $('#btn-arc').css({'display':'none'})
+                            $('#btn-reprocess').show()
+                            $('.status-badge').html(` <h5 class="badge bg-success p-2">${stats}</h5>`)
+                            break;
+                    
+                        default:
+                        $('.status-badge').html(``)
+                            break;
+                    }
                     $('#open-document-modal').modal('show')
 
                    
