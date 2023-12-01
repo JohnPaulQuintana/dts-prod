@@ -889,39 +889,46 @@ class RequestedDocumentController extends Controller
     //get all departements and users
     public function departmentAndUsers($requestor)
     {
-        // dd($requestor);
-        $excludedOfficeIds = [$requestor, Auth::user()->id]; //user id
-        // updates
-        $departmentWithUsers = DB::table('offices')
-            ->leftJoin('users', 'offices.id', '=', 'users.office_id')
-            ->select('offices.*', 'users.name as user_name', 'users.email as user_email', 'users.id as user_id', 'users.office_id as user_office_id')
-            ->whereNotIn('users.id', $excludedOfficeIds) //this is the problem all the users with the same office_id
-            ->where(function ($query) {
-                $query->where('users.status', 'active')
-                    ->where('users.assigned', 'processing');
-            })
-            ->get();
+        // Exclude the current user and the requestor user
+    $excludedUserIds = [$requestor, Auth::user()->id];
 
-        // Group the results by user name using Laravel collection's groupBy method
-        $usersWithOffices = $departmentWithUsers->groupBy('user_name');
-        // dd($usersWithOffices);
-        // Transform the grouped collection into the specified format
-        $result = $usersWithOffices->map(function ($offices, $userName) {
-            // dd($userName);
-            return [
-                'user_id' => $offices->first()->user_id, // Get the user ID from the first office,
-                'user_office_id' => $offices->first()->user_office_id, // Get the user ID from the first office,
-                'user_name' => $userName,
-                'offices' => $offices->map(function ($office) {
-                    return [
-                        'office_id' => $office->id,
-                        'office_name' => $office->office_name,
-                        'office_abbrev' => $office->office_abbrev,
-                        'office_head' => $office->office_head,
-                    ];
-                })->toArray(),
-            ];
-        })->values()->toArray();
+    // Retrieve offices and users data
+    $departmentWithUsers = DB::table('offices')
+        ->leftJoin('users', 'offices.id', '=', 'users.office_id')
+        ->select(
+            'offices.*',
+            'users.name as user_name',
+            'users.office_id as user_office_id',
+            'users.id as user_id',
+            'users.office_id as user_office_id'
+        )
+        ->whereNotIn('users.id', $excludedUserIds)
+        ->where(function ($query) {
+            $query->where('users.status', 'active')
+                ->where('users.assigned', 'processing');
+        })
+        ->get();
+
+    // Group the results by office ID using Laravel collection's groupBy method
+    $officesWithUsers = $departmentWithUsers->groupBy('id');
+
+    // Transform the grouped collection into the specified format
+    $result = $officesWithUsers->map(function ($office, $officeId) {
+        return [
+            'office_id' => $officeId,
+            'office_name' => $office->first()->office_name,
+            'office_abbrev' => $office->first()->office_abbrev,
+            'office_head' => $office->first()->office_head,
+            'users' => $office->map(function ($user) {
+                return [
+                    'user_id' => $user->user_id,
+                    'user_name' => $user->user_name,
+                    'user_office_id' => $user->user_office_id,
+                ];
+            })->toArray(),
+        ];
+    })->values()->toArray();
+    // dd($result);
         return response()->json(['departmentWithUsers' => $result]);
     }
 

@@ -350,42 +350,6 @@
                     }
                 });
 
-                // // new request
-                // $('.new-request').on('click',function(){
-                //     // alert('dwadwa')
-                //      // Prevent modal from closing when clicking outside
-                //     $('#new-request-modal').modal({
-                //         backdrop: 'static',
-                //         keyboard: false
-                //     });
-
-                //     $('#new-request-modal').modal('show')
-                //     var departmentJson = {!! json_encode($departments)!!};
-                //     console.log(departmentJson)
-                //     var html = ''
-                //     //old
-                //     // departmentJson.forEach(department => {
-                //     //     console.log(department)
-                //     //    if(department.office_abbrev !== 'ADM'){
-                //     //         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
-                //     //    }
-                //     // });
-
-                //     // updates
-                //     $.each(departmentJson, function(officeAbbrev, officeData){
-                //         var officeAbbr = officeData.office_abbrev;
-                //         console.log(officeAbbr)
-                //     })
-                //     // var trkId = $(this).data("trk-id");
-                //     $('#department-select').html(html)
-
-                //     // Reset the form when clicking the "x" button
-                //     $('#close-modal').on('click', function () {
-                //         $('#request-form')[0].reset();
-                //         $("#image").val(""); // Clear the file input
-                //         $("#image-preview").hide(); // Hide the image preview container
-                //     });
-                // })
                
                 // documents open
                 $('.view-document-btn').on('click', function(){
@@ -458,6 +422,32 @@
                        
                 })
 
+                function populateUsersForDepartment(response, selectedDepartmentValue) {
+                    // Extract office_id from the selected value
+                    const selectedOfficeId = selectedDepartmentValue.split('|')[0].trim();
+                    // alert(selectedOfficeId)
+                    // Filter users based on the selected department
+                    const filteredUsers = response.departmentWithUsers.find(data => data.office_id ==
+                        selectedOfficeId);
+                    console.log(filteredUsers)
+                    // Populate users
+                    let departementUsersHtml = "";
+                    if (filteredUsers) {
+                        filteredUsers.users.forEach(user => {
+                            departementUsersHtml += `
+                                <div class="card p-2 border border-success" style="max-width: 250px;margin:10px auto;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">${user.user_name}</label>
+                                    </div>
+                                </div>`;
+                        });
+
+                    }
+
+                    $('.con-user').html(departementUsersHtml);
+                }
+
                 // pin open
                 $('.pin-document-btn').on('click',function(){
                     var trkId = $(this).data('trk')//trk_id
@@ -485,19 +475,28 @@
                                 console.log(data)
                                 //office_id | office_name | office_abbrev
                                 departementHtml += `
-                                    <option value='${data.offices[0].office_id} | ${data.offices[0].office_name} | ${data.offices[0].office_abbrev}'>
-                                        ${data.offices[0].office_name}
+                                    <option value='${data.office_id} | ${data.office_name} | ${data.office_abbrev}'>
+                                        ${data.office_name}
                                     </option>`
                                 //User id | user_office_id | name
-                                departementUsersHtml += `
-                                    <option value='${data.user_id} | ${data.user_office_id} | ${data.user_name}'>
-                                        ${data.user_name}
-                                    </option>
-                                `
+                                // departementUsersHtml += `
+                                //     <option value='${data.user_id} | ${data.user_office_id} | ${data.user_name}'>
+                                //         ${data.user_name}
+                                //     </option>
+                                // `
                             });
                             $('.department-select').html(departementHtml)
+                            const defaultValue = $('.department-select').val()
+                            populateUsersForDepartment(response, defaultValue);
+                            $(".department-select").on("change", function() {
+                                // Get the selected department value
+                                const selectedDepartmentValue = $(this).val();
+                                console.log(selectedDepartmentValue);
 
-                            $('#department-staff-select').html(departementUsersHtml)
+                                // Populate users based on the selected department
+                                populateUsersForDepartment(response, selectedDepartmentValue);
+                            });
+                            // $('#department-staff-select').html(departementUsersHtml)
 
                         })
                         .catch(function(err){

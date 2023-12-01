@@ -236,7 +236,8 @@
                                                 style="word-break: break-all; max-width:150px;white-space:nowrap;overflow: hidden; text-overflow: ellipsis;">
                                                 <span class="">
                                                     {{ $document['purpose'] }}
-                                                </span></td>
+                                                </span>
+                                            </td>
                                             <td>
                                                 @php
                                                     // $badges = ['BGA', 'BGB', 'BGX', 'BGC', 'BGI', 'BGK']; // Replace this with your data
@@ -474,7 +475,7 @@
                 if (filter !== "all") {
                     $("tbody tr").each(function() {
                         var status = $(this).find("td:eq(5)").text().trim()
-                    .toLowerCase(); // Assuming status is in the 5th column (index 4)
+                            .toLowerCase(); // Assuming status is in the 5th column (index 4)
                         if (status !== filter) {
                             $(this).hide();
                         }
@@ -638,7 +639,7 @@
 
                     // Set the value in an input field
                     $('.trk-input').val(`TKR-${decodedText}`).addClass(
-                    'text-success border border-success');
+                        'text-success border border-success');
 
                     // Stop the scanner
                     // stopScanner();
@@ -717,17 +718,21 @@
 
                 switch (stats) {
                     case 'forwarded':
-                        $('.status-badge').html(` <h5 class="badge bg-warning p-2">This document is ${stats}</h5>`)
+                        $('.status-badge').html(
+                            ` <h5 class="badge bg-warning p-2">This document is ${stats}</h5>`)
                         break;
                     case 'approved':
-                        $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
+                        $('.status-badge').html(
+                            ` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                         break;
                     case 'archived':
-                        $('.status-badge').html(` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
+                        $('.status-badge').html(
+                            ` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
                         break;
                     case 'completed':
                         $('#btn-arc').prop('disabled', true);
-                        $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
+                        $('.status-badge').html(
+                            ` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                         break;
 
                     default:
@@ -745,7 +750,7 @@
 
                 checkIfAlreadyProcessed(id)
                     .then((res) => {
-                        
+
                         console.log(res)
                         //hide the buttons for already processed documents by this user
                         if (res.scanned === 1) {
@@ -760,21 +765,21 @@
 
                         }
 
-                        if(res.po === null){
-                            
+                        if (res.po === null) {
+
                             $('.po').prop('readonly', false);
-                        }else{
+                        } else {
                             $('.po').val(res.po)
                             $('.po').prop('readonly', true);
                         }
-                        if(res.pr === null){
-                            
+                        if (res.pr === null) {
+
                             $('.pr').prop('readonly', false);
-                        }else{
+                        } else {
                             $('.pr').val(res.pr)
                             $('.pr').prop('readonly', true);
                         }
-            
+
                     })
             })
 
@@ -814,59 +819,114 @@
                 var departementHtml = ''
                 var departementUsersHtml = ``
 
+                function populateUsersForDepartment(response, selectedDepartmentValue) {
+                    // Extract office_id from the selected value
+                    const selectedOfficeId = selectedDepartmentValue.split('|')[0].trim();
+                    // alert(selectedOfficeId)
+                    // Filter users based on the selected department
+                    const filteredUsers = response.departmentWithUsers.find(data => data.office_id ==
+                        selectedOfficeId);
+                    console.log(filteredUsers)
+                    // Populate users
+                    let departementUsersHtml = "";
+                    if (filteredUsers) {
+                        filteredUsers.users.forEach(user => {
+                            departementUsersHtml += `
+                                <div class="card p-2 border border-success" style="max-width: 250px;margin:10px auto;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">${user.user_name}</label>
+                                    </div>
+                                </div>`;
+                        });
+
+                    }
+
+                    $('.con-user').html(departementUsersHtml);
+                }
+
                 getDepartmentWithUsers(from, officeId)
                     .then(function(response) {
                         // Process the response (logs) here
                         // console.log(response.departmentWithUsers);
                         response.departmentWithUsers.forEach(data => {
-                            console.log(data)
                             //office_id | office_name | office_abbrev
                             departementHtml += `
-                                    <option value='${data.offices[0].office_id} | ${data.offices[0].office_name} | ${data.offices[0].office_abbrev}'>
-                                        ${data.offices[0].office_name}
+                                    <option value='${data.office_id} | ${data.office_name} | ${data.office_abbrev}'>
+                                        ${data.office_name}
                                     </option>`
+                           
                             //User id | user_office_id | name
-                            departementUsersHtml += `
-                                    <option value='${data.user_id} | ${data.user_office_id} | ${data.user_name}'>
-                                        ${data.user_name}
-                                    </option>
-                                `
+                            // departementUsersHtml += `
+                        //         <option value='${data.user_id} | ${data.user_office_id} | ${data.user_name}'>
+                        //             ${data.user_name}
+                        //         </option>
+                        //     `
+                            // departementUsersHtml += `
+                        //     <div class="card p-2 border border-success" style="max-width: 250px;margin:10px auto;">
+                        //         <div class="form-check form-switch">
+                        //             <input class="form-check-input" name="department_staff" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        //             <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                        //         </div>
+                        //     </div>
+                        // `
                         });
                         $('.department-select').html(departementHtml)
+                        // Set the default selected department (replace 'defaultValue' with the actual default value)
+                        const defaultValue = $('.department-select').val()
 
-                        $('#department-staff-select').html(departementUsersHtml)
+                        // alert(defaultValue.split('|')[0].trim())
+
+                        // $('.department-select').val(defaultValue);
+
+                        // Populate users for the default selected department
+                        populateUsersForDepartment(response, defaultValue);
+
+                        // Handle department select change event
+                        // Handle department select change event
+                        $(".department-select").on("change", function() {
+                            // Get the selected department value
+                            const selectedDepartmentValue = $(this).val();
+                            console.log(selectedDepartmentValue);
+
+                            // Populate users based on the selected department
+                            populateUsersForDepartment(response, selectedDepartmentValue);
+                        });
+
 
                     })
                     .catch(function(err) {
                         console.log(err)
                     })
 
+
+
                 // Attach event listeners to both selects
-                $('#department-select').on('change', function() {
-                    // const selectedDepartment = $(this).val();
-                    const selectedDepartmentOfficeId = $(this).val().split(' | ')[0];
-                    console.log(selectedDepartmentOfficeId)
+                // $('#department-select').on('change', function() {
+                //     // const selectedDepartment = $(this).val();
+                //     const selectedDepartmentOfficeId = $(this).val().split(' | ')[0];
+                //     console.log(selectedDepartmentOfficeId)
 
-                    // Clear the options in #department-staff-select
+                //     // Clear the options in #department-staff-select
 
 
-                    // Iterate through all options in #department-staff-select
-                    $('#department-staff-select option').each(function() {
-                        const departmentUserOfficeId = $(this).val().split(' | ')[1];
+                //     // Iterate through all options in #department-staff-select
+                //     $('#department-staff-select option').each(function() {
+                //         const departmentUserOfficeId = $(this).val().split(' | ')[1];
 
-                        if (departmentUserOfficeId == selectedDepartmentOfficeId) {
-                            // If the user's office matches the selected department, display the option
-                            $(this).prop('disabled', false);
-                            $(this).show();
-                            $(this).removeAttr('selected');
+                //         if (departmentUserOfficeId == selectedDepartmentOfficeId) {
+                //             // If the user's office matches the selected department, display the option
+                //             $(this).prop('disabled', false);
+                //             $(this).show();
+                //             $(this).removeAttr('selected');
 
-                        } else {
-                            // Otherwise, disable the option
-                            $(this).prop('disabled', true);
-                            $(this).hide();
-                        }
-                    });
-                });
+                //         } else {
+                //             // Otherwise, disable the option
+                //             $(this).prop('disabled', true);
+                //             $(this).hide();
+                //         }
+                //     });
+                // });
                 // alert(currentLoc)
                 switch (scannedId) {
                     case 1:
