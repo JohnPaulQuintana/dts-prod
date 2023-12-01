@@ -173,10 +173,10 @@
                             "X-CSRF-TOKEN": csrfToken
                         },
                         success: function(res){
-                            $('.on-card').text(res.response.forwarded)
-                            $('.accomplished').text(res.response.accomplished)
-                            $('.rejected').text(res.response.rejected)
-                            $('.assigned').text(res.response.assigned)
+                            $('.on-card').text(res.response.assigned.approved)
+                            $('.accomplished').text(res.response.assigned.completed)
+                            $('.rejected').text(res.response.assigned.rejected)
+                            $('.assigned').text(res.response.assigned.pending)
 
                             console.log(res)
                         },

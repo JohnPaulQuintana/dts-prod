@@ -183,6 +183,29 @@
                         }
                     });
                 }
+
+                function getOnGoing(){
+                var csrfToken = $('#csrf-token').val();
+                    $.ajax({
+                        type: "GET",
+                        url: "/on",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken
+                        },
+                        success: function(res){
+                            $('.on-card').text(res.response.assigned.approved)
+                            $('.accomplished').text(res.response.assigned.completed)
+                            $('.rejected').text(res.response.assigned.rejected)
+                            $('.assigned').text(res.response.assigned.pending)
+
+                            console.log(res)
+                        },
+                        error: function(err){
+                            console.log(err)
+                        }
+                    })
+            }
+            getOnGoing()
                 getNotification()
                 // Enable pusher logging - don't include this in production
                 Pusher.logToConsole = true;
