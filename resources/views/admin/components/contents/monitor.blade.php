@@ -490,7 +490,7 @@
 
             //re process documents
             $('.repro-document-btn').on('click', function(){
-                alert($(this).data('id'))
+                // alert($(this).data('id'))
                 $.ajax({
                         url: `/request-documents-update`, // Replace with your route URL
                         type: 'POST',

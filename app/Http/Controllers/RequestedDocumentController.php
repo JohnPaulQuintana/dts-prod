@@ -450,8 +450,10 @@ class RequestedDocumentController extends Controller
                 ];
                 break;
             case 'Archived':
+                // dd('archived');
                 // Update the 'status' field using the trk_id
                 $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'archived']);
+                // dd($affectedRows);
                 // Retrieve the updated records
                 $updatedRecords = RequestedDocument::where('id', $id)->get();
                 // dd($updatedRecords[0]->id);
@@ -498,6 +500,7 @@ class RequestedDocumentController extends Controller
                     'status' => 'error',
                     'message' => $message,
                 ];
+                break;
             case 'Re-process':
                 // Update the 'status' field using the trk_id
                 $affectedRows = RequestedDocument::where('id', $id)->update(['forwarded_to'=>Auth::user()->id,'status' => 'approved']);
