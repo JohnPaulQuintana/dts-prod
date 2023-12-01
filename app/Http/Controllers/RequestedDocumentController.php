@@ -383,7 +383,7 @@ class RequestedDocumentController extends Controller
         switch ($action) {
             case 'Approved':
 
-                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' => 'PR-' . $pr, 'status' => 'approved']);
+                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' =>  $pr,'po' => $po, 'status' => 'approved']);
 
 
                 // Retrieve the updated records
@@ -500,7 +500,7 @@ class RequestedDocumentController extends Controller
                 ];
             case 'Re-process':
                 // Update the 'status' field using the trk_id
-                $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'approved']);
+                $affectedRows = RequestedDocument::where('id', $id)->update(['forwarded_to'=>Auth::user()->id,'status' => 'approved']);
                 // Retrieve the updated records
                 $updatedRecords = RequestedDocument::where('id', $id)->get();
                 // dd($updatedRecords[0]->id);
@@ -887,7 +887,7 @@ class RequestedDocumentController extends Controller
     public function departmentAndUsers($requestor)
     {
         // dd($requestor);
-        $excludedOfficeIds = [$requestor, 1, Auth::user()->id]; //user id
+        $excludedOfficeIds = [$requestor, Auth::user()->id]; //user id
         // updates
         $departmentWithUsers = DB::table('offices')
             ->leftJoin('users', 'offices.id', '=', 'users.office_id')

@@ -419,6 +419,9 @@
                         // add data-id on archived button
                         // $('.documents-archive').attr('data-archived-id',id)
                         switch (stats) {
+                        case 'pending':
+                            $('#btn-reprocess').hide()
+                            $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)
                         case 'forwarded':
                             $('#btn-reprocess').hide()
                             $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)

@@ -745,15 +745,36 @@
 
                 checkIfAlreadyProcessed(id)
                     .then((res) => {
+                        
                         console.log(res)
                         //hide the buttons for already processed documents by this user
-                        if (res === '1') {
+                        if (res.scanned === 1) {
                             console.log('ginagawa')
                             $('.btn-approved').prop('disabled', true);
                             $('.btn-archived').prop('disabled', true);
+                            $('.po').val(res.po)
+                            $('.pr').val(res.pr)
+                            // $('.po').val(res.po)
                             $('.po').prop('readonly', false);
+                            $('.pr').prop('readonly', false);
 
                         }
+
+                        if(res.po === null){
+                            
+                            $('.po').prop('readonly', false);
+                        }else{
+                            $('.po').val(res.po)
+                            $('.po').prop('readonly', true);
+                        }
+                        if(res.pr === null){
+                            
+                            $('.pr').prop('readonly', false);
+                        }else{
+                            $('.pr').val(res.pr)
+                            $('.pr').prop('readonly', true);
+                        }
+            
                     })
             })
 

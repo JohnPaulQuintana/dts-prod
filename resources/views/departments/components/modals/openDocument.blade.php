@@ -27,10 +27,10 @@
                                                     </div>
                                                     <br>
                                                     <label for="pr" class="text-center">Purchase Request</label>
-                                                    <input type="number" name="pr" value="" class="form-control text-center mb-2 po" placeholder="PO-123456">
+                                                    <input type="text" name="pr" class="form-control text-center mb-2 pr" placeholder="PO123456">
 
                                                     <label for="po" class="text-center">Purchase Order</label>
-                                                    <input type="number" name="po" value="" class="form-control text-center mb-2 po" placeholder="PR-123456">
+                                                    <input type="text" name="po" class="form-control text-center mb-2 po" placeholder="PR123456">
                                                     
                                                     <label for="amount" class="text-center">Requested Amount</label>
                                                     <input type="text" name="amount" value="" class="form-control text-center mb-2 amount" readonly>

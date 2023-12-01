@@ -213,6 +213,9 @@
                                 <td>{{ $document['po'] }}</td>
                                 <td><b>{{ $document['created_at'] }}</b></td>
                                 <td>
+                                    @if ($document['status'] == 'completed')
+                                    <a class="ri-refresh-fill text-white font-size-18 btn btn-info p-2 repro-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-process documents"></a>
+                                    @endif
                                     <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                 </td>
                             </tr>
@@ -476,11 +479,34 @@
                     
                    
                     $('.reason').hide();
+                    $('.pr').hide();
+                    $('.pr-text').hide();
                     $('.reason-text').hide();
                     $('#btn-reprocess').hide()
                     $('#open-document-modal').modal('show')
 
                    
+            })
+
+            //re process documents
+            $('.repro-document-btn').on('click', function(){
+                alert($(this).data('id'))
+                $.ajax({
+                        url: `/request-documents-update`, // Replace with your route URL
+                        type: 'POST',
+                        data: {id : $(this).data('id'), action: 'Re-process'},
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            // Resolve the promise with the response
+                           console.log(response)
+                        },
+                        error: function(xhr, status, error) {
+                            // Reject the promise with an error
+                            console.log(xhr.responseText);
+                        }
+                    });
             })
 
             // process request for logs

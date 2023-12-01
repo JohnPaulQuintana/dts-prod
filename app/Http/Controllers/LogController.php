@@ -11,9 +11,12 @@ class LogController extends Controller
     public function alreadyProcessed(Request $request)
     {
         // dd($request);
-        $alreadyPs = Log::where('destination', Auth::user()->id)
-        ->where('scanned', 1)->where('status', 'approved')
-        ->where('requested_document_id', $request->input('doc_id'))->exists();
+        $alreadyPs = Log::select('logs.*', 'requested_documents.po', 'requested_documents.pr')
+            ->join('requested_documents', 'logs.requested_document_id', '=', 'requested_documents.id')
+            ->where('destination', Auth::user()->id)
+            ->where('requested_document_id', $request->input('doc_id'))
+            ->latest('created_at')
+            ->first();
         return $alreadyPs;
     }
 }
