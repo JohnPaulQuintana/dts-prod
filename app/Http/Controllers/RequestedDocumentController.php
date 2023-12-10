@@ -324,13 +324,24 @@ class RequestedDocumentController extends Controller
     {
         $user_id = Auth::user()->id;
         $documents = DB::table('requested_documents')
-            ->select('requested_documents.*', 'offices.id as office_id', 'offices.office_name', 'offices.office_abbrev', 'offices.office_head')
-            ->join('offices', 'requested_documents.requestor', '=', 'offices.id')
-            // ->whereIn('requested_documents.requestor', [Auth::user()->office_id])
-            ->whereIn('requested_documents.forwarded_to', [1, $user_id])
-            // ->Where('requested_documents.requestor_user',$user_id)
-            ->orderBy('requested_documents.created_at', 'desc') // Order by 'created_at' column in descending order (latest to oldest)
-            ->get();
+        ->select(
+            'requested_documents.*',
+            'offices.id as office_id',
+            'offices.office_name',
+            'offices.office_abbrev',
+            'offices.office_head',
+            'logs.scanned',
+            'logs.current_location'
+        )
+        ->join('offices', 'requested_documents.requestor', '=', 'offices.id')
+        ->join('logs', function ($join) {
+            $join->on('requested_documents.id', '=', 'logs.requested_document_id')
+                ->whereRaw('logs.created_at = (select max(created_at) from logs where requested_document_id = requested_documents.id)');
+        })
+        ->whereIn('requested_documents.forwarded_to', [1, $user_id])
+        ->orderBy('logs.created_at', 'desc') // Order by 'created_at' column in descending order
+        ->get();
+    
 
         // dd($documents);
         // dd($documents);
@@ -341,6 +352,8 @@ class RequestedDocumentController extends Controller
             $formattedDocument = [
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
+                'scanned' => $document->scanned,
+                'current_location' => $document->current_location,
                 'pr' => $document->pr,
                 'requestor' => $document->requestor,
                 'requestor_user_id' => $document->requestor_user,
@@ -1522,8 +1535,11 @@ class RequestedDocumentController extends Controller
                 ($item->trk_id ? "TRK-" . $item->trk_id : "Not-Generated"),
               
                 // $item->office_name,
-                ($item->pr ? $item->pr : "No PR"), 
-                ($item->po ? $item->po : "No PO"),
+                // ($item->pr ? $item->pr : "No PR"), 
+                // ($item->po ? $item->po : "No PO"),
+                (isset($item->pr) ? $item->pr : "No PR"),
+
+                (isset($item->po) ? $item->po : "No PO"),
                 $item->current_location,
                 $item->status,
                 $item->created_at,

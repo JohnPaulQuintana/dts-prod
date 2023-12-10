@@ -77,7 +77,7 @@ class GenerateTable extends Fpdf
 
             // Header
             $this->SetFont('Courier', 'B', 18);
-            $this->Cell(0, 10, 'MadTrack ' . $this->types . ' Report', 0, 1, 'C');
+            $this->Cell(0, 10, 'Document Tracking System ' . $this->types . ' Report', 0, 1, 'C');
             $this->SetFont('Courier', '', 12);
             $this->Cell(0, 5, 'From: 2023-22-22 | To: 2023-22-23', 0, 1, 'C');
             $this->Ln(10);

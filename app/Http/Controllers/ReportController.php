@@ -46,6 +46,7 @@ class ReportController extends Controller
         
         // Create an associative array for the response
         $response = [
+            'approved' => $statusCounts->get('approved', 0),
             'forwarded' => $statusCounts->get('forwarded', 0),
             'accomplished' => $statusCounts->get('accomplished', 0),
             'rejected' => $statusCounts->get('rejected', 0),

@@ -92,6 +92,19 @@
                         <a  href="{{ route('departments.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                     </div>
                 </div> --}}
+                <div class="dropdown float-end">
+                    <input type="text" id="search-input" class="" placeholder="Search"
+                        style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="mdi mdi-dots-vertical"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <!-- item-->
+                        <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">New
+                            Request</a>
+                    </div>
+                </div>
 
                 <h4 class="card-title mb-4">
                     <span class="me-2">Docement's List</span>

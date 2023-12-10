@@ -47,7 +47,7 @@
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="col-6" style="margin: auto;">
+                                                    <div class="col-6" style="margin: auto;" hidden>
                                                         <div class="mb-2 text-center">
                                                             <h4 class="card-title">Purchased Request: <span class="text-secondary"></span></h4>
                                                             <input type="number" id="purchased-request" name="purchased-request" class="form-control" value="" placeholder="PR-123456">

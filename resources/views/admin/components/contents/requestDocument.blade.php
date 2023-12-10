@@ -198,8 +198,9 @@
                                         <td><b>{{ $document['created_at'] }}</b></td>
                                         <td width="50px">
                                             <span class="">
+                                                
                                                 @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'completed' && $document['status'] !== 'forwarded')
-                                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
+                                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 
                                                 <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
@@ -226,6 +227,8 @@
     @include('admin.components.modals.timeline')
     {{-- open pin modal --}}
     @include('admin.components.modals.pin')
+    {{-- open pin modal --}}
+    @include('admin.components.modals.scanned')
 @endsection
 
 @section('script')
@@ -451,7 +454,10 @@
                 // pin open
                 $('.pin-document-btn').on('click',function(){
                     var trkId = $(this).data('trk')//trk_id
+                    var scannedId = $(this).data('scanned-id') //scanned_id
                     var documentId = parseInt($(this).data('id'))//documents id
+                    // var data-current-loc="{{ $document['current_location'] }}"
+                    var currentLoc = $(this).data('current-loc') //scanned_id
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
                     var requestor = $(this).data('requestor-id')//documents
@@ -502,6 +508,21 @@
                         .catch(function(err){
                             console.log(err)
                         })
+
+                        switch (scannedId) {
+                    case 1:
+                        alert('yes')
+                        $('.rdi').val(documentId)
+                       $('.loc').val(currentLoc)
+                        $('#scanned-barcode-modal').modal('show')
+                        break;
+                    case 2:
+                        $('#pin-document-modal').modal('show')
+                        break;
+
+                    default:
+                        break;
+                }
                     
                         // Attach event listeners to both selects
                         $('#department-select').on('change', function() {
@@ -530,7 +551,7 @@
                                 });
                         });
                     
-                        $('#pin-document-modal').modal('show')
+                        // $('#pin-document-modal').modal('show')
                 })
 
                 // tracking documents

@@ -24,12 +24,15 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <li>
-                <a href="{{ route('departments.dashboard.incoming') }}" class="waves-effect">
-                    <i class="fas fa-file"></i><span class="badge rounded-pill bg-danger float-end"></span>
-                    <span>Requests</span>
-                </a>
-            </li>
+            @if (Auth::user()->assigned !== 'viewing')
+                <li>
+                    <a href="{{ route('departments.dashboard.incoming') }}" class="waves-effect">
+                        <i class="fas fa-file"></i><span class="badge rounded-pill bg-danger float-end"></span>
+                        <span>Requests</span>
+                    </a>
+                </li>
+            @endif
+            
             <li>
                 <a href="{{ route('departments.dashboard.my.request') }}" class="waves-effect">
                     <i class="fas fa-file"></i><span class="badge rounded-pill bg-danger float-end"></span>

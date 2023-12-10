@@ -472,6 +472,7 @@
                             break;
                     
                         default:
+                        $('#btn-reprocess').hide()
                         $('.status-badge').html(``)
                             break;
                     }

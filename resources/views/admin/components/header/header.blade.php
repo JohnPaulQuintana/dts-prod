@@ -47,7 +47,11 @@
             <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
                   data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="ri-notification-3-line"></i>
-                <span class="noti-dot"></span>
+                <span class="noti-dot">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger count-notif">
+                        1
+                      </span>
+                </span>
             </button>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                 aria-labelledby="page-header-notifications-dropdown">
@@ -57,7 +61,7 @@
                             <h6 class="m-0"> Notifications </h6>
                         </div>
                         <div class="col-auto">
-                            <a href="#!" class="small"> View All</a>
+                            {{-- <a href="#!" class="small"> View All</a> --}}
                         </div>
                     </div>
                 </div>

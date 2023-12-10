@@ -146,8 +146,9 @@
                             // Using a conditional statement
                             if (response.notifications.length > 0) {
                                 $('noti-dot').css({'display':'block'})
+                                $('.count-notif').text(response.notifications.length)
                                 response.notifications.forEach(notif => {
-                                    notifyPopUps(`You have a notification from ${notif.notification_from_name}`)
+                                    // notifyPopUps(`You have a notification from ${notif.notification_from_name}`)
                                     notifHtml += `
                                         <a class="text-reset notification-item" data-id="${notif.notification_from_id}">
                                             <div class="d-flex">
@@ -193,7 +194,18 @@
                             "X-CSRF-TOKEN": csrfToken
                         },
                         success: function(res){
-                            $('.on-card').text(res.response.assigned.approved)
+                            var approved1 = res.response.assigned.approved;
+                            var approved2 = res.response.assigned.forwarded;
+
+                            // Check if the values are numeric, and if not, set them to 0
+                            approved1 = !isNaN(approved1) ? approved1 : 0;
+                            approved2 = !isNaN(approved2) ? approved2 : 0;
+
+                            // Perform the addition
+                            var totalApproved = approved1 + approved2;
+
+                            // console.log(res.)
+                            $('.on-card').text(totalApproved)
                             $('.accomplished').text(res.response.assigned.completed)
                             $('.rejected').text(res.response.assigned.rejected)
                             $('.assigned').text(res.response.assigned.pending)
