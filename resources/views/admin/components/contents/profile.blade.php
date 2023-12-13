@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-12">
                             <div class="p-4 bg-white shadow rounded-lg">
                                 <div class="max-w-xl">
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         {{-- </x-app-layout> --}}
