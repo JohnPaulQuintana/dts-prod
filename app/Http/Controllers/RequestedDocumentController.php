@@ -395,8 +395,29 @@ class RequestedDocumentController extends Controller
         // dd($pr);
         switch ($action) {
             case 'Approved':
-
-                $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' =>  $pr,'po' => $po, 'status' => 'approved']);
+                $requestedDocument = RequestedDocument::where('id', $id)->first();
+                if ($requestedDocument->trk_id === null) {
+                    // trk_id is null, update it
+                    $affectedRows = RequestedDocument::where('id', $id)
+                        ->whereNull('trk_id')
+                        ->update([
+                            'trk_id' => $this->generateTRKID(),
+                            'pr' => $pr,
+                            'po' => $po,
+                            'status' => 'approved'
+                        ]);
+                } else {
+                    // trk_id is not null, perform another update or handle accordingly
+                    $affectedRows = RequestedDocument::where('id', $id)
+                        ->whereNotNull('trk_id')
+                        ->update([
+                            // Update other fields as needed
+                            'pr' => $pr,
+                            'po' => $po,
+                            'status' => 'approved'
+                        ]);
+                }
+                // $affectedRows = RequestedDocument::where('id', $id)->update(['trk_id' => $this->generateTRKID(), 'pr' =>  $pr,'po' => $po, 'status' => 'approved']);
 
 
                 // Retrieve the updated records
