@@ -494,8 +494,8 @@
                     $('#doc-id').val(id)
                     $('#trkNo').html(trkId)
                     $('.event-notes-open').val(purpose)
-                    $('.pr').va(pr)
-                    $('.po').va(po)
+                    $('.pr').val(pr)
+                    $('.po').val(po)
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
                     $('.pr').attr('readonly',true)
