@@ -1465,7 +1465,7 @@ class RequestedDocumentController extends Controller
         $pdf->Cell(30, 5, 'TRK-No', 1, 0, 'C', true);
         $pdf->Cell(25, 5, 'PR#', 1, 0, 'C', true);
         $pdf->Cell(25, 5, 'PO#', 1, 0, 'C', true);
-        $pdf->Cell(30, 5, 'Purpose', 1, 0, 'C', true);
+        $pdf->Cell(30, 5, 'Processedby', 1, 0, 'C', true);
         $pdf->Cell(30, 5, 'Status', 1, 0, 'C', true);
         // $pdf->Cell(18, 5, 'Status', 1, 0, 'C', true);
         $pdf->Cell(25, 5, 'Created', 1, 0, 'C', true);
