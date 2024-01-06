@@ -208,7 +208,7 @@
                                             @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'completed')
                                                 <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
                                             @endif
-                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-po="{{ $document['po'] }}" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                             {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                         </span>
                                     </td>
@@ -456,10 +456,14 @@
                     const baseUrls = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                     var docPath = $(this).data("document-id");
                     var id = parseInt($(this).data("id"));
+                    var pr = parseInt($(this).data("pr"));
+                    var po = parseInt($(this).data("po"));
                     var trkId = $(this).data("trk");
                     var purpose = $(this).data("purpose");
                     var stats = $(this).data("stats")
 
+                    $('.pr').val(pr)
+                    $('.pr').attr('readonly', true)
                     var from = $(this).data('from')
                     // alert(from)
                     if(trkId == '' && from != 1){

@@ -62,6 +62,8 @@ class RequestedDocumentController extends Controller
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
                 'requestor' => $document->requestor,
+                'pr' => $document->pr,
+                'po' => $document->po,
                 'requestor_user_id' => $document->requestor_user,
                 'purpose' => $document->purpose,
                 'documents' => $document->documents,
