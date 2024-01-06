@@ -479,6 +479,8 @@
                     var trkId = $(this).data("trk");
                     var purpose = $(this).data("purpose");
                     var stats = $(this).data("stats")
+                    var pr = $(this).data("pr")
+                    var po = $(this).data("po")
                     if(trkId == ''){
                         trkId = 'Pending Approval'
                         $('#btn-approved').css({'display':'block'})
@@ -492,6 +494,8 @@
                     $('#doc-id').val(id)
                     $('#trkNo').html(trkId)
                     $('.event-notes-open').val(purpose)
+                    $('.pr').va(pr)
+                    $('.po').va(po)
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
                     $('.pr').attr('readonly',true)
