@@ -95,10 +95,12 @@
                 <div class="dropdown float-end">
                     <input type="text" id="search-input" class="" placeholder="Search"
                         style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                        {{ Auth::user() }}
-                        <a id="new-request" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New Request">
-                            <i class="mdi mdi-plus"></i>
-                        </a>
+                        {{-- {{ Auth::user() }} --}}
+                        @if (Auth::user()->assigned === 'viewing')
+                            <a id="new-request" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New Request">
+                                <i class="mdi mdi-plus"></i>
+                            </a>
+                        @endif
                     {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
