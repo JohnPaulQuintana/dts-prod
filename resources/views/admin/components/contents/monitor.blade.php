@@ -216,8 +216,8 @@
                                     @if ($document['status'] == 'completed')
                                     <a class="ri-refresh-fill text-white font-size-18 btn btn-info p-2 repro-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-process documents"></a>
                                     @endif
-                                    {{ $document }}
-                                    <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                    {{-- {{ $document }} --}}
+                                    <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                 </td>
                             </tr>
                             @endforeach
