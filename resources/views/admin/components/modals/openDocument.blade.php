@@ -38,6 +38,9 @@
                                                
                                                 <label for="pr" class="text-center pr-text">Purchased Request</label>
                                                 <input type="text" name="pr" value="" class="form-control text-center mb-2 pr" placeholder="Enter your purchased request">
+                                                
+                                                <label for="po" class="text-center po-text">Purchased Request</label>
+                                                <input type="text" name="po" value="" class="form-control text-center mb-2 po" placeholder="Enter your purchased order">
                                                 <label for="amount" class="text-center text-danger reason-text">give them a reason's why this documents archived!</label>
                                                 <textarea class="form-control text-center reason" rows="3" type="text"
                                                     name="reason" id="event-notes" value="" placeholder="This section is for giving them a valid reason for being archived there documents optional"></textarea>

@@ -463,7 +463,9 @@
                     var stats = $(this).data("stats")
 
                     $('.pr').val(pr)
+                    $('.po').val(po)
                     $('.pr').attr('readonly', true)
+                    $('.po').attr('readonly', true)
                     var from = $(this).data('from')
                     // alert(from)
                     if(trkId == '' && from != 1){
