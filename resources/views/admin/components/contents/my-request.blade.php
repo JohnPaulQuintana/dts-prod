@@ -466,7 +466,7 @@
                     $('.po').val(po)
                     $('.pr').attr('readonly', true)
                     $('.po').attr('readonly', true)
-                    $('#btn-reprocess').hide()
+                    $('.btn-reprocess').hide()
                     var from = $(this).data('from')
                     // alert(from)
                     if(trkId == '' && from != 1){
