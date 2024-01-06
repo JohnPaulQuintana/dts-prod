@@ -216,11 +216,12 @@
             var userId = JSON.parse(userJson);
 
                 
-                if(userId == dataID.user_id){
+                if(userId == dataID.user_id || userId == 'all'){
                     getNotification();
                     // Reload the page when the event is received
                     window.location.reload();
                 }
+                
                 console.log(userId,dataID)
                 // Reload the page when the event is received
                 // window.location.reload();

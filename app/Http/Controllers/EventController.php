@@ -33,7 +33,7 @@ class EventController extends Controller
  
          // Convert the notification to JSON
          $notificationJson = json_encode($notification);
-         event(new NotifyEvent('departments sending a documents'));
+         event(new NotifyEvent(['user_id' => 'all', 'refresh' => true]));
          // Redirect back with a success message and the inserted products
          return response()->json(['notification'=>$notificationJson], 200);
     }
@@ -54,7 +54,7 @@ class EventController extends Controller
  
          // Convert the notification to JSON
          $notificationJson = json_encode($notification);
-         event(new NotifyEvent('departments sending a documents'));
+         event(new NotifyEvent(['user_id' => 'all', 'refresh' => true]));
          // Redirect back with a success message and the inserted products
          return response()->json(['notification'=>$notificationJson], 200);
     }
@@ -110,7 +110,7 @@ class EventController extends Controller
     
             // Convert the notification to JSON
             $notificationJson = json_encode($notification);
-            event(new NotifyEvent('departments sending a documents'));
+            event(new NotifyEvent(['user_id' => 'all', 'refresh' => true]));
             // Redirect back with a success message and the inserted products
             return back()->with(['notification'=>$notificationJson]);
         }
@@ -149,7 +149,7 @@ class EventController extends Controller
     
             // Convert the notification to JSON
             $notificationJson = json_encode($notification);
-            event(new NotifyEvent('departments sending a documents'));
+            event(new NotifyEvent(['user_id' => 'all', 'refresh' => true]));
             // Redirect back with a success message and the inserted products
             return response()->json(['notification'=>$notificationJson], 200);
         } else {
