@@ -106,16 +106,13 @@
 
                     <div class="dropdown float-end">
                         <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
+                        
+
+                        <a id="trigger-user" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New User">
+                            <i class="mdi mdi-plus"></i>
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a id="trigger-user" href="javascript:void(0);" class="dropdown-item text-success">New User</a>
-                            <!-- item-->
-                            {{-- <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-danger">Back to Office</a> --}}
-                        </div>
+                        
                     </div>
 
                     <h4 class="card-title mb-4">
