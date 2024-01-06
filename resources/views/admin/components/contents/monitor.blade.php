@@ -441,7 +441,7 @@
                     const baseUrls = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                     var docPath = $(this).data("document-id");
                     var id = parseInt($(this).data("id"));
-                    alert(id)
+                    
                     var trkId = $(this).data("trk");
                     var purpose = $(this).data("purpose");
                     var stats = $(this).data("stats")
@@ -507,6 +507,7 @@
                         success: function(response) {
                             // Resolve the promise with the response
                            console.log(response)
+                           window.location.reload()
                         },
                         error: function(xhr, status, error) {
                             // Reject the promise with an error
