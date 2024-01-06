@@ -459,6 +459,7 @@
                     $('#trkNo').html(trkId)
                     $('.event-notes-open').val(purpose)
                     $('#btn-reprocess').hide()
+                    $('#btn-arc').show()
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
                     switch (stats) {
