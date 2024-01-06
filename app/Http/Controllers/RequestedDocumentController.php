@@ -337,6 +337,7 @@ class RequestedDocumentController extends Controller
                 'scanned' => $document->scanned,
                 'current_location' => $document->current_location,
                 'pr' => $document->pr,
+                'po' => $document->po,
                 'requestor' => $document->requestor,
                 'requestor_user_id' => $document->requestor_user,
                 'purpose' => $document->purpose,

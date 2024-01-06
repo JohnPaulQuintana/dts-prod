@@ -203,7 +203,7 @@
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 
-                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-po="{{ $document['po'] }}" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                                 {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                             </span>
                                         </td>
@@ -375,6 +375,7 @@
                         var amount = $(this).data("amount");
                         var stats = $(this).data('stat')
                         var pr = $(this).data('pr')
+                        var po = $(this).data('po')
                         // alert(pr)
                         if(trkId == ''){
                             trkId = 'Pending Approval'
@@ -385,6 +386,9 @@
 
                         if(pr !== ''){
                             $('.pr').val(pr).attr('readonly', true)
+                        }
+                        if(po !== ''){
+                            $('.po').val(po).attr('readonly', true)
                         }
                          // Construct the full URL to the document
                         var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
