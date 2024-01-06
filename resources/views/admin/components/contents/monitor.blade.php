@@ -469,6 +469,7 @@
                             $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                             break;
                         case 'archived':
+                            $('#btn-arc').hide()
                             $('#btn-reprocess').show()
                             $('.status-badge').html(` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
                             break;
