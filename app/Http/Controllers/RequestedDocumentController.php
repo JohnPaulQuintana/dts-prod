@@ -136,6 +136,8 @@ class RequestedDocumentController extends Controller
             $formattedDocument = [
                 'document_id' => $document->id,
                 'trk_id' => $document->trk_id,
+                'pr' => $document->pr,
+                'po' => $document->po,
                 'requestor' => $document->requestor,
                 'requestor_user_id' => $document->requestor_user,
                 'purpose' => $document->purpose,

@@ -235,7 +235,7 @@
                                             @if ($document['status'] !== 'pending' && $document['status'] !== 'archived' && $document['status'] !== 'completed')
                                                 <a class="ri-barcode-line text-white font-size-18 btn btn-dark p-2 barcode-document-btn" data-trk="{{ $document['trk_id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Print Barcode"></a>
                                             @endif
-                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-my="mydocs" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                            <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-po="{{ $document['po'] }}" data-my="mydocs" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                             {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                         </span>
                                     </td>
