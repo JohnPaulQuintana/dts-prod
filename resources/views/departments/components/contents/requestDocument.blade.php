@@ -734,7 +734,7 @@
                     backdrop: 'static',
                     keyboard: false
                 })
-                $('.btn-reprocess').hide()
+                
                 $('#open-document-modal').modal('show')
                 const baseUrls =
                     `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;

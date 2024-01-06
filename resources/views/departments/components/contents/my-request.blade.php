@@ -481,6 +481,8 @@
                     var stats = $(this).data("stats")
                     var pr = $(this).data("pr")
                     var po = $(this).data("po")
+
+                    $('.btn-reprocess').hide()
                     if(trkId == ''){
                         trkId = 'Pending Approval'
                         $('#btn-approved').css({'display':'block'})
