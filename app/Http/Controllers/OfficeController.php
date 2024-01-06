@@ -11,7 +11,7 @@ use App\Helpers\TextAbbreviator;
 // use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
-
+use Illuminate\Validation\ValidationException;
 class OfficeController extends Controller
 {
     public function showOffices(){
@@ -94,19 +94,31 @@ class OfficeController extends Controller
 
     public function addUsers(Request $request){
         // dd($request);
-        $request->validate([
-            'office_id' => ['required', 'numeric'],
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'middle_name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed'],
-        ]);
+        try {
+            $request->validate([
+                'office_id' => ['required', 'numeric'],
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'type' => ['required', 'string', 'max:255'],
+                'username' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+                'password' => ['required', 'confirmed', 'min:8', 'regex:/[!@#$%^&*(),.?":{}|<>]/'],
+            ]);
+        } catch (ValidationException $e) {
+            $errors = $e->errors();
+
+            $notification = [
+                'status' => 'error',
+                'fields' => $errors,
+                'message' => 'All field is required!',
+            ];
+
+            // Redirect back with a success message and the inserted products
+            return response()->json($notification);
+        }
 
         $user = User::create([
-            'name' => $request->first_name.' '.$request->last_name.' '.$request->middle_name,
+            'name' => $request->first_name.' '.$request->middle_name.' '.$request->last_name,
             'email' => $request->email,
             'username' => $request->username,
             'office_id' => $request->office_id,
@@ -133,5 +145,23 @@ class OfficeController extends Controller
 
         // Redirect back with a success message and the inserted products
         return back()->with('notification', $notificationJson);
+    }
+
+    public function destroy(Request $request){
+       // 1. Retrieve the office by its ID
+        $office_id = $request->input('id');
+        $office = Office::find($office_id);
+
+        // 2. Check if the office exists
+        if (!$office) {
+            // Handle the case where the office doesn't exist
+            return response()->json(['message' => 'Office not found'], 404);
+        }
+
+        // 3. Delete the office
+        $office->delete();
+
+        // Optionally, you can return a response indicating success
+        return response()->json(['message' => 'Office archived successfully']);
     }
 }

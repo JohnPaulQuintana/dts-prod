@@ -58,6 +58,26 @@
             height: 65px;
             /* border: 1px solid red; */
         }
+
+        #password-container {
+            /* background: red; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #password-input {
+            flex-grow: 1;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        #generate-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
 @endsection
 
@@ -94,7 +114,7 @@
                             <!-- item-->
                             <a id="trigger-user" href="javascript:void(0);" class="dropdown-item text-success">New User</a>
                             <!-- item-->
-                            <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-danger">Back to Office</a>
+                            {{-- <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-danger">Back to Office</a> --}}
                         </div>
                     </div>
 
@@ -249,8 +269,11 @@
 
         {{-- custom js --}}
         <script>
+             
             $(document).ready(function(){
 
+                // alert('ito')
+                console.log('connected')
                 // search functionality
                 // Handle input changes in real-time
                 $('#search-input').on('input', function () {
@@ -281,6 +304,7 @@
                 });
 
                 $('#trigger-user').on('click',function(){
+                    // alert('yes')
                         // var csrfToken = $('meta[name="csrf-token"]').attr('content');
                         // $.ajax({
                         //     type: "POST",
@@ -300,6 +324,7 @@
                         // });
 
                     $('#new-user').modal('show')
+                    
                    // Create a URL object from the current window's URL
                     const currentUrl = new URL(window.location.href);
 
@@ -309,13 +334,15 @@
                     $('#office_id_user').val(officeId)
                 })
 
+               
+
                 // archived user account
                 $('.archived').on('click',function(){
                     var id = $(this).data('user-id')
                     // alert($id)
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "You won't to Archived this user!",
+                        text: "You want to Archived this user!",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -346,63 +373,136 @@
                     })
                 })
 
+                function generatePassword() {
+                    const length = 12; // Adjust the length of the password as needed
+
+                    // Define character sets
+                    const alphaNumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                    const specialChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+                    // Initialize password with at least one special character
+                    let password = specialChars.charAt(Math.floor(Math.random() * specialChars.length));
+
+                    // Fill the rest of the password with alphanumeric characters
+                    for (let i = 1; i < length; i++) {
+                        const randomIndex = Math.floor(Math.random() * alphaNumeric.length);
+                        password += alphaNumeric.charAt(randomIndex);
+                    }
+
+                    // Shuffle the characters to mix in the special character
+                    password = password.split('').sort(function () { return 0.5 - Math.random() }).join('');
+
+                    $('#password-input').val(password);
+                }
+
                 // forgot user account
                 $('.forgot-password').on('click',function(){
                     var id = $(this).data('user-id')
+                    showPasswordPrompt(id);
                     // alert($id)
+                    // Swal.fire({
+                    //     title: 'Are you sure?',
+                    //     text: "Your attempting to reset the password of this account!",
+                    //     icon: 'warning',
+                    //     input: "text",
+                    //     inputLabel: "Enter a new Password",
+                    //     inputPlaceholder: "Enter your new password",
+                    //     inputAttributes: {
+                    //         maxlength: "10",
+                    //         autocapitalize: "off",
+                    //         autocorrect: "off"
+                    //     },
+                    //     showCancelButton: true,
+                    //     confirmButtonColor: '#3085d6',
+                    //     cancelButtonColor: '#d33',
+                    //     confirmButtonText: 'Yes, Forgot!',
+                    //     inputValidator: (value) => {
+                    //         if (!value) {
+                    //             return 'New Password is required!';
+                    //         }
+                    //         if (value.length < 8) {
+                    //             return 'Password must be at least 8 characters long!';
+                    //         }
+                    //         // Check if the password contains at least one special character
+                    //         if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                    //             return 'Password must contain at least one special character!';
+                    //         }
+                    //     }
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         let newPassword = result.value;
+
+                    //         // If the user didn't enter a password, generate a random one
+                    //         if (!newPassword) {
+                    //             newPassword = generatePassword(12); // You can adjust the length as needed
+                    //         }
+
+                    //         sendRequests(id, newPassword, 'forgot-password')
+                    //             .then(function (response) {
+                    //                 console.log(response); // Log the success message
+                    //                 Swal.fire(
+                    //                     'Forgot User Password!',
+                    //                     response.message,
+                    //                     response.status
+                    //                 );
+
+                    //                 // You can perform other actions here based on the response
+                    //             })
+                    //             .catch(function (error) {
+                    //                 console.error(error); // Handle errors here
+                    //             });
+                    //     }
+                    // });
+
+                })
+                $(document).on('click', '#generate-button', function () {
+                    generatePassword();
+                });
+
+                function showPasswordPrompt(id) {
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "Your attempting to reset the password of this account!",
-                        icon: 'warning', 
-                        input: "text",
-                        inputLabel: "Enter a new Password",
-                        inputPlaceholder: "Enter your new password",
-                        inputAttributes: {
-                            maxlength: "10",
-                            autocapitalize: "off",
-                            autocorrect: "off"
-                        },
+                        text: "You are attempting to reset the password of this account!",
+                        icon: 'warning',
+                        html:
+                            `<div id="password-container">
+                                <input type="text" id="password-input" class="swal2-input text-center" placeholder="Enter your new password" maxlength="12" autocapitalize="off" autocorrect="off">
+                                <button type="button" id="generate-button" class="btn btn-info">Generate</button>
+                            </div>`,
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, Forgot!',
-                        inputValidator: (value) => {
-                            if (!value) {
-                                return 'New Password is required!';
-                            }
-                            if (value.length < 8) {
-                                return 'Password must be at least 8 characters long!';
-                            }
-                            // Check if the password contains at least one special character
-                            if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-                                return 'Password must contain at least one special character!';
+                        confirmButtonText: 'Yes, Reset!',
+                        preConfirm: () => {
+                            const newPassword = $('#password-input').val();
+                            if (!newPassword) {
+                                Swal.showValidationMessage('New Password is required!');
+                            } else if (newPassword.length < 8) {
+                                Swal.showValidationMessage('Password must be at least 8 characters long!');
+                            } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(newPassword)) {
+                                Swal.showValidationMessage('Password must contain at least one special character!');
                             }
                         }
-                        }).then((result) => {
+                    }).then((result) => {
                         if (result.isConfirmed) {
-                            const newPassword = result.value;
-                            sendRequests(id,newPassword,'forgot-password')
-                            .then(function (response) {
-                                console.log(response); // Log the success message
-                                Swal.fire(
-                                    'Forgot User Password!',
-                                    response.message,
-                                    response.status
-                                )
-                                
-                                // You can perform other actions here based on the response
-                            })
-                            .catch(function (error) {
-                                console.error(error); // Handle errors here
-                            });
-                            // Swal.fire(
-                            // 'Deleted!',
-                            // 'Your file has been deleted.',
-                            // 'success'
-                            // )
+                            const newPassword = $('#password-input').val();
+                            sendRequests(id, newPassword, 'reset-password')
+                                .then(function (response) {
+                                    console.log(response); // Log the success message
+                                    Swal.fire(
+                                        'Password Reset!',
+                                        response.message,
+                                        response.status
+                                    );
+
+                                    // You can perform other actions here based on the response
+                                })
+                                .catch(function (error) {
+                                    console.error(error); // Handle errors here
+                                });
                         }
-                    })
-                })
+                    });
+                }
 
                 // activate user account
                 $('.activate-account').on('click',function(){
@@ -466,9 +566,11 @@
             })
         </script>
         {{-- // notification --}}
-    @if (session()->has('notification'))
+    {{-- @if (session()->has('notification'))
     <script>
+        
         $(document).ready(function() {
+           
             // Set Toastr options
             toastr.options = {
                 "closeButton": false,
@@ -489,9 +591,13 @@
             };
             var notificationJson = {!! json_encode(session('notification')) !!};
             var notification = JSON.parse(notificationJson);
-            console.log(notification)
+            console.log(notification.fields.email)
             toastr[notification.status](notification.message);
+
+            if(notification.fields){
+
+            }
         });
-    </script>
+    </script> --}}
     @endif
 @endsection

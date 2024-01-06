@@ -22,6 +22,8 @@ return new class extends Migration
             $table->bigInteger('recieved_offices');//purpose
             $table->string('documents');//purpose
             $table->string('status');
+            $table->string('pr')->nullable();
+            $table->string('po')->nullable();
             $table->timestamps();
         });
     }

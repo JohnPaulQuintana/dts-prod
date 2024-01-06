@@ -80,17 +80,9 @@
 
                 <div class="dropdown float-end">
                     <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                    <a class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="mdi mdi-dots-vertical"></i>
+                    <a id="new-request" class="dropdown-toggle btn btn-success btn-sm new-request" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="Request a Documents">
+                        <i class="mdi mdi-plus"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <!-- item-->
-                        <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success new-request">Request a Documents</a>
-                        <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
-                        <a href="{{ route('reportsPdf') }}" class="dropdown-item text-danger">Report</a>
-                        <!-- item-->
-                        <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
-                    </div>
                 </div>
 
                 <h4 class="card-title mb-4">
@@ -100,7 +92,7 @@
                 <div class="mb-2">
                     <a class="filter-button text-white font-size-13 btn btn-info p-1" data-filter="all"  data-bs-toggle="tooltip" data-bs-placement="top" title="All Document">All Documents</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
-                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Discontinued Document">Discontinued</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed Document">Completed</a>
                 </div>
@@ -369,7 +361,8 @@
                     backdrop: 'static',
                     keyboard: false
                 });
-
+                $('.error-document').hide()
+                $('.error-text').hide()
                 $('#new-request-modal').modal('show')
                 var departmentJson = {!! json_encode($departments)!!};
                 console.log(departmentJson)
@@ -394,8 +387,57 @@
                 // var trkId = $(this).data("trk-id");
                 $('#department-select').html(html)
 
+                // send request docs
+                $('.send-request-btn').on('click', function(){
+                    // Create FormData object
+                     var formData = new FormData($('#request-form')[0]);
+                    $.ajax({
+                        url: `/documents`, // Replace with your route URL
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                           console.log(response.fields)
+                           if(response.status === 'error'){
+                                if(response.fields.document){
+                                    $('.error-document').show()
+                                    $("#image").addClass('border border-danger') 
+                                }else{
+                                    $('.error-document').hide()
+                                    $("#image").removeClass('border border-danger')
+                                }
+                                if(response.fields.request_text){
+                                    $('.error-text').show()
+                                    $("#textarea").addClass('border border-danger')
+                                }else{
+                                    $('.error-text').hide()
+                                    $("#textarea").removeClass('border border-danger')
+                                }
+                                
+                           }else{
+                       
+                            $('.error-document').hide()
+                            $('.error-text').hide()
+                            $("#textarea").removeClass('border border-danger')
+                            $("#image").removeClass('border border-danger')
+                            window.location.reload(); // Reload the page
+                           }
+                           
+                        },
+                        error: function(xhr, status, error) {
+                            // Reject the promise with an error
+                            console.log(error);
+                        }
+                    });
+                })
                 // Reset the form when clicking the "x" button
                 $('#close-modal').on('click', function () {
+                    $("#textarea").removeClass('border border-danger')
+                    $("#image").removeClass('border border-danger')
                     $('#request-form')[0].reset();
                     $("#image").val(""); // Clear the file input
                     $("#image-preview").hide(); // Hide the image preview container

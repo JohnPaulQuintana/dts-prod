@@ -78,7 +78,7 @@
         <div class="card">
             <div class="card-body">
 
-                <div class="dropdown float-end">
+                {{-- <div class="dropdown float-end">
                     <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                     <a class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
@@ -91,7 +91,7 @@
                         <!-- item-->
                         <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                     </div>
-                </div>
+                </div> --}}
 
                 <h4 class="card-title mb-4">
                     <span class="me-2">Document's List</span>
@@ -100,7 +100,7 @@
                 <div class="mb-2">
                     <a class="filter-button text-white font-size-13 btn btn-info p-1" data-filter="all"  data-bs-toggle="tooltip" data-bs-placement="top" title="All Document">All Documents</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
-                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Discontinued Document">Discontinued</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed Document">Completed</a>
                 </div>
@@ -116,7 +116,7 @@
                                 <th>PR</th>
                                 <th>PO</th>
                                 {{-- <th>Location</th> --}}
-                                <th>Date Created</th>
+                                {{-- <th>Date Created</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead><!-- end thead -->
@@ -209,9 +209,9 @@
                                     @endswitch
                                     
                                 </td>
-                                <td>{{ $document['pr'] }}</td>
-                                <td>{{ $document['po'] }}</td>
-                                <td><b>{{ $document['created_at'] }}</b></td>
+                                <td><span class="{{ $document['pr'] ? 'bg-success' : 'badge p-2 bg-danger' }}">{{ $document['pr'] ? $document['pr'] : 'not-available' }}</span></td>
+                                <td><span class="{{ $document['po'] ? 'bg-success' : 'badge p-2 bg-danger' }}">{{ $document['po'] ? $document['po'] : 'not-available' }}</span></td>
+                                {{-- <td><b>{{ $document['created_at'] }}</b></td> --}}
                                 <td>
                                     @if ($document['status'] == 'completed')
                                     <a class="ri-refresh-fill text-white font-size-18 btn btn-info p-2 repro-document-btn" data-from="{{ $document['requestor_user_id']  }}" data-stats="{{ $document['status'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-process documents"></a>
@@ -448,7 +448,7 @@
                     
                         // alert('ginagawa else')
                         $('#btn-approved').css({'display':'none'})
-                        $('#btn-arc').css('display', 'none');
+                        
                      // Construct the full URL to the document
                     var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
                     // Set the src attribute of the iframe in the modal
@@ -456,6 +456,7 @@
                     $('#doc-id').val(id)
                     $('#trkNo').html(trkId)
                     $('.event-notes-open').val(purpose)
+                    $('#btn-reprocess').hide()
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
                     switch (stats) {
@@ -466,6 +467,7 @@
                             $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                             break;
                         case 'archived':
+                            $('#btn-reprocess').show()
                             $('.status-badge').html(` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
                             break;
                         case 'completed':
@@ -482,7 +484,7 @@
                     $('.pr').hide();
                     $('.pr-text').hide();
                     $('.reason-text').hide();
-                    $('#btn-reprocess').hide()
+                    
                     $('#open-document-modal').modal('show')
 
                    

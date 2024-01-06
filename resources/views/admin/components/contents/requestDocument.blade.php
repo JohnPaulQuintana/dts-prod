@@ -78,20 +78,20 @@
             <div class="card">
                 <div class="card-body">
 
-                    <div class="dropdown float-end">
+                    {{-- <div class="dropdown float-end">
                         <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
                         <a class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            {{-- <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success new-request">Request a Documents</a> --}}
+                            
                             <a  href="{{ route('administrator.dashboard.offices') }}" class="dropdown-item text-info">Go to Office</a>
                             <a href="{{ route('reportsPdf') }}" class="dropdown-item text-danger">Report</a>
                             <!-- item-->
                             <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <h4 class="card-title mb-4">
                         <span class="me-2">Docement's List</span>
@@ -100,7 +100,7 @@
                     <div class="mb-2">
                         <a class="filter-button text-white font-size-13 btn btn-info p-1" data-filter="all"  data-bs-toggle="tooltip" data-bs-placement="top" title="All Document">All Documents</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
-                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Discontinued Document">Discontinued</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed Document">Completed</a>
                     </div>
@@ -115,7 +115,7 @@
                                     <th>Purpose</th>
                                     <th>Office (Requestor)</th>
                                     <th>Status</th>
-                                    <th>Date Created</th>
+                                    {{-- <th>Date Created</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead><!-- end thead -->
@@ -195,7 +195,7 @@
                                             @endswitch
                                             
                                         </td>
-                                        <td><b>{{ $document['created_at'] }}</b></td>
+                                        {{-- <td><b>{{ $document['created_at'] }}</b></td> --}}
                                         <td width="50px">
                                             <span class="">
                                                 
@@ -203,7 +203,7 @@
                                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="{{ $document['current_location'] }}" data-scanned-id="{{ $document['scanned'] }}" data-requestor-id="{{ $document['requestor_user_id'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-office-id="{{ $document['corporate_office']['office_id'] }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                                 @endif
                                                 
-                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                                <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                                 {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
                                             </span>
                                         </td>
@@ -212,6 +212,11 @@
                                 
                             </tbody><!-- end tbody -->
                         </table> <!-- end table -->
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <div>
+                            {{-- {{ $documents->links('pagination::simple-bootstrap-5') }} --}}
+                        </div>
                     </div>
                 </div><!-- end card -->
             </div><!-- end card -->
@@ -369,11 +374,17 @@
                         var purpose = $(this).data("purpose");
                         var amount = $(this).data("amount");
                         var stats = $(this).data('stat')
+                        var pr = $(this).data('pr')
+                        // alert(pr)
                         if(trkId == ''){
                             trkId = 'Pending Approval'
                             $('#btn-approved').css({'display':'block'})
                         }else{
                             $('#btn-approved').css({'display':'none'})
+                        }
+
+                        if(pr !== ''){
+                            $('.pr').val(pr).attr('readonly', true)
                         }
                          // Construct the full URL to the document
                         var fullDocUrl = `${baseUrls}/storage/documents/` + docPath;
@@ -390,6 +401,7 @@
                             $('#btn-reprocess').hide()
                             $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)
                         case 'forwarded':
+                            $('#btn-approved').show()
                             $('#btn-reprocess').hide()
                             $('.status-badge').html(` <h5 class="badge bg-warning p-2">${stats}</h5>`)
                             break;
@@ -440,7 +452,7 @@
                             departementUsersHtml += `
                                 <div class="card p-2 border border-success" style="max-width: 250px;margin:10px auto;">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="radio" role="switch" id="flexSwitchCheckDefault" required>
                                         <label class="form-check-label" for="flexSwitchCheckDefault">${user.user_name}</label>
                                     </div>
                                 </div>`;
@@ -456,13 +468,13 @@
                     var trkId = $(this).data('trk')//trk_id
                     var scannedId = $(this).data('scanned-id') //scanned_id
                     var documentId = parseInt($(this).data('id'))//documents id
-                    // var data-current-loc="{{ $document['current_location'] }}"
+                   
                     var currentLoc = $(this).data('current-loc') //scanned_id
                     var document = $(this).data('document-id')//documents
                     var officeId = $(this).data('office-id')//documents
                     var requestor = $(this).data('requestor-id')//documents
 
-                    console.log(trkId, documentId, document)
+                    // console.log(trkId, documentId, document)
 
                     $('.trkNo').text(trkId)
                     $('.timestamp-placeholder').text(document)
@@ -511,7 +523,7 @@
 
                         switch (scannedId) {
                     case 1:
-                        alert('yes')
+                        // alert('yes')
                         $('.rdi').val(documentId)
                        $('.loc').val(currentLoc)
                         $('#scanned-barcode-modal').modal('show')

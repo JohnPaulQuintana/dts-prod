@@ -8,7 +8,8 @@
     <meta content="Themesdesign" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
-
+ <!-- Sweet Alert-->
+ <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     {{-- toast css --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/toastr/build/toastr.min.css') }}">
 
@@ -79,16 +80,12 @@
 
                     <div class="dropdown float-end">
                         <input type="text" id="search-input" class="" placeholder="Search" style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
-                        </a>
+                        
 
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a id="trigger-office" href="javascript:void(0);" class="dropdown-item text-success">New Office</a>
-                            <!-- item-->
-                            <a  href="{{ route('administrator.dashboard') }}" class="dropdown-item text-danger">Back to Dashboard</a>
-                        </div>
+                        <a id="trigger-office" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New Office">
+                            <i class="mdi mdi-plus"></i>
+                        </a>
+                        
                     </div>
 
                     <h4 class="card-title mb-4">Office List</h4>
@@ -143,6 +140,9 @@
                                             <span class="">
                                                 <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
                                             </span>
+                                            <span class="">
+                                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -194,14 +194,18 @@
         <script src="{{ asset('assets/libs/toastr/build/toastr.min.js') }}"></script>
         <!-- toastr init -->
         <script src="{{ asset('assets/js/pages/toastr.init.js') }}"></script>
-
+        <!-- Sweet Alerts js -->
+        <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
         <!-- App js -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
 
         {{-- custom js --}}
         <script>
             $(document).ready(function(){
-
+                // console.log('ito')
+                // var errorJson = {!! json_encode(session('errors')) !!};
+                // var notification2 = JSON.parse(errorJson);
+                // console.log(notification2)
                 // search functionality
                 // Handle input changes in real-time
                 $('#search-input').on('input', function () {
@@ -231,6 +235,45 @@
                     });
                 });
 
+                // archived office
+                $('.archived-offices-btn').on('click', function(){
+                    var officeID = $(this).data('office-id')
+                    // alert(officeID)
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You are attempting to archived the office!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Archived!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                            $.ajax({
+                                type: "POST",
+                                url: "/archived-office",
+                                headers: {
+                                    "X-CSRF-TOKEN": csrfToken
+                                },
+                                data: { 'id': officeID},
+                                success: function (response) {
+                                    console.log(response)
+                                    Swal.fire(
+                                        'Successfully Archived!',
+                                        response.message,
+                                        'success'
+                                    )
+                                    window.location.href = '/offices'
+                                },
+                                error: function (err) {
+                                   console.log(err); // Reject the Promise with the error
+                                }
+                            });
+                        }
+                    });
+                })
+
                 $('#trigger-office').on('click',function(){
                     $('#new-office').modal('show')
                     // var trkId = $(this).data("trk-id");
@@ -240,31 +283,31 @@
         </script>
         {{-- // notification --}}
     @if (session()->has('notification'))
-    <script>
-        $(document).ready(function() {
-            // Set Toastr options
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": false,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": 300,
-                "hideDuration": 1000,
-                "timeOut": 5000,
-                "extendedTimeOut": 1000,
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
-            var notificationJson = {!! json_encode(session('notification')) !!};
-            var notification = JSON.parse(notificationJson);
-            console.log(notification)
-            toastr[notification.status](notification.message);
-        });
-    </script>
+        <script>
+            $(document).ready(function() {
+                // Set Toastr options
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": 300,
+                    "hideDuration": 1000,
+                    "timeOut": 5000,
+                    "extendedTimeOut": 1000,
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+                var notificationJson = {!! json_encode(session('notification')) !!};
+                var notification = JSON.parse(notificationJson);
+                console.log(notification)
+                toastr[notification.status](notification.message);
+            });
+        </script>
     @endif
 @endsection

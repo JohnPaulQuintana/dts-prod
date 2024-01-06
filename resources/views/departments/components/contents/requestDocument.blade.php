@@ -101,15 +101,11 @@
                     <div class="dropdown float-end">
                         <input type="text" id="search-input" class="" placeholder="Search"
                             style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
+
+                        <a id="new-request" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New Request">
+                            <i class="mdi mdi-plus"></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">New
-                                Request</a>
-                        </div>
+
                     </div>
                     {{-- {{ Auth::user() }} --}}
                     <h4 class="card-title mb-4">Document's List</h4>
@@ -120,7 +116,7 @@
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
                         <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Discontinued Document">Discontinued</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed"
@@ -128,7 +124,6 @@
                     </div>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-
                         <table class="table table-centered mb-0 align-middle table-hover table-nowrap req-table">
                             <thead class="table-light">
                                 <tr>
@@ -138,7 +133,7 @@
                                     <th>Purpose</th>
                                     <th>Received Offices</th>
                                     <th>Status</th>
-                                    <th>Date Created</th>
+                                    {{-- <th>Date Created</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead><!-- end thead -->
@@ -292,16 +287,17 @@
                                                 @endswitch
 
                                             </td>
-                                            <td><b>{{ $document['created_at'] }}</b></td>
+                                            {{-- <td><b>{{ $document['created_at'] }}</b></td> --}}
                                             <td width="50px">
                                                 {{-- problem on this buttons --}}
-                                                {{-- {{ Auth::user()->assigned }} --}}
+                                                
                                                 <span class="">
-                                                    @if (Auth::user()->assigned != 'viewing' &&
+                                                    @if (Auth::user()->assigned !== 'viewing' &&
                                                             $document['type'] !== 'my document' &&
                                                             $document['status'] !== 'pending' &&
+                                                            $document['status'] !== 'archived' &&
                                                             $document['status'] !== 'completed' &&
-                                                            Auth::user()->id === end($document['destination']))
+                                                            Auth::user()->id == end($document['destination']))
                                                         {{-- data-scanned-id="{{ $document['scanned'] }}" --}}
                                                         <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn"
                                                             data-from="{{ $document['from'] }}"
@@ -490,7 +486,8 @@
                     backdrop: 'static',
                     keyboard: false
                 });
-
+                $('.error-document').hide()
+                $('.error-text').hide()
                 $('#new-request-modal').modal('show')
                 var departmentJson = {!! json_encode($departments) !!};
                 console.log(departmentJson)
@@ -518,8 +515,56 @@
                 $('#department-select').html(html) //new added
 
 
+                $('.send-request-btn').on('click', function(){
+                    // Create FormData object
+                     var formData = new FormData($('#request-form')[0]);
+                    $.ajax({
+                        url: `/documents`, // Replace with your route URL
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                           console.log(response.fields)
+                           if(response.status === 'error'){
+                                if(response.fields.document){
+                                    $('.error-document').show()
+                                    $("#image").addClass('border border-danger') 
+                                }else{
+                                    $('.error-document').hide()
+                                    $("#image").removeClass('border border-danger')
+                                }
+                                if(response.fields.request_text){
+                                    $('.error-text').show()
+                                    $("#textarea").addClass('border border-danger')
+                                }else{
+                                    $('.error-text').hide()
+                                    $("#textarea").removeClass('border border-danger')
+                                }
+                                
+                           }else{
+                            $('.error-document').hide()
+                            $('.error-text').hide()
+                            $("#textarea").removeClass('border border-danger')
+                            $("#image").removeClass('border border-danger')
+                            window.location.reload(); // Reload the page
+                           }
+                           
+                        },
+                        error: function(xhr, status, error) {
+                            // Reject the promise with an error
+                            console.log(error);
+                        }
+                    });
+                })
+
                 // Reset the form when clicking the "x" button
                 $('#close-modal').on('click', function() {
+                    $("#textarea").removeClass('border border-danger')
+                    $("#image").removeClass('border border-danger')
                     $('#request-form')[0].reset();
                     $("#image").val(""); // Clear the file input
                     $("#image-preview").hide(); // Hide the image preview container
@@ -715,7 +760,7 @@
                     // alert('yes')
                     $('.po').prop('readonly', false);
                 }
-
+                $('.btn-reprocess').hide();
                 switch (stats) {
                     case 'forwarded':
                         $('.status-badge').html(
@@ -726,6 +771,7 @@
                             ` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                         break;
                     case 'archived':
+                        $('.btn-reprocess').show();
                         $('.status-badge').html(
                             ` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
                         break;
@@ -834,7 +880,7 @@
                             departementUsersHtml += `
                                 <div class="card p-2 border border-success" style="max-width: 250px;margin:10px auto;">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                        <input class="form-check-input" value='${user.user_id} | ${user.user_office_id} | ${user.user_name}' name="department_staff" type="radio" role="switch" id="flexSwitchCheckDefault" required>
                                         <label class="form-check-label" for="flexSwitchCheckDefault">${user.user_name}</label>
                                     </div>
                                 </div>`;

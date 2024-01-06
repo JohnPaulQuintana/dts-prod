@@ -210,10 +210,20 @@
 
             var channel = pusher.subscribe('update-dashboard');
             channel.bind('initialize-dashboard', function(data) {
-            console.log(JSON.stringify(data));
-                getNotification();
+            
+            var dataID = data.data
+            var userJson = {!! json_encode(Auth::user()->id) !!};
+            var userId = JSON.parse(userJson);
+
+                
+                if(userId == dataID.user_id){
+                    getNotification();
+                    // Reload the page when the event is received
+                    window.location.reload();
+                }
+                console.log(userId,dataID)
                 // Reload the page when the event is received
-                window.location.reload();
+                // window.location.reload();
             });
 
             function updateNotif($id, $trk){

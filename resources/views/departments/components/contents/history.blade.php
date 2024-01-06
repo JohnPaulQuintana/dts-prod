@@ -97,7 +97,7 @@
                         <table class="table table-centered mb-0 align-middle table-hover table-nowrap history-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="text-center" colspan="7">History Of Documents</th>
+                                    <th class="text-center" colspan="7">History Of Processed Documents</th>
                                 </tr>
                             </thead><!-- end thead -->
                             <tbody>

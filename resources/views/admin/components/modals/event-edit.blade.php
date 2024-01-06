@@ -58,12 +58,12 @@
                                 <label class="form-label">Category</label>
                                 <select class="form-select" name="category" id="event-category-edit">
                                     <option  selected> --Select-- </option>
-                                    <option value="bg-danger">Danger</option>
-                                    <option value="bg-success">Success</option>
-                                    <option value="bg-primary">Primary</option>
-                                    <option value="bg-info">Info</option>
-                                    <option value="bg-dark">Dark</option>
-                                    <option value="bg-warning">Warning</option>
+                                    <option value="bg-danger">Urgent Notification</option>
+                                    <option value="bg-success">Achievement Unlocked</option>
+                                    <option value="bg-primary">Urgent Attention</option>
+                                    <option value="bg-info">Important Information</option>
+                                    <option value="bg-dark">Strategic Update</option>
+                                    <option value="bg-warning">Advisory Alert</option>
                                 </select>
                                 <div class="invalid-feedback">Please select a valid event
                                     category</div>

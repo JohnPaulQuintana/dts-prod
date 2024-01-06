@@ -2,7 +2,7 @@
 <div class="col-sm-6 col-md-4 col-xl-3">
     <div class="modal fade" id="new-request-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
-            <form action="{{ route('request.documents') }}" class="" method="POST" id="request-form" enctype="multipart/form-data">
+            <form class="" method="POST" id="request-form" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
@@ -34,6 +34,9 @@
                                                         <div class="mb-2 text-center">
                                                             <h4 class="card-title">Upload Documents</h4>
                                                             <input class="form-control" type="file" name="document" accept="image/*" id="image">
+                                                        </div>
+                                                        <div class="text-center error-document">
+                                                            <p class="card-title text-danger">Document is required to make a request!</p>
                                                         </div>
                                                     </div>
 
@@ -70,8 +73,13 @@
 
                                                 <div class="mt-3">
                                                     <h4 class="card-title">Description</h4>
-                                                    <textarea id="textarea" name="request-text" class="form-control" maxlength="225" rows="3" placeholder="This textarea has a limit of 225 chars."></textarea>
+                                                    <textarea id="textarea" name="request_text" class="form-control" maxlength="225" rows="3" placeholder="This textarea has a limit of 225 chars."></textarea>
+                                            
                                                 </div>
+                                                <div class="text-center error-text">
+                                                    <p class="card-title text-danger"> Description is required to make a request!</p>
+                                                </div>
+                                               
 
                                     </div>
                                 </div>
@@ -80,7 +88,7 @@
                     </div>
                     <div class="modal-footer">
                         {{-- <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button> --}}
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Send Request</button>
+                        <button type="button" class="btn btn-primary waves-effect waves-light send-request-btn">Send Request</button>
                     </div>
                 </div><!-- /.modal-content -->
             </form>

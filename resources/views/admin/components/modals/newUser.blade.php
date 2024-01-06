@@ -22,6 +22,9 @@
                                                     <label for="first-name" class="form-label">First Name</label>
                                                     <input type="text" name="first_name" class="form-control" id="first-name">
                                                 </div>
+                                                <div class="error-fname text-center text-danger">
+                                                    <p>First Name is required</p>
+                                                </div>
                                            </div>
                                             
                                            <div class="col-4">
@@ -29,12 +32,16 @@
                                                     <label for="middle-name" class="form-label">Middle Name</label>
                                                     <input type="text" name="middle_name" class="form-control" id="middle-name">
                                                 </div>
+
                                            </div>
 
                                             <div class="col-4">
                                                 <div class="mb-3">
                                                     <label for="last-name" class="form-label">Last Name</label>
                                                     <input type="text" name="last_name" class="form-control" id="last-name">
+                                                </div>
+                                                <div class="error-lname text-center text-danger">
+                                                    <p>Last Name is required</p>
                                                 </div>
                                             </div>
                                             
@@ -57,6 +64,9 @@
                                                         <label for="user-name" class="form-label">Username</label>
                                                         <input type="text" name="username" class="form-control" id="user-name">
                                                     </div>
+                                                    <div class="error-username text-center text-danger">
+                                                        <p>Username is required</p>
+                                                    </div>
                                                 </div>
                                             @else
                                                 <input type="text" name="type" id="" value="{{ $currentOffice[0]->office_type }}" hidden>
@@ -78,6 +88,9 @@
                                                     <label for="email" class="form-label">Email - <span class="text-primary">(for Confirmation of account)</span></label>
                                                     <input type="email" name="email" class="form-control" id="email">
                                                 </div>
+                                                <div class="error-email text-center text-danger">
+                                                    <p>Email is required</p>
+                                                </div>
                                            </div>
                                         </div>
 
@@ -87,6 +100,9 @@
                                                     <label for="password" class="form-label">Password</label>
                                                     <input type="password" name="password" class="form-control" id="password">
                                                 </div>
+                                                <div class="error-password text-center text-danger">
+                                                    <p>Password is required| 8 characters | 1 Special</p>
+                                                </div>
                                            </div>
 
                                             <div class="col-6">
@@ -94,6 +110,9 @@
                                                     <div class="mb-3">
                                                         <label for="confirmed-password" class="form-label">Confirmed Password</label>
                                                         <input type="password" name="password_confirmation" class="form-control" id="confirmed-password">
+                                                    </div>
+                                                    <div class="error-cpassword text-center text-danger">
+                                                        <p>Confirmed is required</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -105,7 +124,7 @@
                         </div> <!-- end row -->
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="text-white font-size-18 p-2 btn btn-success waves-effect" data-bs-toggle="tooltip" data-bs-placement="top" title="Add New Office">Submit</button>
+                        <button type="button" class="text-white font-size-18 p-2 btn btn-success waves-effect adduser2" data-bs-toggle="tooltip" data-bs-placement="top" title="Add New User">Submit</button>
                         {{-- <button type="submit" class="ri-close-line text-white font-size-18 btn btn-danger p-2 waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Reject Documents"></button> --}}
                     </div>
                 </div><!-- /.modal-content -->

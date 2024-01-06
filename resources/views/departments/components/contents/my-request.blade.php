@@ -95,7 +95,10 @@
                 <div class="dropdown float-end">
                     <input type="text" id="search-input" class="" placeholder="Search"
                         style="width: 80%; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
+                        <a id="new-request" class="dropdown-toggle btn btn-success btn-sm" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="New Request">
+                            <i class="mdi mdi-plus"></i>
+                        </a>
+                    {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
                     </a>
@@ -103,7 +106,7 @@
                         <!-- item-->
                         <a id="new-request" href="javascript:void(0);" class="dropdown-item text-success">New
                             Request</a>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <h4 class="card-title mb-4">
@@ -113,7 +116,7 @@
                 <div class="mb-2">
                     <a class="filter-button text-white font-size-13 btn btn-info p-1" data-filter="all"  data-bs-toggle="tooltip" data-bs-placement="top" title="All Document">All Documents</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="approved"  data-bs-toggle="tooltip" data-bs-placement="top" title="On-going Document">On-going</a>
-                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Archieved Document">Archived</a>
+                        <a class="filter-button text-white font-size-13 btn btn-danger p-1" data-filter="archived" data-bs-toggle="tooltip" data-bs-placement="top" title="Discontinued Document">Discontinued</a>
                         <a class="filter-button text-white font-size-13 btn btn-warning p-1" data-filter="pending" data-bs-toggle="tooltip" data-bs-placement="top" title="Pending Document">Pending</a>
                         <a class="filter-button text-white font-size-13 btn btn-success p-1" data-filter="completed" data-bs-toggle="tooltip" data-bs-placement="top" title="Completed Document">Completed</a>
                 </div>
@@ -127,7 +130,7 @@
                                 <th>Purpose</th>
                                 <th>Office (Requestor)</th>
                                 <th>Status</th>
-                                <th>Date Created</th>
+                                {{-- <th>Date Created</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead><!-- end thead -->
@@ -222,7 +225,7 @@
                                         @endswitch
                                         
                                     </td>
-                                    <td><b>{{ $document['created_at'] }}</b></td>
+                                    {{-- <td><b>{{ $document['created_at'] }}</b></td> --}}
                                     <td width="50px">
                                         <span class="">
                                             {{-- for barcodes --}}
@@ -379,6 +382,9 @@
             $('#new-request').on('click',function(){
                 // console.log('dkwajdkwajkdwa')
                  // Prevent modal from closing when clicking outside
+
+                $('.error-document').hide()
+                $('.error-text').hide()
                 $('#new-request-modal').modal({
                     backdrop: 'static',
                     keyboard: false
@@ -388,12 +394,6 @@
                 var departmentJson = {!! json_encode($departments)!!};
                 // console.log(departmentJson)
                 var html = ''
-                //old
-                // departmentJson.forEach(department => {
-                //    if(department.office_abbrev !== 'ADM'){
-                //         html += `<option value="${department.office_abbrev} | ${department.office_name}">${department.office_name}</option>`
-                //    }
-                // });
                     // updates
                     $.each(departmentJson, function(officeAbbrev, officeData){
                         var office = officeData.office;
@@ -405,10 +405,54 @@
                             
                         });
                     })
-                // var trkId = $(this).data("trk-id");
-                console.log(html)
                 $('#department-select').html(html)
                 $('#new-request-modal').modal('show')
+
+                $('.send-request-btn').on('click', function(){
+                    // Create FormData object
+                     var formData = new FormData($('#request-form')[0]);
+                    $.ajax({
+                        url: `/documents`, // Replace with your route URL
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                           console.log(response.fields)
+                           if(response.status === 'error'){
+                                if(response.fields.document){
+                                    $('.error-document').show()
+                                    $("#image").addClass('border border-danger') 
+                                }else{
+                                    $('.error-document').hide()
+                                    $("#image").removeClass('border border-danger')
+                                }
+                                if(response.fields.request_text){
+                                    $('.error-text').show()
+                                    $("#textarea").addClass('border border-danger')
+                                }else{
+                                    $('.error-text').hide()
+                                    $("#textarea").removeClass('border border-danger')
+                                }
+                                
+                           }else{
+                            $('.error-document').hide()
+                            $('.error-text').hide()
+                            $("#textarea").removeClass('border border-danger')
+                            $("#image").removeClass('border border-danger')
+                            window.location.reload(); // Reload the page
+                           }
+                           
+                        },
+                        error: function(xhr, status, error) {
+                            // Reject the promise with an error
+                            console.log(error);
+                        }
+                    });
+                })
                 // Reset the form when clicking the "x" button
                 $('#close-modal').on('click', function () {
                     $('#request-form')[0].reset();
@@ -424,7 +468,7 @@
                     keyboard: false
                 })
 
-
+               
                 
                     const baseUrls = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                     var docPath = $(this).data("document-id");
@@ -447,20 +491,29 @@
                     $('.event-notes-open').val(purpose)
                     // add data-id on archived button
                     // $('.documents-archive').attr('data-archived-id',id)
-
-                   
+                    $('.pr').attr('readonly',true)
+                    $('.po').attr('readonly',true)
+                    
 
                     switch (stats) {
                         case 'forwarded':
+                            // $('.pr').attr('readonly',false)
+                            // $('.po').attr('readonly',false)
                             $('.status-badge').html(` <h5 class="badge bg-warning p-2">This document is ${stats}</h5>`)
                             break;
                         case 'approved':
+                            $('.pr').attr('readonly',true)
+                            $('.po').attr('readonly',true)
                             $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                             break;
                         case 'archived':
+                            $('.pr').attr('readonly',true)
+                            $('.po').attr('readonly',true)
                             $('.status-badge').html(` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
                             break;
                         case 'completed':
+                            $('.pr').attr('readonly',true)
+                            $('.po').attr('readonly',true)
                             $('#btn-arc').prop('disabled', true);
                             $('.status-badge').html(` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                             break;

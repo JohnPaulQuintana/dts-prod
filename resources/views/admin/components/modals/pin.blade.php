@@ -43,14 +43,6 @@
                                                             </div>
                                                         </div>
 
-                                                        {{-- <div class="col-6" style="margin: auto;">
-                                                            <div class="mb-2 text-center">
-                                                                <h4 class="card-title">Department Staffs:</h4>
-                                                                <select id="department-staff-select" name="department_staff" class="form-select" aria-label="Default select example" required>
-                                                                    
-                                                                </select>
-                                                            </div>
-                                                        </div> --}}
                                                         <div class="col-12 border">
                                                             <div class="mb-2 text-center">
                                                                 <h4>Department Users</h4>
@@ -76,7 +68,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success waves-effect" id="btn-approved">Forward Document</button>
-                        {{-- <button type="submit" class="btn btn-danger waves-effect waves-light">Archived</button> --}}
                     </div>
                 </div><!-- /.modal-content -->
             </form>

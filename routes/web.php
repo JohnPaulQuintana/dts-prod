@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified', 'roleguard'])->group(function(){
     Route::get('/create-reports', [AdministratorController::class,'reportsPdf'])->name('reportsPdf');
     Route::post('/generate-reports', [RequestedDocumentController::class,'generateReports'])->name('generate.reports');
     Route::post('/cancel-reports', [RequestedDocumentController::class,'cancelReports'])->name('cancel.reports');
+    Route::post('/archived-office', [OfficeController::class, 'destroy'])->name('delete.office');
 });
 
 // Route::get('/department', [DepartmentController::class,'dashboard'])->middleware(['auth', 'verified'])->name('departments.dashboard');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Log;
 use App\Models\User;
 use App\Events\NotifyEvent;
+use App\Models\RequestedDocument;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,6 +75,28 @@ class AdministratorController extends Controller
             case 'archived':
                 // Find the user by ID
                 $user = User::find($id);
+                // Check in logs if this user has pending documents
+                $logsuser = Log::where(function ($query) use ($id) {
+                    $query->where('forwarded_to', $id)
+                        ->orWhere('destination', $id);
+                })
+                ->whereIn('status', ['forwarded', 'pending'])
+                ->latest('created_at') // Order by the latest created_at timestamp
+                ->first();
+
+                // Check in logs if this user has pending documents
+                $requestedsuser = RequestedDocument::where(function ($query) use ($id) {
+                    $query->where('requestor_user', $id)
+                        ->orWhere('forwarded_to', $id);
+                })
+                ->where('status', 'pending')
+                ->latest('created_at') // Order by the latest created_at timestamp
+                ->first();
+
+                if($logsuser || $requestedsuser){
+                     // User has the latest pending document
+                     return response()->json(['status'=>'error','message'=>"This user's cant be archive."],200);
+                }
                 // Mark the user as unverified (set email_verified_at to null)
                 // $user->email_verified_at = null;
                 $user->status = 'archived';
@@ -87,11 +110,11 @@ class AdministratorController extends Controller
                 // Mark the user as unverified (set email_verified_at to null)
                 $user->email_verified_at = Carbon::now();
                 $user->status = 'active';
-                $user->password = Hash::make('password');
+                // $user->password = Hash::make('password');
                 $status = 'success';
                 $message = 'Account is successfully activated, user can login to the system!';
                 break;
-            case 'forgot-password':
+            case 'reset-password':
                 // Find the user by ID
                 $user = User::find($id);
                 // Mark the user as unverified (set email_verified_at to null)
@@ -108,7 +131,7 @@ class AdministratorController extends Controller
         }
         if ($user) {
             $user->save();
-            event(new NotifyEvent('accounts archived'));
+            event(new NotifyEvent(["user_id"=>$id,"refresh"=>true]));
         }
         return response()->json(['status'=>$status,'message'=>$message],200);
     }

@@ -51,7 +51,7 @@
                         <input type="submit" name="action" class="btn btn-success waves-effect" id="btn-approved" value="Approved">
                         
                         <input type="submit" name="action" class="btn btn-info waves-effect waves-light documents-reprocess" id="btn-reprocess" value="Re-process">
-                        <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive" id="btn-arc" value="Archived">
+                        <input type="submit" name="action" class="btn btn-danger waves-effect waves-light documents-archive" id="btn-arc" value="Discontinued">
                     </div>
                 </div><!-- /.modal-content -->
             </form>

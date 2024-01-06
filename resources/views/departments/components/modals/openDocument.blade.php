@@ -27,10 +27,10 @@
                                                     </div>
                                                     <br>
                                                     <label for="pr" class="text-center">Purchase Request</label>
-                                                    <input type="text" name="pr" class="form-control text-center mb-2 pr" placeholder="PO123456">
+                                                    <input type="text" name="pr" class="form-control text-center mb-2 pr" placeholder="EX.123456">
 
                                                     <label for="po" class="text-center">Purchase Order</label>
-                                                    <input type="text" name="po" class="form-control text-center mb-2 po" placeholder="PR123456">
+                                                    <input type="text" name="po" class="form-control text-center mb-2 po" placeholder="EX.123456">
                                                     
                                                     <label for="amount" class="text-center">Requested Amount</label>
                                                     <input type="text" name="amount" value="" class="form-control text-center mb-2 amount" readonly>
@@ -44,8 +44,9 @@
                     </div>
                     <div class="modal-footer">
                         @if (Auth::user()->assigned !== 'viewing' && Auth::user()->id)
+                            <input type="submit" name="action" class="btn btn-info waves-effect btn-reprocess" id="btn-reprocess" value="Re-process">
                             <input type="submit" name="action" class="btn btn-success openbtn waves-effect btn-r btn-approved" id="btn-approved" value="Approved">
-                            <input type="submit" name="action" class="btn btn-danger openbtn waves-effect waves-light documents-archive btn-a btn-archived" id="btn-archived" value="Archived">
+                            <input type="submit" name="action" class="btn btn-danger openbtn waves-effect waves-light documents-archive btn-a btn-archived" id="btn-archived" value="Discontinued">
                             {{-- <input type="button" class="btn btn-success waves-effect btn-r">
                             <input type="submit" class="btn btn-danger waves-effect waves-light btn-a"> --}}
                         @endif

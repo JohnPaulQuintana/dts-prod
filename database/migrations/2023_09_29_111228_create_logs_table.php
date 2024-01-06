@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('scanned')->default(false);//indicators for that the documents is scan by user. so able to forward
             $table->timestamps();
             $table->string('time_range')->nullable()->default(now());
-
+            $table->string('destination')->nullable();
              // Define a foreign key constraint
              $table->foreign('requested_document_id')
              ->references('id')

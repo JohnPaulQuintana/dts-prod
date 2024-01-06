@@ -14,11 +14,11 @@ class NotifyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public string $data;
+    public $data;
     /**
      * Create a new event instance.
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
