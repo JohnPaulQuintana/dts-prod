@@ -13,6 +13,10 @@
     {{-- toast css --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/toastr/build/toastr.min.css') }}">
 
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
     <!-- twitter-bootstrap-wizard css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/twitter-bootstrap-wizard/prettify.css') }}">
     
@@ -106,7 +110,7 @@
                     </div>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap req-table">
+                        {{-- <table class="table table-centered mb-0 align-middle table-hover table-nowrap req-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Tracking No.</th>
@@ -115,14 +119,14 @@
                                     <th>Purpose</th>
                                     <th>Office (Requestor)</th>
                                     <th>Status</th>
-                                    {{-- <th>Date Created</th> --}}
+                                    
                                     <th>Action</th>
                                 </tr>
                             </thead><!-- end thead -->
                             <tbody>
-                                {{-- {{ $documents }} --}}
+                                
                                 @foreach ($documents as $document)
-                                    {{-- {{ $document }} --}}
+                                    
                                     <tr data-status="{{ $document['status'] }}" data-requestor-id="{{ $document['requestor_user_id'] }}">
                                         <td class="text-center">
                                             @switch($document['trk_id'])
@@ -195,7 +199,7 @@
                                             @endswitch
                                             
                                         </td>
-                                        {{-- <td><b>{{ $document['created_at'] }}</b></td> --}}
+                                        
                                         <td width="50px">
                                             <span class="">
                                                 
@@ -204,14 +208,16 @@
                                                 @endif
                                                 
                                                 <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="{{ $document['pr'] }}" data-po="{{ $document['po'] }}" data-stat="{{ $document['status'] }}" data-amount="{{ $document['amount'] }}" data-purpose="{{ $document['purpose'] }}" data-trk="{{ $document['trk_id'] }}" data-id="{{ $document['document_id'] }}" data-document-id="{{ $document['documents'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
-                                                {{-- <a id="scan-document-btn" class="ri-camera-line text-white font-size-18 btn btn-success p-2" data-office-id="2" data-bs-toggle="tooltip" data-bs-placement="top" title="Scan Document"></a> --}}
+                                               
                                             </span>
                                         </td>
                                     </tr>
                                 @endforeach
                                 
                             </tbody><!-- end tbody -->
-                        </table> <!-- end table -->
+                        </table> <!-- end table --> --}}
+                        <table id="requested-table" class="table activate-select dt-responsive nowrap w-100 text-center" style="width:100%;border:0 solid transparent; padding:10px;font-weight:700;text-transform:capitalize;"></table>
+
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <div>
@@ -272,10 +278,176 @@
         <!-- App js -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
 
+        {{-- datatables --}}
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+
         {{-- custom js --}}
         <script>
+            var dataToRender =  @json($documents);
+            console.log(dataToRender)
             $(document).ready(function(){
-                // filter table base on id
+               
+                $('#requested-table').DataTable({
+                data: dataToRender,
+                columns: [
+                    { 
+                        data: null, 
+                        title: 'Tracking No : ',
+                        render: function(data, type, row){
+                            switch (row.trk_id) {
+                                case null:
+                                    if(row.status !== 'archived'){
+                                        return `<h6 class="mb-0 text-warning"><i class="ri-checkbox-blank-circle-fill font-size-10 text-warning align-middle me-2"></i>{{ __('Pending') }}</h6>`
+                                    }else{
+                                        return `<h6 class="mb-0 text-danger"><i class="ri-checkbox-blank-circle-fill font-size-10 text-danger align-middle me-2"></i>{{ __('rejected') }}</h6>`
+                                    } 
+                                    break;
+                            
+                                default:
+                                    var renderStatus = ''
+                                    switch (row.status) {
+                                        case 'forwarded':
+                                            renderStatus = `<span class="position-absolute bottom-50 left-100 translate-middle badge bg-info">
+                                                                {{ __('requested') }}
+                                                            </span>`
+                                            break;
+                                        case 'pending':
+                                            renderStatus = `<span class="position-absolute bottom-50 left-100 translate-middle badge bg-warning">
+                                                                {{ __('pending') }}
+                                                            </span>`
+                                            break;
+                                        case 'approved':
+                                            renderStatus = `<span class="position-absolute bottom-50 left-100 translate-middle badge bg-info">
+                                                                {{ __('approved') }}
+                                                            </span>`
+                                            break;
+                                        case 'archived':
+                                            renderStatus = `<span class="position-absolute bottom-50 left-100 translate-middle badge bg-danger">
+                                                                {{ __('discontinued') }}
+                                                            </span>`
+                                            break;
+                                        case 'completed':
+                                            renderStatus = `<span class="position-absolute bottom-50 left-100 translate-middle badge bg-success">
+                                                                {{ __('completed') }}
+                                                            </span>`
+                                            break;
+                                    
+                                        default:
+                                            break;
+                                    }
+
+                                    return `<h6 class="mb-0 position-relative">
+                                                {!! DNS1D::getBarcodeHTML("579503", 'PHARMA') !!}
+                                                ${renderStatus}
+                                            </h6>
+`
+                                    break;
+                            }
+                            
+                        } 
+                    },
+                    { 
+                        data: null, 
+                        title: 'Purchased Request : ',
+                        render: function(data, type, row){
+                            var renderPR = ''
+                            var renderClass = ''
+                            if(row.pr){
+                                renderPR = row.pr
+                                renderClass = "badge p-2 bg-success"
+                            }else{
+                                renderPR = 'not-available'
+                                renderClass = "badge p-2 bg-danger"
+                            }
+                            return `<span class="${renderClass}">${renderPR}</span>`;
+                            
+                        }
+                    },
+                    { 
+                        data: null,
+                        title: 'Document : ', 
+                        render: function(data, type, row){
+                            return `
+                                <i class="far fa-file-alt fa-3x"></i>
+                                <a class="position-relative track-document" data-id="${row.document_id}" data-trk="${row.trk_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Track document...">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><b><i class="fas fa-route"></i></b></span>
+                                </a>
+
+                            `
+                        }
+                    },
+                    { data: 'purpose', title: 'Purpose : ' },
+                    { 
+                        data: null, 
+                        title: 'Office (Requestor) : ',
+                        render: function(data, type, row){
+                            return `
+                                ${row.corporate_office.office_name}
+                                <span class="badge bg-info p-1"><b>${row.corporate_office.office_abbrev}</b></span>
+                            `
+                        } 
+                    },
+                    { 
+                        data: null, 
+                        title: 'Status : ',
+                        render: function(data, type, row){
+                            var renderStat = ''
+                            switch (row.status) {
+                                case 'archived':
+                                    renderStat = `<span class="badge bg-danger p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'forwarded':
+                                    renderStat = `<span class="badge bg-warning p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'approved':
+                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'pending':
+                                    renderStat = `<span class="badge bg-warning p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'completed':
+                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+                                    break;
+                                
+                                default:
+                                    break;
+                            }
+
+                            return renderStat;
+                        }
+                    },
+                    
+                    { 
+                        data: null, 
+                        title: 'Action : ',
+                        render: function(data, type, row){
+                            var renderAction = ''
+                            var renderClass = ''
+                            if(row.status !== 'pending' && row.status !== 'archived' && row.status !== 'completed' && row.status !== 'forwarded'){
+                                renderAction = `
+                                    <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="${row.current_location}" data-scanned-id="${row.scanned}" data-requestor-id="${row.requestor_user_id}" data-trk="${row.trk_id}" data-id="${row.document_id}" data-document-id="${row.documents}" data-office-id="${row.corporate_office.office_id}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
+                                `
+                                
+                            }else{
+                                renderAction = `
+                                    <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="${row.pr}" data-po="${row.po}" data-stat="${row.status}" data-amount="${row.amount}" data-purpose="${row.purpose}" data-trk="${row.trk_id}" data-id="${row.document_id}" data-document-id="${row.documents}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
+                                `
+                                
+                            }
+                            return renderAction;
+                            
+                        }
+                    },
+                   
+                    
+                ],
+                responsive: true,
+                "initComplete": function (settings, json) {
+                    $(this.api().table().container()).addClass('bs4');
+                },
+            });
+            
                  // Parse the URL search parameters
                 const urlSearchParams = new URLSearchParams(window.location.search);
 
