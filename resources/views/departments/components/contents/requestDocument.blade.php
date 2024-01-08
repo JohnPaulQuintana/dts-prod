@@ -767,10 +767,13 @@
                             ` <h5 class="badge bg-warning p-2">This document is ${stats}</h5>`)
                         break;
                     case 'approved':
+                            $('.btn-approved').prop('disabled', true);
+                            $('.btn-archived').prop('disabled', false);
                         $('.status-badge').html(
                             ` <h5 class="badge bg-success p-2">This document is ${stats}</h5>`)
                         break;
                     case 'archived':
+                        $('.btn-archived').prop('disabled', true);
                         $('.btn-reprocess').show();
                         $('.status-badge').html(
                             ` <h5 class="badge bg-danger p-2">This document is ${stats}</h5>`)
