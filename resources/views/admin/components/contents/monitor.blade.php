@@ -423,7 +423,7 @@
                         render: function(data, type, row){
                             var renderPO = ''
                             var renderClass = ''
-                            if(row.pr){
+                            if(row.po){
                                 renderPO = row.po
                                 renderClass = "badge p-2 bg-success"
                             }else{
