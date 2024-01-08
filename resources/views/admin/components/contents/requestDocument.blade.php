@@ -425,12 +425,12 @@
                             var renderAction = ''
                             var renderClass = ''
                             if(row.status !== 'pending' && row.status !== 'archived' && row.status !== 'completed' && row.status !== 'forwarded'){
-                                renderAction = `
+                                renderAction += `
                                     <a class="ri-map-pin-line text-white font-size-18 btn btn-danger p-2 pin-document-btn" data-current-loc="${row.current_location}" data-scanned-id="${row.scanned}" data-requestor-id="${row.requestor_user_id}" data-trk="${row.trk_id}" data-id="${row.document_id}" data-document-id="${row.documents}" data-office-id="${row.corporate_office.office_id}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Forward Document"></a>
                                 `
                                 
                             }else{
-                                renderAction = `
+                                renderAction += `
                                     <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="${row.pr}" data-po="${row.po}" data-stat="${row.status}" data-amount="${row.amount}" data-purpose="${row.purpose}" data-trk="${row.trk_id}" data-id="${row.document_id}" data-document-id="${row.documents}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                 `
                                 
