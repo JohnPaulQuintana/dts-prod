@@ -214,7 +214,7 @@
         {{-- custom js --}}
         <script>
             var dataToRender =  @json($offices);
-            // var baseRoute = @json(route('administrator.dashboard.offices.user', ['office_id' => '']));
+           
             console.log(dataToRender)
 
             $(document).ready(function(){
