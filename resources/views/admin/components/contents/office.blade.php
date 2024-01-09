@@ -8,8 +8,13 @@
     <meta content="Themesdesign" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
- <!-- Sweet Alert-->
- <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
+    <!-- Sweet Alert-->
+    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     {{-- toast css --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/toastr/build/toastr.min.css') }}">
 
@@ -91,7 +96,7 @@
                     <h4 class="card-title mb-4">Office List</h4>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap office-table">
+                        {{-- <table class="table table-centered mb-0 align-middle table-hover table-nowrap office-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Office Name</th>
@@ -135,7 +140,7 @@
                                             @endswitch
                                         </td>
                                         <td>{{ $office->created_at }}</td>
-                                        {{-- <td>{{ $log->formatted_time }}</td> --}}
+                                        
                                         <td width="50px">
                                             <span class="">
                                                 <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
@@ -150,7 +155,10 @@
                                 <!-- end -->
                                 
                             </tbody><!-- end tbody -->
-                        </table> <!-- end table -->
+                        </table> <!-- end table --> --}}
+
+                        <table id="office-table" class="table activate-select dt-responsive nowrap w-100 text-center" style="width:100%;border:0 solid transparent; padding:10px;font-weight:700;text-transform:capitalize;"></table>
+
                     </div>
                 </div><!-- end card -->
             </div><!-- end card -->
@@ -199,9 +207,82 @@
         <!-- App js -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
 
+        {{-- datatables --}}
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+
         {{-- custom js --}}
         <script>
+            var dataToRender =  @json($offices);
+            console.log(dataToRender)
+
             $(document).ready(function(){
+
+                $('#requested-table').DataTable({
+                data: dataToRender,
+                columns: [
+                    {
+                        data: null,
+                        title: 'Office Name',
+                        render: function(data, type, row){
+                            return `<h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>${row.office_name}</h6>`
+                        }
+                    },
+
+                    { data: 'office_description', title: 'Office Description : ' },
+                    { data: 'office_head', title: 'Office Head : ' },
+                    { data: 'office_type', title: 'Office Type : ' },
+                    { 
+                        data: null, 
+                        title: 'Status : ',
+                        render: function(data, type, row){
+                            var renderStat = ''
+                            switch (row.status) {
+                                case 'forwarded':
+                                    renderStat = `<span class="badge bg-info p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'rejected':
+                                    renderStat = `<span class="badge bg-danger p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'on-going':
+                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+                                    break;
+                                case 'active':
+                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+                                    break;
+                                
+                                default:
+                                    break;
+                            }
+
+                            return renderStat;
+                        }
+                    },
+                    { data: 'created_at', title: 'Date Created : ' },
+                    { 
+                        data: null, 
+                        title: 'Action : ',
+                        render: function(data, type, row){
+                            var renderAction = `
+                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
+                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
+                            `
+                            
+                            
+                            
+                            return `${renderAction}`;
+                            
+                        }
+                    },
+                   
+                    
+                ],
+                responsive: true,
+                "initComplete": function (settings, json) {
+                    $(this.api().table().container()).addClass('bs4');
+                },
+            });
+
                 // console.log('ito')
                 // var errorJson = {!! json_encode(session('errors')) !!};
                 // var notification2 = JSON.parse(errorJson);
