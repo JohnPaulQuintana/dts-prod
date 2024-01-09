@@ -260,23 +260,23 @@
                         }
                     },
                     { data: 'created_at', title: 'Date Created : ' },
-                    { 
-                        data: null, 
-                        title: 'Action : ',
-                        render: function(data, type, row){
-                            var officeId = row.id;
+                    // { 
+                    //     data: null, 
+                    //     title: 'Action : ',
+                    //     render: function(data, type, row){
+                    //         var officeId = row.id;
                             
-                            var renderAction = `
-                                <a id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2 view-users-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
-                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${officeId}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
-                            `
+                    //         var renderAction = `
+                    //             <a id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2 view-users-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
+                    //             <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${officeId}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
+                    //         `
                             
                             
                             
-                            return `${renderAction}`;
+                    //         return `${renderAction}`;
                             
-                        }
-                    },
+                    //     }
+                    // },
                    
                     
                 ],
