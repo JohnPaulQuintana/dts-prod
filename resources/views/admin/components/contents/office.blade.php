@@ -219,10 +219,11 @@
 
             $(document).ready(function(){
 
-                $('.view-users-btn').on('click', function(){
-                console.log('yes')
-            })
-            
+                $(document).on('click', '.view-users-btn', function(){
+                    console.log('yes');
+                });
+
+
                 $('#office-table').DataTable({
                 data: dataToRender,
                 columns: [
