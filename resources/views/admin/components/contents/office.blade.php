@@ -219,6 +219,10 @@
 
             $(document).ready(function(){
 
+                $('.view-users-btn').on('click', function(){
+                console.log('yes')
+            })
+            
                 $('#office-table').DataTable({
                 data: dataToRender,
                 columns: [
@@ -287,9 +291,7 @@
             });
 
             
-            $(document).on('.view-users-btn','click', function(){
-                console.log('yes')
-            })
+            
                 // console.log('ito')
                 // var errorJson = {!! json_encode(session('errors')) !!};
                 // var notification2 = JSON.parse(errorJson);
