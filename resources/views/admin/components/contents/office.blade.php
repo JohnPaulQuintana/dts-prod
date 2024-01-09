@@ -268,7 +268,7 @@
                             // var baseRoute = '{{ route("administrator.dashboard.offices.user", ["office_id" => ""]) }}';
                             // var objId = {'office_id':officeId}
                             var renderAction = `
-                            <a href="${baseRoute}/${officeId}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
+                                <a id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2 view-users-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
                                 <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${officeId}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
                             `
                             
@@ -286,6 +286,10 @@
                     $(this.api().table().container()).addClass('bs4');
                 },
             });
+
+            $('.view-users-btn').on('click', function(){
+                alert('yes')
+            })
 
                 // console.log('ito')
                 // var errorJson = {!! json_encode(session('errors')) !!};
