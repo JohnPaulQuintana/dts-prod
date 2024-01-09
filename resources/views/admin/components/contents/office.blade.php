@@ -287,7 +287,7 @@
             });
 
             
-            $('.view-users-btn').on('click', function(){
+            $(document).on('.view-users-btn','click', function(){
                 console.log('yes')
             })
                 // console.log('ito')
