@@ -214,6 +214,7 @@
         {{-- custom js --}}
         <script>
             var dataToRender =  @json($offices);
+            var baseRoute = @json(route('administrator.dashboard.offices.user', ['office_id' => '']));
             console.log(dataToRender)
 
             $(document).ready(function(){
@@ -264,7 +265,7 @@
                         title: 'Action : ',
                         render: function(data, type, row){
                             var officeId = row.id;
-                            var baseRoute = '{{ route("administrator.dashboard.offices.user", ["office_id" => ""]) }}';
+                            // var baseRoute = '{{ route("administrator.dashboard.offices.user", ["office_id" => ""]) }}';
                             // var objId = {'office_id':officeId}
                             var renderAction = `
                             <a href="${baseRoute}/${officeId}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
