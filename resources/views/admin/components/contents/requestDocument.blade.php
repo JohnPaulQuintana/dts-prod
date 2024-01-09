@@ -438,7 +438,7 @@
                                 `
                                 
                             
-                            return `<span>${renderClass}</span>`;
+                            return `${renderClass}`;
                             
                         }
                     },
