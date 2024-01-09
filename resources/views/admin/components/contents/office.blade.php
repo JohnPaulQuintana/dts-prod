@@ -264,8 +264,8 @@
                         title: 'Action : ',
                         render: function(data, type, row){
                             var renderAction = `
-                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => $office->id]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
-                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="{{ $office->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
+                                <a href="{{ route('administrator.dashboard.offices.user', ['office_id' => ${row.id}]) }}" id="view-users-btn" class="ri-user-add-line text-white font-size-18 btn btn-success p-2" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
+                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
                             `
                             
                             
