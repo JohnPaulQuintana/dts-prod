@@ -433,7 +433,7 @@
                                 `
                                 
                             }
-                                renderAction += `
+                                renderAction = `
                                     <a class="ri-eye-line text-white font-size-18 btn btn-info p-2 view-document-btn" data-pr="${row.pr}" data-po="${row.po}" data-stat="${row.status}" data-amount="${row.amount}" data-purpose="${row.purpose}" data-trk="${row.trk_id}" data-id="${row.document_id}" data-document-id="${row.documents}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document"></a>
                                 `
                                 
