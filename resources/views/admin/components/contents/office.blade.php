@@ -219,7 +219,7 @@
 
             $(document).ready(function(){
 
-                $('#requested-table').DataTable({
+                $('#office-table').DataTable({
                 data: dataToRender,
                 columns: [
                     {
