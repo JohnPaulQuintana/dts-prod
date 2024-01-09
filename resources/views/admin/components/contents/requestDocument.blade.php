@@ -339,6 +339,9 @@
 
                                     return `<h6 class="mb-0 position-relative">
                                                 {!! DNS1D::getBarcodeHTML("579503", 'PHARMA') !!}
+                                                <i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>
+                                                            TRK-${row.trk_id}
+
                                                 ${renderStatus}
                                             </h6>
 `
@@ -435,7 +438,7 @@
                                 `
                                 
                             }
-                            return renderAction;
+                            return `<span>${renderClass}</span>`;
                             
                         }
                     },
