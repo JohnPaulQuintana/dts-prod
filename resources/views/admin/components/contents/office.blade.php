@@ -96,7 +96,7 @@
                     <h4 class="card-title mb-4">Office List</h4>
                     {{-- {{ $logs }} --}}
                     <div class="table-responsive">
-                        {{-- <table class="table table-centered mb-0 align-middle table-hover table-nowrap office-table">
+                        <table class="table table-centered mb-0 align-middle table-hover table-nowrap office-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Office Name</th>
@@ -155,9 +155,9 @@
                                 <!-- end -->
                                 
                             </tbody><!-- end tbody -->
-                        </table> <!-- end table --> --}}
+                        </table> <!-- end table -->
 
-                        <table id="office-table" class="table activate-select dt-responsive nowrap w-100 text-center" style="width:100%;border:0 solid transparent; padding:10px;font-weight:700;text-transform:capitalize;"></table>
+                        {{-- <table id="office-table" class="table activate-select dt-responsive nowrap w-100 text-center" style="width:100%;border:0 solid transparent; padding:10px;font-weight:700;text-transform:capitalize;"></table> --}}
 
                     </div>
                 </div><!-- end card -->
@@ -213,83 +213,84 @@
 
         {{-- custom js --}}
         <script>
-            var dataToRender =  @json($offices);
+            // var dataToRender =  @json($offices);
            
-            console.log(dataToRender)
+            // console.log(dataToRender)
 
             $(document).ready(function(){
 
-                $(document).on('click', '.view-users-btn', function(){
-                    console.log('yes');
-                });
+                // $(document).on('click', '.view-users-btn', function(){
+                    
+                //     console.log('yes');
+                // });
 
 
-                $('#office-table').DataTable({
-                data: dataToRender,
-                columns: [
-                    {
-                        data: null,
-                        title: 'Office Name',
-                        render: function(data, type, row){
-                            return `<h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>${row.office_name}</h6>`
-                        }
-                    },
+            //     $('#office-table').DataTable({
+            //     data: dataToRender,
+            //     columns: [
+            //         {
+            //             data: null,
+            //             title: 'Office Name',
+            //             render: function(data, type, row){
+            //                 return `<h6 class="mb-0"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success align-middle me-2"></i>${row.office_name}</h6>`
+            //             }
+            //         },
 
-                    { data: 'office_description', title: 'Office Description : ' },
-                    { data: 'office_head', title: 'Office Head : ' },
-                    { data: 'office_type', title: 'Office Type : ' },
-                    { 
-                        data: null, 
-                        title: 'Status : ',
-                        render: function(data, type, row){
-                            var renderStat = ''
-                            switch (row.status) {
-                                case 'forwarded':
-                                    renderStat = `<span class="badge bg-info p-2"><b>${row.status}</b></span>`
-                                    break;
-                                case 'rejected':
-                                    renderStat = `<span class="badge bg-danger p-2"><b>${row.status}</b></span>`
-                                    break;
-                                case 'on-going':
-                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
-                                    break;
-                                case 'active':
-                                    renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
-                                    break;
+            //         { data: 'office_description', title: 'Office Description : ' },
+            //         { data: 'office_head', title: 'Office Head : ' },
+            //         { data: 'office_type', title: 'Office Type : ' },
+            //         { 
+            //             data: null, 
+            //             title: 'Status : ',
+            //             render: function(data, type, row){
+            //                 var renderStat = ''
+            //                 switch (row.status) {
+            //                     case 'forwarded':
+            //                         renderStat = `<span class="badge bg-info p-2"><b>${row.status}</b></span>`
+            //                         break;
+            //                     case 'rejected':
+            //                         renderStat = `<span class="badge bg-danger p-2"><b>${row.status}</b></span>`
+            //                         break;
+            //                     case 'on-going':
+            //                         renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+            //                         break;
+            //                     case 'active':
+            //                         renderStat = `<span class="badge bg-success p-2"><b>${row.status}</b></span>`
+            //                         break;
                                 
-                                default:
-                                    break;
-                            }
+            //                     default:
+            //                         break;
+            //                 }
 
-                            return renderStat;
-                        }
-                    },
-                    { data: 'created_at', title: 'Date Created : ' },
-                    { 
-                        data: null, 
-                        title: 'Action : ',
-                        render: function(data, type, row){
-                            var officeId = row.id;
+            //                 return renderStat;
+            //             }
+            //         },
+            //         { data: 'created_at', title: 'Date Created : ' },
+            //         { 
+            //             data: null, 
+            //             title: 'Action : ',
+            //             render: function(data, type, row){
+            //                 var officeId = row.id;
                             
-                            var renderAction = `
-                                <a class="ri-user-add-line text-white font-size-18 btn btn-success p-2 view-users-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
-                                <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${officeId}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
-                            `
+            //                 var renderAction = `
+            //                     <a class="ri-user-add-line text-white font-size-18 btn btn-success p-2 view-users-btn" data-office-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Assigned Users"></a>
+            //                     <a class="ri-archive-line text-white font-size-18 btn btn-danger p-2 archived-offices-btn" data-office-id="${officeId}" data-bs-toggle="tooltip" data-bs-placement="top" title="Archived Office"></a>
+            //                 `
                             
                             
                             
-                            return `${renderAction}`;
+            //                 return `${renderAction}`;
                             
-                        }
-                    },
+            //             }
+            //         },
                    
                     
-                ],
-                responsive: true,
-                "initComplete": function (settings, json) {
-                    $(this.api().table().container()).addClass('bs4');
-                },
-            });
+            //     ],
+            //     responsive: true,
+            //     "initComplete": function (settings, json) {
+            //         $(this.api().table().container()).addClass('bs4');
+            //     },
+            // });
 
             
             
