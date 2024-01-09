@@ -286,10 +286,10 @@
                 },
             });
 
+            
             $('.view-users-btn').on('click', function(){
-                alert('yes')
+                console.log('yes')
             })
-
                 // console.log('ito')
                 // var errorJson = {!! json_encode(session('errors')) !!};
                 // var notification2 = JSON.parse(errorJson);
