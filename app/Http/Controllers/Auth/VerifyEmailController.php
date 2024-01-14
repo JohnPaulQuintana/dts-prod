@@ -21,7 +21,8 @@ class VerifyEmailController extends Controller
         }
 
         if ($request->user()->markEmailAsVerified()) {
-            event(new NotifyEvent('refresh the page'));
+            // event(new NotifyEvent(['user_id' => $updatedRecords[0]->requestor_user, 'refresh' => true]));
+            event(new NotifyEvent(['user_id' => 1, 'refresh' => true]));
             // Update the user's status to "active"
             $request->user()->update(['status' => 'active']);
             
