@@ -25,7 +25,7 @@ class RequestedDocumentController extends Controller
 
     public function monitor()
     {
-        $documents = RequestedDocument::get();
+        $documents = RequestedDocument::orderBy('created_at', 'desc')->get();
 
         // Fetch logs for each document separately
         $documents->each(function ($document) {
@@ -371,6 +371,8 @@ class RequestedDocumentController extends Controller
     public function updateIncomingRequest(Request $request)
     {
         // dd($request);
+        // $reason
+        $notes = $request->input('reason');
         $id = $request->input('id');
         $action = $request->input('action');
         $pr = $request->input('pr');
@@ -491,6 +493,10 @@ class RequestedDocumentController extends Controller
                 ];
                 break;
             case 'Discontinued':
+
+                if($notes === null){
+                    $notes = 'false';
+                }
                 // dd('archived');
                 // Update the 'status' field using the trk_id
                 $affectedRows = RequestedDocument::where('id', $id)->update(['status' => 'archived']);
@@ -515,7 +521,7 @@ class RequestedDocumentController extends Controller
                     'destination' => Auth::user()->id,
                     'current_location' => $office->office_abbrev . ' | ' . $office->office_name, // current loaction  department abbrev
                     'notes' => 'Document is rejected by admin.', //if the have a notes
-                    'notes_user' => 'false', //if the have a notes
+                    'notes_user' => $notes, //if the have a notes
                     'status' => $updatedRecords[0]->status, // Set the on-going status
                     'scanned' => true,
                 ]);

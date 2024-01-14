@@ -297,6 +297,8 @@
 
             //add new user
             $('.adduser2').on('click', function() {
+                var $submitButton = $(this); // Store a reference to the button
+                $submitButton.attr('disabled', true)
                 var csrfToken = $('#csrf-token').val();
                 $.ajax({
                     type: "POST",
@@ -327,6 +329,7 @@
                             $('.error-username').hide()
                         }
                         if (res.fields.email) {
+                            $('#em').html(res.fields.email)
                             $('.error-email').show()
                         } else {
                             $('.error-email').hide()
@@ -339,7 +342,7 @@
                             $('.error-cpassword').hide()
                         }
 
-                        
+                        $submitButton.attr('disabled', false);
 
                         
                     },

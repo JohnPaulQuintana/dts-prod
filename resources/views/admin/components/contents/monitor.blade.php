@@ -300,6 +300,11 @@
             // render data
             $('#monitor-table').DataTable({
                 data: dataToRender,
+                "order": [],
+                "columnDefs": [ {
+                "targets"  : 'no-sort',
+                "orderable": false,
+                }],       
                 columns: [
                     { 
                         data: null, 

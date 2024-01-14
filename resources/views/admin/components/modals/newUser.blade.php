@@ -89,7 +89,7 @@
                                                     <input type="email" name="email" class="form-control" id="email">
                                                 </div>
                                                 <div class="error-email text-center text-danger">
-                                                    <p>Email is required</p>
+                                                    <p id="em">Email is required</p>
                                                 </div>
                                            </div>
                                         </div>
