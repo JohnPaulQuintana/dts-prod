@@ -140,6 +140,7 @@
                                         <td>{{ $user->username }}</td>
                                         <td>{{ __('staff') }}</td>
                                         <td>
+                                            {{-- {{ $user->status }} --}}
                                             @switch($user->status)
                                                 @case("forwarded")
                                                     <!-- Display something when status is 1 -->
