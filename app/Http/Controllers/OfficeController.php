@@ -130,7 +130,8 @@ class OfficeController extends Controller
 
         // Send email verification notification
         // event(new Registered($user));
-        $user->sendEmailVerificationNotification();
+        event(new Registered($user));
+        // $user->sendEmailVerificationNotification();
 
         // Build the success message
         $message = 'Successfully added '.$user->name;
