@@ -118,7 +118,7 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="name">Name <span class="required text-danger">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control">
+                            <input type="text" name="name" id="name" class="form-control" required>
                                
                         </div>
                         
@@ -220,7 +220,7 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="name">Name <span class="required text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control">
+                            <input type="text" name="name" class="form-control" required>
                                
                         </div>
                         <div class="col-sm-3">
