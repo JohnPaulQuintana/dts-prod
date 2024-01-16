@@ -133,4 +133,6 @@ class GenerateTable extends Fpdf
     function getHeader($type){
         $this->types = $type;
     }
+
+    
 }

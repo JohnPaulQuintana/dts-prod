@@ -117,6 +117,12 @@
                             </select>
                         </div>
                         <div class="col-sm-3">
+                            <label for="name">Name <span class="required text-danger">*</span></label>
+                            <input type="text" name="name" id="name" class="form-control">
+                               
+                        </div>
+                        
+                        <div class="col-sm-3">
                             <label for="processed-by">Processed By <span class="required text-danger">*</span></label>
                             <select name="processed-by" id="processed-by" class="form-select">
                                 {{-- <option value="all">All</option> --}}
@@ -210,6 +216,11 @@
                         <div class="col-sm-3">
                             <label for="to">To <span class="required text-danger">*</span></label>
                             <input type="date" name="to" id="to" class="form-control">
+                               
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="name">Name <span class="required text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control">
                                
                         </div>
                         <div class="col-sm-3">

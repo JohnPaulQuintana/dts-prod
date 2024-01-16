@@ -1134,6 +1134,7 @@ class RequestedDocumentController extends Controller
     public function generateReports(Request $request)
     {
         // dd($request);
+        $name = $request->input('name');
         $trk = $request->input('trk');
         $from = $request->input('from');
         $to = $request->input('to');
@@ -1237,11 +1238,13 @@ class RequestedDocumentController extends Controller
                     })
                     ->orderBy('logs.created_at', $orderBy)
                     ->get();
+
+                    $office = $request->input('processed-by-departments');
         }
         // dd($getAllData);
 
         if (count($getAllData) > 0) {
-            $pdfName = $this->generateReportDocuments2($getAllData, $from, $to);
+            $pdfName = $this->generateReportDocuments2($getAllData, $from, $to, $name, $office);
 
             $saveReports = new Report();
             $saveReports->report_trk = $trk ?? 'not-generated';
@@ -1442,8 +1445,9 @@ class RequestedDocumentController extends Controller
         return $uniqueId;
     }
 
-    function generateReportDocuments2($datas, $from, $to)
+    function generateReportDocuments2($datas, $from, $to, $name, $processedByDept)
     {
+        $off = Office::where('id', $processedByDept)->first();
         // dd($datas);
         $from2 = $from ?? now()->format('Y-m-d');
         $to2 = $to ?? now()->format('Y-m-d');
@@ -1457,6 +1461,8 @@ class RequestedDocumentController extends Controller
         $pdf->Cell(0, 10, 'Document Tracking System' . ' Reports', 0, 1, 'C');
         $pdf->SetFont('Courier', '', 12);
         $pdf->Cell(0, 5, 'From: ' . $from2 . ' | To: ' . $to2, 0, 1, 'C');
+        $pdf->SetFont('Courier', '', 12);
+        $pdf->Cell(0, 5, 'Department : ' . $off->office_name , 0, 1, 'C');
         $pdf->Ln(10);
 
         // get the title for next page
@@ -1524,8 +1530,19 @@ class RequestedDocumentController extends Controller
                 $item->created_at,
                 $item->time_range,
             ));
+
+            
+            
         }
 
+        // Footer
+        // $pdf->SetY(-2); // Move to 15 units from the bottom
+        // $pdf->SetFont('Courier', 'I', 8);
+        $pdf->Ln(7); // Move to the next row
+        $pdf->SetFont('Courier', 'B', 12);
+        $pdf->Cell(0, 5, $name, 0, 1, 'R');
+        $pdf->Cell(0, 5, '_______________' , 0, 1, 'R');
+        $pdf->Cell(0, 5, 'ADMINISTRATOR' , 0, 1, 'R');
         // Output the PDF
         $uniqueId = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
         $pdf->Output('F', public_path('reports/') . $uniqueId . '.pdf');
